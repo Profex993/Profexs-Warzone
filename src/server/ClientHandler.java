@@ -32,12 +32,11 @@ public class ClientHandler implements Runnable {
                 PlayerInput playerInput = PlayerInput.parseFromString(in.readLine());
                 player.setX(playerInput.x());
                 player.setY(playerInput.y());
-                System.out.println(playerInput.x() + " " + playerInput.y());
                 StringBuilder playerOut = new StringBuilder();
                 StringBuilder playerNames = new StringBuilder();
                 for (PlayerData player : players) {
                     playerNames.append(player.getId()).append(" ");
-                    playerOut.append(player.getX()).append(" ").append(player.getY()).append(";");
+                    playerOut.append(player.getX()).append(" ").append(player.getY()).append(" ").append(player.getId()).append(";");
                 }
                 out.write(playerNames.toString());
                 out.newLine();

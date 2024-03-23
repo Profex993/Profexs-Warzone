@@ -7,6 +7,7 @@ import dataFormats.PlayerInput;
 import java.io.*;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class ServerCommunication {
     private final Socket socket;
@@ -33,7 +34,7 @@ public class ServerCommunication {
 
     public void update() {
         try {
-            out.write(playerMain.getX() + " " + playerMain.getY());
+            out.write(playerMain.getX() + " " + playerMain.getY() + " " + playerMain.getName());
             out.newLine();
             out.flush();
             String line = in.readLine();
@@ -48,9 +49,14 @@ public class ServerCommunication {
             line = in.readLine();
             if (!line.isEmpty()) {
                 String[] playerInputs = line.split(";");
+                System.out.println(Arrays.toString(playerInputs));
                 for (int i = 0; i < playerList.size(); i++) {
                     PlayerInput playerInput = PlayerInput.parseFromString(playerInputs[i]);
-                    playerList.get(i).updateFromInputData(playerInput);
+                    for (Player player : playerList) {
+                        if (player.getName().equals(playerInput.id())) {
+                            player.updateFromInputData(playerInput);
+                        }
+                    }
                 }
             }
         } catch (IOException e) {
