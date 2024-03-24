@@ -7,7 +7,6 @@ import dataFormats.PlayerInput;
 import java.io.*;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class ServerCommunication {
     private final Socket socket;
@@ -41,15 +40,28 @@ public class ServerCommunication {
             if (!line.isEmpty()) {
                 String[] playerNames = line.split(" ");
                 if (playerNames.length != playerList.size()) {
-                    for (int i = playerList.size(); i < playerNames.length; i++) {
-                        playerList.add(new Player(playerNames[i]));
+                    if (playerNames.length > playerList.size()) {
+                        for (int i = playerList.size(); i < playerNames.length; i++) {
+                            playerList.add(new Player(playerNames[i]));
+                        }
+                    } else {
+                        ArrayList<Player> newPlayerList = new ArrayList<>();
+                        for (Player player : playerList) {
+                            for (String name : playerNames) {
+                                if (name.equals(player.getName())) {
+                                    newPlayerList.add(player);
+                                    break;
+                                }
+                            }
+                        }
+                        playerList.removeIf(player -> !newPlayerList.contains(player));
+                        System.out.println(playerList);
                     }
                 }
             }
             line = in.readLine();
             if (!line.isEmpty()) {
                 String[] playerInputs = line.split(";");
-                System.out.println(Arrays.toString(playerInputs));
                 for (int i = 0; i < playerList.size(); i++) {
                     PlayerInput playerInput = PlayerInput.parseFromString(playerInputs[i]);
                     for (Player player : playerList) {
@@ -59,6 +71,14 @@ public class ServerCommunication {
                     }
                 }
             }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void exit() {
+        try {
+            socket.close();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
