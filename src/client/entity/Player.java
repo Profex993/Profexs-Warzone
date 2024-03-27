@@ -1,6 +1,6 @@
 package client.entity;
 
-import dataFormats.PlayerInput;
+import shared.PlayerInput;
 
 import java.awt.*;
 

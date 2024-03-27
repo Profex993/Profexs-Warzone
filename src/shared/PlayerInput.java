@@ -1,4 +1,4 @@
-package dataFormats;
+package shared;
 
 public record PlayerInput(int x, int y, String id) {
 

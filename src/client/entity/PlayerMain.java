@@ -31,6 +31,7 @@ public class PlayerMain {
 
     public void draw(Graphics2D g2) {
         g2.drawRect(x, y, 48, 48);
+        g2.drawString(name, x, y - 5);
     }
 
     public String getName() {
@@ -45,7 +46,7 @@ public class PlayerMain {
         return y;
     }
 
-    public int getSpeed(){
+    public int getSpeed() {
         return speed;
     }
 }

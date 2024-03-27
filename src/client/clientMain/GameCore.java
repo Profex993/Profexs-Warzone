@@ -3,6 +3,9 @@ package client.clientMain;
 import client.entity.Player;
 import client.entity.PlayerMain;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.net.Socket;
 import java.util.ArrayList;
 
 public class GameCore {
@@ -13,10 +16,10 @@ public class GameCore {
     private final GamePanel gamePanel;
     private final UpdateManager updateManager;
 
-    public GameCore(String name) {
+    public GameCore(String name, Socket socket, BufferedReader in, BufferedWriter out) {
         playerMain = new PlayerMain(name, 0, 0, keyHandler);
         gamePanel = new GamePanel(playerMain, playerList, keyHandler);
-        serverCommunication = new ServerCommunication(playerMain, playerList);
+        serverCommunication = new ServerCommunication(playerMain, playerList, socket, in , out);
         updateManager = new UpdateManager(playerMain, playerList, serverCommunication);
         updateManager.startThread();
         gamePanel.startThread();

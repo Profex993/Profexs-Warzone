@@ -34,6 +34,11 @@ public class Console {
                     throw new RuntimeException(e);
                 }
             }
+            try {
+                reader.close();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
             System.exit(0);
         }).start();
     }
