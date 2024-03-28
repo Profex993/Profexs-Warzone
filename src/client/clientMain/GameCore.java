@@ -15,10 +15,17 @@ public class GameCore {
     private final ServerCommunication serverCommunication;
     private final GamePanel gamePanel;
     private final UpdateManager updateManager;
+    private final TileManager tileManager;
 
     public GameCore(String name, Socket socket, BufferedReader in, BufferedWriter out) {
         playerMain = new PlayerMain(name, 0, 0, keyHandler);
-        gamePanel = new GamePanel(playerMain, playerList, keyHandler);
+        try {
+            this.tileManager = new TileManager(playerMain);
+        } catch (Exception e) {
+            ClientMain.closeSocket(socket, in, out);
+            throw new RuntimeException();
+        }
+        gamePanel = new GamePanel(playerMain, playerList, keyHandler, tileManager);
         serverCommunication = new ServerCommunication(playerMain, playerList, socket, in , out);
         updateManager = new UpdateManager(playerMain, playerList, serverCommunication);
         updateManager.startThread();

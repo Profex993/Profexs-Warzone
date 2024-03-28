@@ -36,7 +36,7 @@ public class ServerCommunication {
 
     public void update() {
         try {
-            out.write(playerMain.getX() + " " + playerMain.getY() + " " + playerMain.getName());
+            out.write(playerMain.getWorldX() + " " + playerMain.getWorldY() + " " + playerMain.getName());
             out.newLine();
             out.flush();
             String line = in.readLine();
@@ -45,7 +45,7 @@ public class ServerCommunication {
                 if (playerNames.length != playerList.size()) {
                     if (playerNames.length > playerList.size()) {
                         for (int i = playerList.size(); i < playerNames.length; i++) {
-                            playerList.add(new Player(playerNames[i]));
+                            playerList.add(new Player(playerMain, playerNames[i]));
                         }
                     } else {
                         ArrayList<Player> newPlayerList = new ArrayList<>();

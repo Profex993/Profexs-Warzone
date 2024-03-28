@@ -5,16 +5,20 @@ import shared.PlayerInput;
 import java.awt.*;
 
 public class Player {
-    private int x, y;
+    private int worldX, worldY, screenX, screenY;
     private final String name;
+    private final PlayerMain playerMain;
 
-    public Player(String name) {
+    public Player(PlayerMain playerMain, String name) {
+        this.playerMain = playerMain;
         this.name = name;
     }
 
     public void draw(Graphics2D g2) {
-        g2.drawRect(x, y, 48, 48);
-        g2.drawString(name, x, y - 5);
+        screenX = worldX - playerMain.getWorldX() + playerMain.getScreenX();
+        screenY = worldY - playerMain.getWorldY() + playerMain.getScreenY();
+        g2.drawRect(screenX, screenY, 48, 48);
+        g2.drawString(name, screenX, screenY - 5);
     }
 
     public void update() {
@@ -22,27 +26,27 @@ public class Player {
     }
 
     public void updateFromInputData(PlayerInput playerInput) {
-        this.x = playerInput.x();
-        this.y = playerInput.y();
+        this.worldX = playerInput.x();
+        this.worldY = playerInput.y();
     }
 
     public String getName() {
         return name;
     }
 
-    public int getX() {
-        return x;
+    public int getWorldX() {
+        return worldX;
     }
 
-    public void setX(int x) {
-        this.x = x;
+    public void setWorldX(int worldX) {
+        this.worldX = worldX;
     }
 
-    public int getY() {
-        return y;
+    public int getWorldY() {
+        return worldY;
     }
 
-    public void setY(int y) {
-        this.y = y;
+    public void setWorldY(int worldY) {
+        this.worldY = worldY;
     }
 }

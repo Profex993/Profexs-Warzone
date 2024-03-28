@@ -15,7 +15,8 @@ public class ClientMain {
         Scanner scn = new Scanner(System.in);
         try {
             System.out.println("enter ip and port");
-            socket = new Socket(scn.nextLine(), scn.nextInt());
+//            socket = new Socket(scn.nextLine(), scn.nextInt());
+            socket = new Socket("localhost", 8080);
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
         } catch (ConnectException | UnknownHostException e) {

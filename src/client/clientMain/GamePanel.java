@@ -8,15 +8,19 @@ import java.awt.*;
 import java.util.ArrayList;
 
 public class GamePanel extends JPanel implements Runnable {
+    private static final Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+    private static final int screenWidth = screenSize.width, screenHeight = screenSize.height;
+    //    private static final int screenWidth = 720, screenHeight = 480;
     private Thread thread;
     private int currentFps = 0;
     private final PlayerMain playerMain;
     private final ArrayList<Player> playerList;
+    private final TileManager tileManager;
 
 
-    public GamePanel(PlayerMain player, ArrayList<Player> playerList, KeyHandler keyHandler) {
-        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        this.setPreferredSize(new Dimension(screenSize.width, screenSize.height));
+    public GamePanel(PlayerMain player, ArrayList<Player> playerList, KeyHandler keyHandler, TileManager tileManager) {
+//        this.setPreferredSize(new Dimension(screenWidth, screenHeight));
+        this.setPreferredSize(screenSize);
         this.setBackground(Color.black);
         this.setDoubleBuffered(true);
         this.addKeyListener(keyHandler);
@@ -24,6 +28,7 @@ public class GamePanel extends JPanel implements Runnable {
         this.setFocusable(true);
         this.playerMain = player;
         this.playerList = playerList;
+        this.tileManager = tileManager;
     }
 
     public void startThread() {
@@ -62,6 +67,7 @@ public class GamePanel extends JPanel implements Runnable {
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;
         g2.setColor(Color.white);
+        tileManager.draw(g2);
         playerMain.draw(g2);
         for (Player player : playerList) {
             player.draw(g2);
@@ -70,4 +76,11 @@ public class GamePanel extends JPanel implements Runnable {
         g2.dispose();
     }
 
+    public static int getScreenWidth() {
+        return screenWidth;
+    }
+
+    public static int getScreenHeight() {
+        return screenHeight;
+    }
 }
