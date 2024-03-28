@@ -12,7 +12,7 @@ public class ServerCore {
     public void runServer(int port) {
         new Thread(() -> {
             try (ServerSocket serverSocket = new ServerSocket(port)) {
-                System.out.println("server running on port: " + port);
+                System.out.println("server running on port: " + port + "\nwrite help for list of available commands");
                 while (true) {
                     Socket socket = serverSocket.accept();
                     BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));

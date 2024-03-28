@@ -9,20 +9,20 @@ import server.console.commands.Command_PlayerList;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 public class Console {
     private boolean exit = true;
-    private final HashMap<String, Command> commandList;
+    private final LinkedHashMap<String, Command> commandList;
     private final ServerCore core;
     private final BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 
     public Console(ServerCore core) {
         this.core = core;
-        this.commandList = new HashMap<>();
+        this.commandList = new LinkedHashMap<>();
+        commandList.put("help", new Command_Help());
         commandList.put("exit", new Command_Exit());
         commandList.put("players", new Command_PlayerList());
-        commandList.put("help", new Command_Help());
     }
 
     public void startConsole() {
@@ -30,6 +30,8 @@ public class Console {
             while (exit) {
                 try {
                     System.out.println(commandList.get(reader.readLine()).execute(this));
+                } catch (NullPointerException e) {
+                    System.out.println("unknown command");
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
@@ -44,12 +46,13 @@ public class Console {
     }
 
     public int selectPort() {
-        System.out.println("enter port number:");
-        try {
-            return Integer.parseInt(reader.readLine());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        return 8080;
+//        System.out.println("enter port number:");
+//        try {
+//            return Integer.parseInt(reader.readLine());
+//        } catch (IOException e) {
+//            throw new RuntimeException(e);
+//        }
     }
 
     public void triggerExit() {
@@ -60,7 +63,7 @@ public class Console {
         return core;
     }
 
-    public HashMap<String, Command> getCommandList() {
+    public LinkedHashMap<String, Command> getCommandList() {
         return commandList;
     }
 }

@@ -8,4 +8,9 @@ public class Command_Exit implements Command {
         console.triggerExit();
         return "shutting down...";
     }
+
+    @Override
+    public String description() {
+        return "shut down server";
+    }
 }
