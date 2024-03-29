@@ -14,11 +14,12 @@ public class TileManager {
     private final PlayerMain player;
     private final Tile[] tiles;
     private final int[][] mapTileNumber;
-    private final int maxWorldColum = 50, maxWorldRow = 50;
+    private final int maxWorldColum = 50, maxWorldRow = 50, size;
 
     public TileManager(PlayerMain playerMain) throws IOException {
         this.player = playerMain;
         tiles = new Tile[70];
+        this.size = (int) ((GamePanel.originalScreenWidth / 32) * GamePanel.widthScale);
         mapTileNumber = new int[maxWorldColum][maxWorldRow];
         getTileImg();
         loadMap();
@@ -108,8 +109,6 @@ public class TileManager {
         tiles[68] = new Tile(ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("Tiles/floor.png"))), false);
     }
 
-    //17 tiles horizontal
-    //10 tiles vertical
     private void loadMap() throws IOException {
         String filePath = "clientGameData/maps/map_crossfire.txt";
 
@@ -137,7 +136,6 @@ public class TileManager {
     public void draw(Graphics2D g2) {
         int worldCol = 0;
         int worldRow = 0;
-        int size = 48;
 
         while (worldCol < maxWorldColum && worldRow < maxWorldRow) {
             int tileNum = mapTileNumber[worldCol][worldRow];

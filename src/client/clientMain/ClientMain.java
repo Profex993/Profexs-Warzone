@@ -32,7 +32,7 @@ public class ClientMain {
 
         JFrame window = new JFrame();
         window.setTitle("game");
-//        window.setUndecorated(true);
+        window.setUndecorated(true);
         window.add(core.getGamePanel());
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         window.setVisible(true);
