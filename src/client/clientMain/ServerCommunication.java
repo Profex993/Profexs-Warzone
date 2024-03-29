@@ -36,7 +36,7 @@ public class ServerCommunication {
 
     public void update() {
         try {
-            out.write(playerMain.getWorldX() + " " + playerMain.getWorldY() + " " + playerMain.getName());
+            out.write(playerMain.outputToServer());
             out.newLine();
             out.flush();
             String line = in.readLine();
@@ -44,8 +44,20 @@ public class ServerCommunication {
                 String[] playerNames = line.split(" ");
                 if (playerNames.length != playerList.size()) {
                     if (playerNames.length > playerList.size()) {
-                        for (int i = playerList.size(); i < playerNames.length; i++) {
-                            playerList.add(new Player(playerMain, playerNames[i]));
+                        for (String playerName : playerNames) {
+                            if (!playerName.equals(playerMain.getName())) {
+                                boolean nameExists = false;
+                                for (Player player : playerList) {
+                                    if (player.getName().equals(playerName)) {
+                                        nameExists = true;
+                                        break;
+                                    }
+                                }
+                                if (!nameExists) {
+                                    Player newPlayer = new Player(playerMain, playerName);
+                                    playerList.add(newPlayer);
+                                }
+                            }
                         }
                     } else {
                         ArrayList<Player> newPlayerList = new ArrayList<>();
@@ -62,8 +74,8 @@ public class ServerCommunication {
                 }
                 line = in.readLine();
                 String[] playerInputs = line.split(";");
-                for (int i = 0; i < playerList.size(); i++) {
-                    PlayerInput playerInput = PlayerInput.parseFromString(playerInputs[i]);
+                for (String input : playerInputs) {
+                    PlayerInput playerInput = PlayerInput.parseFromString(input);
                     for (Player player : playerList) {
                         if (player.getName().equals(playerInput.id())) {
                             player.updateFromInputData(playerInput);

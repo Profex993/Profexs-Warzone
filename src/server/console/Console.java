@@ -46,13 +46,12 @@ public class Console {
     }
 
     public int selectPort() {
-        return 8080;
-//        System.out.println("enter port number:");
-//        try {
-//            return Integer.parseInt(reader.readLine());
-//        } catch (IOException e) {
-//            throw new RuntimeException(e);
-//        }
+        System.out.println("enter port number:");
+        try {
+            return Integer.parseInt(reader.readLine());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public void triggerExit() {

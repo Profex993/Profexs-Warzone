@@ -32,15 +32,13 @@ public class ClientHandler implements Runnable {
                 } else {
                     throw new Exception("player disconnected");
                 }
-                player.setX(playerInput.x());
-                player.setY(playerInput.y());
+                player.updateFromPlayerInput(playerInput);
                 if (playerList.size() > 1) {
                     StringBuilder playerOut = new StringBuilder();
                     StringBuilder playerNames = new StringBuilder();
                     for (PlayerData player : playerList) {
                         playerNames.append(player.getId()).append(" ");
-                        playerOut.append(player.getX()).append(" ").append(player.getY()).append(" ")
-                                .append(player.getId()).append(";");
+                        playerOut.append(player.serverOutput()).append(";");
                     }
                     out.write(playerNames.toString());
                     out.newLine();

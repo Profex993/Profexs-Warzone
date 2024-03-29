@@ -1,9 +1,9 @@
 package shared;
 
-public record PlayerInput(int x, int y, String id) {
+public record PlayerInput(String id, int x, int y, String direction, String directionFace, boolean walking) {
 
     public static PlayerInput parseFromString(String line) {
-        String[] parts = line.split(" ");
-        return new PlayerInput(Integer.parseInt(parts[0]), Integer.parseInt(parts[1]), parts[2]);
+        String[] parts = line.split(",");
+        return new PlayerInput(parts[0], Integer.parseInt(parts[1]), Integer.parseInt(parts[2]), parts[3], parts[4], Boolean.parseBoolean(parts[5]));
     }
 }
