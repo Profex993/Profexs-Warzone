@@ -9,10 +9,7 @@ import java.util.ArrayList;
 
 public class GamePanel extends JPanel implements Runnable {
     private static final Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-    public static final int screenWidth = screenSize.width, screenHeight = screenSize.height,
-            originalScreenWidth = 1536, originalScreenHeight = 864;
-    public static final double widthScale = (double) screenWidth / originalScreenWidth,
-            heightScale = (double) screenHeight / originalScreenHeight;
+    public static final int screenWidth = screenSize.width, screenHeight = screenSize.height;
     private Thread thread;
     private int currentFps = 0;
     private final PlayerMain playerMain;
@@ -31,7 +28,6 @@ public class GamePanel extends JPanel implements Runnable {
         this.playerMain = player;
         this.playerList = playerList;
         this.tileManager = tileManager;
-        System.out.println(widthScale + " " + heightScale);
     }
 
     public void startThread() {

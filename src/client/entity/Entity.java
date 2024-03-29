@@ -1,7 +1,5 @@
 package client.entity;
 
-import client.clientMain.GamePanel;
-
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -39,7 +37,7 @@ public class Entity {
     }
 
     public void draw(Graphics2D g2) {
-        g2.drawImage(getImage(), screenX, screenY,  (int)(width * GamePanel.widthScale), (int)(height * GamePanel.heightScale), null);
+        g2.drawImage(getImage(), screenX, screenY, width, height, null);
         g2.drawString(name, screenX, screenY - 5);
     }
 
