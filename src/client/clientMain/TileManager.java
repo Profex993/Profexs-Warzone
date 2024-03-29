@@ -19,7 +19,7 @@ public class TileManager {
     public TileManager(PlayerMain playerMain) throws IOException {
         this.player = playerMain;
         tiles = new Tile[70];
-        this.size = (int) ((GamePanel.originalScreenWidth / 32) * GamePanel.widthScale);
+        this.size = (GamePanel.screenWidth / 32);
         mapTileNumber = new int[maxWorldColum][maxWorldRow];
         getTileImg();
         loadMap();
