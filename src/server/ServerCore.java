@@ -21,9 +21,11 @@ public class ServerCore {
                     do {
                         name = in.readLine();
                     } while (checkNameAvailability(out, name));
-                    PlayerData player = new PlayerData(in.readLine());
+                    String[] playerInput = in.readLine().split(" ");
+                    System.out.println(playerInput[1]);
+                    PlayerData player = new PlayerData(playerInput[0], playerInput[1]);
                     players.add(player);
-                    Thread thread = new Thread(new ClientHandler(socket,in, out, player, players));
+                    Thread thread = new Thread(new ClientHandler(socket, in, out, player, players));
                     thread.start();
                 }
             } catch (SocketException ignored) {

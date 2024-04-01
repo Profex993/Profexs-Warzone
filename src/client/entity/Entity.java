@@ -41,21 +41,22 @@ public class Entity {
         g2.drawString(name, screenX, screenY - 5);
     }
 
-    public void setPlayerImage() {
+    public void setPlayerImage(String dir) {
+        System.out.println(dir);
         try {
-            deathImg = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("entity/default/death.png")));
-            walk1Right = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("entity/default/player2Walk1.png")));
-            walk2Right = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("entity/default/player2Walk2.png")));
-            walk3Right = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("entity/default/player2Walk3.png")));
-            walk1Left = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("entity/default/player1Walk1.png")));
-            walk2Left = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("entity/default/player1Walk2.png")));
-            walk3Left = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("entity/default/player1Walk3.png")));
-            walk1Up = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("entity/default/player4Walk1.png")));
-            walk2Up = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("entity/default/player4Walk3.png")));
-            walk3Up = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("entity/default/player4Walk2.png")));
-            walk1Down = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("entity/default/player3Walk1.png")));
-            walk2Down = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("entity/default/player3Walk2.png")));
-            walk3Down = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("entity/default/player3Walk3.png")));
+            deathImg = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("entity/" + dir + "/death.png")));
+            walk1Right = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("entity/" + dir + "/player2Walk1.png")));
+            walk2Right = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("entity/" + dir + "/player2Walk2.png")));
+            walk3Right = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("entity/" + dir + "/player2Walk3.png")));
+            walk1Left = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("entity/" + dir + "/player1Walk1.png")));
+            walk2Left = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("entity/" + dir + "/player1Walk2.png")));
+            walk3Left = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("entity/" + dir + "/player1Walk3.png")));
+            walk1Up = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("entity/" + dir + "/player4Walk1.png")));
+            walk2Up = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("entity/" + dir + "/player4Walk3.png")));
+            walk3Up = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("entity/" + dir + "/player4Walk2.png")));
+            walk1Down = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("entity/" + dir + "/player3Walk1.png")));
+            walk2Down = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("entity/" + dir + "/player3Walk2.png")));
+            walk3Down = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("entity/" + dir + "/player3Walk3.png")));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

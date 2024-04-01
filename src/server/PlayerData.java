@@ -4,12 +4,14 @@ import shared.PlayerInput;
 
 public class PlayerData {
     private final String id;
+    private final String playerModel;
     private int x = 0, y = 0;
     private String direction, directionFace;
     private boolean walking = false;
 
-    public PlayerData(String id) {
+    public PlayerData(String id, String playerModel) {
         this.id = id;
+        this.playerModel = playerModel;
     }
 
     public String serverOutput() {
@@ -26,6 +28,10 @@ public class PlayerData {
 
     public String getId() {
         return id;
+    }
+
+    public String getPlayerModel() {
+        return playerModel;
     }
 
     @Override

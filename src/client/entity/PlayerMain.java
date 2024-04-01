@@ -10,7 +10,7 @@ public class PlayerMain extends Entity {
     private final KeyHandler keyHandler;
     private final MouseHandler mouseHandler;
 
-    public PlayerMain(String name, int worldX, int worldY, KeyHandler keyHandler, MouseHandler mouseHandler) {
+    public PlayerMain(String name, String playerModel, int worldX, int worldY, KeyHandler keyHandler, MouseHandler mouseHandler) {
         screenX = GamePanel.getScreenWidth() / 2 - (48 / 2);
         screenY = GamePanel.getScreenHeight() / 2 - (48 / 2);
         this.name = name;
@@ -19,7 +19,7 @@ public class PlayerMain extends Entity {
         this.keyHandler = keyHandler;
         this.mouseHandler = mouseHandler;
 
-        setPlayerImage();
+        setPlayerImage(playerModel);
     }
 
     @Override

@@ -1,5 +1,7 @@
 package client.clientMain;
 
+import shared.enums.PlayerModel;
+
 import javax.swing.*;
 import java.io.*;
 import java.net.ConnectException;
@@ -27,8 +29,8 @@ public class ClientMain {
             throw new RuntimeException(e);
         }
 
-
-        GameCore core = new GameCore(setName(socket, in, out, scn), socket, in, out);
+        String playerModel = PlayerModel.REBEL.name; //select player model
+        GameCore core = new GameCore(setName(socket, in, out, scn), playerModel, socket, in, out);
 
         JFrame window = new JFrame();
         window.setTitle("game");

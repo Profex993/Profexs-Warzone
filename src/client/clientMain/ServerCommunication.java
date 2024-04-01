@@ -18,14 +18,14 @@ public class ServerCommunication {
     private final ArrayList<Player> playerList;
 
 
-    public ServerCommunication(PlayerMain playerMain, ArrayList<Player> playerList, Socket socket, BufferedReader in, BufferedWriter out) {
+    public ServerCommunication(PlayerMain playerMain, String playerModel, ArrayList<Player> playerList, Socket socket, BufferedReader in, BufferedWriter out) {
         this.playerMain = playerMain;
         this.playerList = playerList;
         this.out = out;
         this.socket = socket;
         this.in = in;
         try {
-            out.write(playerMain.getName());
+            out.write(playerMain.getName() + " " + playerModel);
             out.newLine();
             out.flush();
         } catch (IOException e) {
@@ -41,20 +41,21 @@ public class ServerCommunication {
             out.flush();
             String line = in.readLine();
             if (!line.equals("noPlayers")) {
-                String[] playerNames = line.split(" ");
-                if (playerNames.length != playerList.size()) {
-                    if (playerNames.length > playerList.size()) {
-                        for (String playerName : playerNames) {
-                            if (!playerName.equals(playerMain.getName())) {
+                String[] playerLines = line.split(";");
+                if (playerLines.length != playerList.size()) {
+                    if (playerLines.length > playerList.size()) {
+                        for (String playerLine : playerLines) {
+                            String[] playerData = playerLine.split(" ");
+                            if (!playerLine.equals(playerMain.getName())) {
                                 boolean nameExists = false;
                                 for (Player player : playerList) {
-                                    if (player.getName().equals(playerName)) {
+                                    if (player.getName().equals(playerData[0])) {
                                         nameExists = true;
                                         break;
                                     }
                                 }
                                 if (!nameExists) {
-                                    Player newPlayer = new Player(playerMain, playerName);
+                                    Player newPlayer = new Player(playerMain, playerData[0], playerData[1]);
                                     playerList.add(newPlayer);
                                 }
                             }
@@ -62,7 +63,7 @@ public class ServerCommunication {
                     } else {
                         ArrayList<Player> newPlayerList = new ArrayList<>();
                         for (Player player : playerList) {
-                            for (String name : playerNames) {
+                            for (String name : playerLines) {
                                 if (name.equals(player.getName())) {
                                     newPlayerList.add(player);
                                     break;

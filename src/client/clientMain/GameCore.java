@@ -11,10 +11,10 @@ import java.util.ArrayList;
 public class GameCore {
     private final GamePanel gamePanel;
 
-    public GameCore(String name, Socket socket, BufferedReader in, BufferedWriter out) {
+    public GameCore(String name, String playerModel, Socket socket, BufferedReader in, BufferedWriter out) {
         MouseHandler mouseHandler = new MouseHandler();
         KeyHandler keyHandler = new KeyHandler();
-        PlayerMain playerMain = new PlayerMain(name, 0, 0, keyHandler, mouseHandler);
+        PlayerMain playerMain = new PlayerMain(name, playerModel, 0, 0, keyHandler, mouseHandler);
         TileManager tileManager;
         try {
             tileManager = new TileManager(playerMain);
@@ -24,7 +24,7 @@ public class GameCore {
         }
         ArrayList<Player> playerList = new ArrayList<>();
         gamePanel = new GamePanel(playerMain, playerList, keyHandler, mouseHandler, tileManager);
-        ServerCommunication serverCommunication = new ServerCommunication(playerMain, playerList, socket, in, out);
+        ServerCommunication serverCommunication = new ServerCommunication(playerMain, playerModel, playerList, socket, in, out);
         UpdateManager updateManager = new UpdateManager(playerMain, playerList, serverCommunication);
         updateManager.startThread();
         gamePanel.startThread();

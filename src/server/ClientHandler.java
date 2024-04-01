@@ -2,7 +2,8 @@ package server;
 
 import shared.PlayerInput;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.net.Socket;
 import java.util.ArrayList;
 
@@ -37,7 +38,7 @@ public class ClientHandler implements Runnable {
                     StringBuilder playerOut = new StringBuilder();
                     StringBuilder playerNames = new StringBuilder();
                     for (PlayerData player : playerList) {
-                        playerNames.append(player.getId()).append(" ");
+                        playerNames.append(player.getId()).append(" ").append(player.getPlayerModel()).append(";");
                         playerOut.append(player.serverOutput()).append(";");
                     }
                     out.write(playerNames.toString());

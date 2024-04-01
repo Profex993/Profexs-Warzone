@@ -7,12 +7,12 @@ import java.awt.*;
 public class Player extends Entity {
     private final PlayerMain playerMain;
 
-    public Player(PlayerMain playerMain, String name) {
+    public Player(PlayerMain playerMain, String name, String playerModel) {
         this.playerMain = playerMain;
         this.name = name;
         direction = "down";
         directionFace = "down";
-        setPlayerImage();
+        setPlayerImage(playerModel);
     }
 
     public void draw(Graphics2D g2) {
