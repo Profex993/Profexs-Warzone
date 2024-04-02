@@ -2,6 +2,7 @@ package client.clientMain;
 
 import client.entity.Player;
 import client.entity.PlayerMain;
+import shared.Constants;
 import shared.PlayerInput;
 
 import java.io.BufferedReader;
@@ -25,7 +26,7 @@ public class ServerCommunication {
         this.socket = socket;
         this.in = in;
         try {
-            out.write(playerMain.getName() + " " + playerModel);
+            out.write(playerMain.getName() + Constants.protocolPlayerVariableSplit + playerModel);
             out.newLine();
             out.flush();
         } catch (IOException e) {
@@ -41,11 +42,11 @@ public class ServerCommunication {
             out.flush();
             String inputLine = in.readLine();
             if (!inputLine.equals("noPlayers")) {
-                String[] playerInputLines = inputLine.split(";");
+                String[] playerInputLines = inputLine.split(Constants.protocolPlayerLineEnd);
                 if (playerInputLines.length != playerList.size()) {
                     if (playerInputLines.length > playerList.size()) {
                         for (String playerLine : playerInputLines) {
-                            String[] playerData = playerLine.split(" ");        //[0] is player name and [1] is player model
+                            String[] playerData = playerLine.split(Constants.protocolPlayerVariableSplit);        //[0] is player name and [1] is player model
                             if (!playerData[0].equals(playerMain.getName())) {
                                 boolean nameExists = false;
                                 for (Player player : playerList) {
@@ -74,7 +75,7 @@ public class ServerCommunication {
                     }
                 }
                 inputLine = in.readLine();
-                String[] playerInputs = inputLine.split(";");
+                String[] playerInputs = inputLine.split(Constants.protocolPlayerLineEnd);
                 for (String input : playerInputs) {
                     PlayerInput playerInput = PlayerInput.parseFromString(input);
                     for (Player player : playerList) {

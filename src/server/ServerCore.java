@@ -1,5 +1,7 @@
 package server;
 
+import shared.Constants;
+
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -21,7 +23,7 @@ public class ServerCore {
                     do {
                         nameAvalibilityTest = in.readLine();
                     } while (checkNameAvailability(out, nameAvalibilityTest));
-                    String[] playerInitData = in.readLine().split(" ");         //[0] is name and [1] is player model
+                    String[] playerInitData = in.readLine().split(Constants.protocolPlayerVariableSplit);         //[0] is name and [1] is player model
                     PlayerData player = new PlayerData(playerInitData[0], playerInitData[1]);
                     playerList.add(player);
                     Thread thread = new Thread(new ClientHandler(socket, in, out, player, playerList));

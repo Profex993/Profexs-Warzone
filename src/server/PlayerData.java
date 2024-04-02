@@ -1,5 +1,6 @@
 package server;
 
+import shared.Constants;
 import shared.PlayerInput;
 
 public class PlayerData {
@@ -15,7 +16,8 @@ public class PlayerData {
     }
 
     public String serverOutput() {
-        return id + "," + x + "," + y + "," + direction + "," + directionFace + "," + walking;
+        String split = Constants.protocolPlayerVariableSplit;
+        return id + split + x + split + y + split + direction + split + directionFace + split + walking;
     }
 
     public void updateFromPlayerInput(PlayerInput playerInput) {

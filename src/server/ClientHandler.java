@@ -1,5 +1,6 @@
 package server;
 
+import shared.Constants;
 import shared.PlayerInput;
 
 import java.io.BufferedReader;
@@ -38,8 +39,9 @@ public class ClientHandler implements Runnable {
                     StringBuilder playerOut = new StringBuilder();
                     StringBuilder playerNames = new StringBuilder();
                     for (PlayerData player : playerList) {
-                        playerNames.append(player.getId()).append(" ").append(player.getPlayerModel()).append(";");
-                        playerOut.append(player.serverOutput()).append(";");
+                        playerNames.append(player.getId()).append(Constants.protocolPlayerVariableSplit)
+                                .append(player.getPlayerModel()).append(Constants.protocolPlayerLineEnd);
+                        playerOut.append(player.serverOutput()).append(Constants.protocolPlayerLineEnd);
                     }
                     out.write(playerNames.toString());
                     out.newLine();
