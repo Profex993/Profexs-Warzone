@@ -29,7 +29,7 @@ public class ClientMain {
             throw new RuntimeException(e);
         }
 
-        String playerModel = PlayerModel.REBEL.name; //select player model
+        String playerModel = PlayerModel.DEFAULT.name; //select player model
         GameCore core = new GameCore(setName(socket, in, out, scn), playerModel, socket, in, out);
 
         JFrame window = new JFrame();

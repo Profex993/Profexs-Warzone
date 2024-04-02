@@ -7,7 +7,7 @@ import java.net.SocketException;
 import java.util.ArrayList;
 
 public class ServerCore {
-    private final ArrayList<PlayerData> players = new ArrayList<>();
+    private final ArrayList<PlayerData> playerList = new ArrayList<>();
 
     public void runServer(int port) {
         new Thread(() -> {
@@ -17,15 +17,14 @@ public class ServerCore {
                     Socket socket = serverSocket.accept();
                     BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                     BufferedWriter out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
-                    String name;
+                    String nameAvalibilityTest;
                     do {
-                        name = in.readLine();
-                    } while (checkNameAvailability(out, name));
-                    String[] playerInput = in.readLine().split(" ");
-                    System.out.println(playerInput[1]);
-                    PlayerData player = new PlayerData(playerInput[0], playerInput[1]);
-                    players.add(player);
-                    Thread thread = new Thread(new ClientHandler(socket, in, out, player, players));
+                        nameAvalibilityTest = in.readLine();
+                    } while (checkNameAvailability(out, nameAvalibilityTest));
+                    String[] playerInitData = in.readLine().split(" ");         //[0] is name and [1] is player model
+                    PlayerData player = new PlayerData(playerInitData[0], playerInitData[1]);
+                    playerList.add(player);
+                    Thread thread = new Thread(new ClientHandler(socket, in, out, player, playerList));
                     thread.start();
                 }
             } catch (SocketException ignored) {
@@ -37,7 +36,7 @@ public class ServerCore {
     }
 
     private boolean checkNameAvailability(BufferedWriter bufferedWriter, String name) throws Exception {
-        for (PlayerData playerData : players) {
+        for (PlayerData playerData : playerList) {
             if (playerData.getId().equals(name)) {
                 bufferedWriter.write("nameTaken");
                 bufferedWriter.newLine();
@@ -61,7 +60,7 @@ public class ServerCore {
         }
     }
 
-    public ArrayList<PlayerData> getPlayers() {
-        return players;
+    public ArrayList<PlayerData> getPlayerList() {
+        return playerList;
     }
 }

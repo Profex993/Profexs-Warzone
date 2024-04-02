@@ -39,14 +39,14 @@ public class ServerCommunication {
             out.write(playerMain.outputToServer());
             out.newLine();
             out.flush();
-            String line = in.readLine();
-            if (!line.equals("noPlayers")) {
-                String[] playerLines = line.split(";");
-                if (playerLines.length != playerList.size()) {
-                    if (playerLines.length > playerList.size()) {
-                        for (String playerLine : playerLines) {
-                            String[] playerData = playerLine.split(" ");
-                            if (!playerLine.equals(playerMain.getName())) {
+            String inputLine = in.readLine();
+            if (!inputLine.equals("noPlayers")) {
+                String[] playerInputLines = inputLine.split(";");
+                if (playerInputLines.length != playerList.size()) {
+                    if (playerInputLines.length > playerList.size()) {
+                        for (String playerLine : playerInputLines) {
+                            String[] playerData = playerLine.split(" ");        //[0] is player name and [1] is player model
+                            if (!playerData[0].equals(playerMain.getName())) {
                                 boolean nameExists = false;
                                 for (Player player : playerList) {
                                     if (player.getName().equals(playerData[0])) {
@@ -63,7 +63,7 @@ public class ServerCommunication {
                     } else {
                         ArrayList<Player> newPlayerList = new ArrayList<>();
                         for (Player player : playerList) {
-                            for (String name : playerLines) {
+                            for (String name : playerInputLines) {
                                 if (name.equals(player.getName())) {
                                     newPlayerList.add(player);
                                     break;
@@ -73,8 +73,8 @@ public class ServerCommunication {
                         playerList.removeIf(player -> !newPlayerList.contains(player));
                     }
                 }
-                line = in.readLine();
-                String[] playerInputs = line.split(";");
+                inputLine = in.readLine();
+                String[] playerInputs = inputLine.split(";");
                 for (String input : playerInputs) {
                     PlayerInput playerInput = PlayerInput.parseFromString(input);
                     for (Player player : playerList) {

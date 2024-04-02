@@ -6,9 +6,9 @@ import server.console.Console;
 public class Command_PlayerList implements Command {
     @Override
     public String execute(Console console) {
-        if (!console.getCore().getPlayers().isEmpty()) {
+        if (!console.getCore().getPlayerList().isEmpty()) {
             StringBuilder out = new StringBuilder("{");
-            for (PlayerData playerData : console.getCore().getPlayers()) {
+            for (PlayerData playerData : console.getCore().getPlayerList()) {
                 out.append(playerData.toString()).append("\n");
             }
             out.append("}");

@@ -42,7 +42,6 @@ public class Entity {
     }
 
     public void setPlayerImage(String dir) {
-        System.out.println(dir);
         try {
             deathImg = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("entity/" + dir + "/death.png")));
             walk1Right = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("entity/" + dir + "/player2Walk1.png")));
