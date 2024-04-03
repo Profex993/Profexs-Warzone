@@ -42,26 +42,22 @@ public class ClientMain {
     }
 
     private static String setName(Socket socket, BufferedReader in, BufferedWriter out, Scanner scn) {
-        String message;
+        String message = "enter username";
+        String username;
         try {
-            System.out.println("enter username");
-            String username = scn.next();
-            out.write(username);
-            out.newLine();
-            out.flush();
-            message = in.readLine();
-            if (message.equals("nameAvailable")) {
-                return username;
-            } else {
-                System.out.println("name taken");
-                closeSocket(socket, in, out);
-                System.exit(0);
-            }
+            do {
+                System.out.println(message);
+                username = scn.next();
+                out.write(username);
+                out.newLine();
+                out.flush();
+                message = in.readLine();
+            } while (!message.equals("name available"));   // to do [a-zA-Z\d_]{1,15}
+            return username;
         } catch (Exception e) {
             closeSocket(socket, in, out);
             throw new RuntimeException(e);
         }
-        return "";
     }
 
     public static void closeSocket(Socket socket, BufferedReader in, BufferedWriter out) {

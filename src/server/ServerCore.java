@@ -19,11 +19,21 @@ public class ServerCore {
                     Socket socket = serverSocket.accept();
                     BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                     BufferedWriter out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
-                    String nameAvalibilityTest;
+                    String nameTest;
+                    boolean test = true;
                     do {
-                        nameAvalibilityTest = in.readLine();
-                    } while (checkNameAvailability(out, nameAvalibilityTest));
-                    String[] playerInitData = in.readLine().split(Constants.protocolPlayerVariableSplit);         //[0] is name and [1] is player model
+                        nameTest = in.readLine();
+
+                        if (checkNameValidity(nameTest, out)) {
+                            if (!checkNameAvailability(out, nameTest)) {
+                                test = false;
+                                out.write("name available");
+                                out.newLine();
+                                out.flush();
+                            }
+                        }
+                    } while (test);
+                    String[] playerInitData = in.readLine().split(Constants.protocolPlayerVariableSplit);  //[0] is name and [1] is player model
                     PlayerData player = new PlayerData(playerInitData[0], playerInitData[1]);
                     playerList.add(player);
                     Thread thread = new Thread(new ClientHandler(socket, in, out, player, playerList));
@@ -37,19 +47,27 @@ public class ServerCore {
         }).start();
     }
 
-    private boolean checkNameAvailability(BufferedWriter bufferedWriter, String name) throws Exception {
+    private boolean checkNameAvailability(BufferedWriter out, String name) throws Exception {
         for (PlayerData playerData : playerList) {
             if (playerData.getId().equals(name)) {
-                bufferedWriter.write("nameTaken");
-                bufferedWriter.newLine();
-                bufferedWriter.flush();
+                out.write("name taken");
+                out.newLine();
+                out.flush();
                 return true;
             }
         }
-        bufferedWriter.write("nameAvailable");
-        bufferedWriter.newLine();
-        bufferedWriter.flush();
         return false;
+    }
+
+    private boolean checkNameValidity(String name, BufferedWriter out) throws Exception {
+        if (name.matches("[a-zA-Z\\d_]{1,15}")) {
+            return true;
+        } else {
+            out.write("invalid name");
+            out.newLine();
+            out.flush();
+            return false;
+        }
     }
 
     public static void closeSocket(Socket socket, BufferedWriter out, BufferedReader in) {
