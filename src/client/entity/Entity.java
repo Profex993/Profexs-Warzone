@@ -1,5 +1,7 @@
 package client.entity;
 
+import shared.Constants;
+
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -7,8 +9,8 @@ import java.io.IOException;
 import java.util.Objects;
 
 public class Entity {
-    protected int worldX = 0, worldY = 0, screenX = 0, screenY = 0;
-    protected final int width = 40, height = 52;
+    protected int worldX, worldY, screenX, screenY;
+    protected final int width = Constants.playerWidth, height = Constants.playerHeight;
     protected String name, direction = "down", directionFace = "down";
     protected int walkAnimNum = 1;
     protected BufferedImage walk1Right, walk2Right, walk3Right, walk1Left,
@@ -17,6 +19,11 @@ public class Entity {
     public void draw(Graphics2D g2) {
         g2.drawImage(getImage(), screenX, screenY, width, height, null);
         g2.drawString(name, screenX, screenY - 5);
+    }
+
+    public Entity(String name, String playerModel) {
+        this.name = name;
+        setPlayerImage(playerModel);
     }
 
     public void setPlayerImage(String dir) {

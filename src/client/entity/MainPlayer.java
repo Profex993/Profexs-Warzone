@@ -5,16 +5,14 @@ import shared.ServerOutputToClient;
 
 import java.awt.*;
 
-public class PlayerMain extends Entity {
+public class MainPlayer extends Entity {
 
-    public PlayerMain(String name, String playerModel, int worldX, int worldY) {
+    public MainPlayer(String name, String playerModel, int worldX, int worldY) {
+        super(name, playerModel);
         screenX = GamePanel.getScreenWidth() / 2 - (48 / 2);
         screenY = GamePanel.getScreenHeight() / 2 - (48 / 2);
-        this.name = name;
         this.worldX = worldX;
         this.worldY = worldY;
-
-        setPlayerImage(playerModel);
     }
 
     public void updateFromServerInput(ServerOutputToClient input) {

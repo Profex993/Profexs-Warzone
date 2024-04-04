@@ -1,7 +1,7 @@
 package client.clientMain;
 
+import client.entity.MainPlayer;
 import client.entity.Player;
-import client.entity.PlayerMain;
 import shared.Constants;
 import shared.PlayerInput;
 import shared.PlayerInputToServer;
@@ -17,15 +17,15 @@ public class ServerCommunication {
     private final Socket socket;
     private final BufferedWriter out;
     private final BufferedReader in;
-    private final PlayerMain playerMain;
+    private final MainPlayer mainPlayer;
     private final ArrayList<Player> playerList;
     private final MouseHandler mouseHandler;
     private final KeyHandler keyHandler;
 
 
-    public ServerCommunication(PlayerMain playerMain, String playerModel, ArrayList<Player> playerList,
+    public ServerCommunication(MainPlayer mainPlayer, String playerModel, ArrayList<Player> playerList,
                                Socket socket, BufferedReader in, BufferedWriter out, KeyHandler keyHandler, MouseHandler mouseHandler) {
-        this.playerMain = playerMain;
+        this.mainPlayer = mainPlayer;
         this.playerList = playerList;
         this.out = out;
         this.socket = socket;
@@ -33,7 +33,7 @@ public class ServerCommunication {
         this.keyHandler = keyHandler;
         this.mouseHandler = mouseHandler;
         try {
-            out.write(playerMain.getName() + Constants.protocolPlayerVariableSplit + playerModel);
+            out.write(mainPlayer.getName() + Constants.protocolPlayerVariableSplit + playerModel);
             out.newLine();
             out.flush();
         } catch (IOException e) {
@@ -44,11 +44,11 @@ public class ServerCommunication {
 
     public void update() {
         try {
-            out.write(PlayerInputToServer.getFromPlayerInput(keyHandler, mouseHandler, playerMain.getScreenX(), playerMain.getScreenY()).toString());
+            out.write(PlayerInputToServer.getFromPlayerInput(keyHandler, mouseHandler, mainPlayer.getScreenX(), mainPlayer.getScreenY()).toString());
             out.newLine();
             out.flush();
             String inputLine = in.readLine();
-            playerMain.updateFromServerInput(ServerOutputToClient.parseFromString(inputLine));
+            mainPlayer.updateFromServerInput(ServerOutputToClient.parseFromString(inputLine));
             inputLine = in.readLine();
             if (!inputLine.equals("noPlayers")) {
                 String[] playerInputLines = inputLine.split(Constants.protocolPlayerLineEnd);
@@ -56,7 +56,7 @@ public class ServerCommunication {
                     if (playerInputLines.length > playerList.size()) {
                         for (String playerLine : playerInputLines) {
                             String[] playerData = playerLine.split(Constants.protocolPlayerVariableSplit);        //[0] is player name and [1] is player model
-                            if (!playerData[0].equals(playerMain.getName())) {
+                            if (!playerData[0].equals(mainPlayer.getName())) {
                                 boolean nameExists = false;
                                 for (Player player : playerList) {
                                     if (player.getName().equals(playerData[0])) {
@@ -65,7 +65,7 @@ public class ServerCommunication {
                                     }
                                 }
                                 if (!nameExists) {
-                                    Player newPlayer = new Player(playerMain, playerData[0], playerData[1]);
+                                    Player newPlayer = new Player(mainPlayer, playerData[0], playerData[1]);
                                     playerList.add(newPlayer);
                                 }
                             }

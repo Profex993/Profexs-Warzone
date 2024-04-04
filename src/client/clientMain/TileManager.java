@@ -1,6 +1,6 @@
 package client.clientMain;
 
-import client.entity.PlayerMain;
+import client.entity.MainPlayer;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -11,13 +11,13 @@ import java.io.IOException;
 import java.util.Objects;
 
 public class TileManager {
-    private final PlayerMain player;
+    private final MainPlayer player;
     private final Tile[] tiles;
     private final int[][] mapTileNumber;
     private final int maxWorldColum = 50, maxWorldRow = 50, size;
 
-    public TileManager(PlayerMain playerMain) throws IOException {
-        this.player = playerMain;
+    public TileManager(MainPlayer mainPlayer) throws IOException {
+        this.player = mainPlayer;
         tiles = new Tile[70];
         this.size = 48;
         mapTileNumber = new int[maxWorldColum][maxWorldRow];

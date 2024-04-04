@@ -1,7 +1,7 @@
 package client.clientMain;
 
+import client.entity.MainPlayer;
 import client.entity.Player;
-import client.entity.PlayerMain;
 
 import javax.swing.*;
 import java.awt.*;
@@ -12,12 +12,12 @@ public class GamePanel extends JPanel implements Runnable {
     public static final int screenWidth = screenSize.width, screenHeight = screenSize.height;
     private Thread thread;
     private int currentFps = 0;
-    private final PlayerMain playerMain;
+    private final MainPlayer mainPlayer;
     private final ArrayList<Player> playerList;
     private final TileManager tileManager;
 
 
-    public GamePanel(PlayerMain player, ArrayList<Player> playerList, KeyHandler keyHandler, MouseHandler mouseHandler, TileManager tileManager) {
+    public GamePanel(MainPlayer player, ArrayList<Player> playerList, KeyHandler keyHandler, MouseHandler mouseHandler, TileManager tileManager) {
         this.setPreferredSize(new Dimension(screenWidth, screenHeight));
 //        this.setPreferredSize(screenSize);
         this.setBackground(Color.black);
@@ -25,7 +25,7 @@ public class GamePanel extends JPanel implements Runnable {
         this.addKeyListener(keyHandler);
         this.addMouseListener(mouseHandler);
         this.setFocusable(true);
-        this.playerMain = player;
+        this.mainPlayer = player;
         this.playerList = playerList;
         this.tileManager = tileManager;
     }
@@ -66,7 +66,7 @@ public class GamePanel extends JPanel implements Runnable {
         Graphics2D g2 = (Graphics2D) g;
         g2.setColor(Color.white);
         tileManager.draw(g2);
-        playerMain.draw(g2);
+        mainPlayer.draw(g2);
         for (Player player : playerList) {
             player.draw(g2);
         }

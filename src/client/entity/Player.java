@@ -5,19 +5,16 @@ import shared.PlayerInput;
 import java.awt.*;
 
 public class Player extends Entity {
-    private final PlayerMain playerMain;
+    private final MainPlayer mainPlayer;
 
-    public Player(PlayerMain playerMain, String name, String playerModel) {
-        this.playerMain = playerMain;
-        this.name = name;
-        direction = "down";
-        directionFace = "down";
-        setPlayerImage(playerModel);
+    public Player(MainPlayer mainPlayer, String name, String playerModel) {
+        super(name, playerModel);
+        this.mainPlayer = mainPlayer;
     }
 
     public void draw(Graphics2D g2) {
-        screenX = worldX - playerMain.getWorldX() + playerMain.getScreenX();
-        screenY = worldY - playerMain.getWorldY() + playerMain.getScreenY();
+        screenX = worldX - mainPlayer.getWorldX() + mainPlayer.getScreenX();
+        screenY = worldY - mainPlayer.getWorldY() + mainPlayer.getScreenY();
         super.draw(g2);
     }
 
