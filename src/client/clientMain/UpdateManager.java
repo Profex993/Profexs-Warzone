@@ -1,19 +1,10 @@
 package client.clientMain;
 
-import client.entity.Player;
-import client.entity.PlayerMain;
-
-import java.util.ArrayList;
-
 public class UpdateManager implements Runnable {
     private Thread thread;
     private final ServerCommunication serverCommunication;
-    private final PlayerMain playerMain;
-    private final ArrayList<Player> playerList;
 
-    public UpdateManager(PlayerMain playerMain, ArrayList<Player> playerList, ServerCommunication serverCommunication) {
-        this.playerMain = playerMain;
-        this.playerList = playerList;
+    public UpdateManager(ServerCommunication serverCommunication) {
         this.serverCommunication = serverCommunication;
     }
 
@@ -46,10 +37,6 @@ public class UpdateManager implements Runnable {
     }
 
     private void update() {
-        playerMain.update();
-        for (Player player : playerList) {
-            player.update();
-        }
         serverCommunication.update();
     }
 }

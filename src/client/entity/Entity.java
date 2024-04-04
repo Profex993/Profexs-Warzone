@@ -7,34 +7,12 @@ import java.io.IOException;
 import java.util.Objects;
 
 public class Entity {
-    protected int worldX, worldY, screenX, screenY, width = 40, height = 52;
-    protected final int speed = 4;
-    protected String name, direction, directionFace;
-    protected int walkAnimNum = 1, walkCounter = 0, idleCounter;
-    protected boolean walking = false;
+    protected int worldX = 0, worldY = 0, screenX = 0, screenY = 0;
+    protected final int width = 40, height = 52;
+    protected String name, direction = "down", directionFace = "down";
+    protected int walkAnimNum = 1;
     protected BufferedImage walk1Right, walk2Right, walk3Right, walk1Left,
             walk2Left, walk3Left, walk1Up, walk2Up, walk3Up, walk1Down, walk2Down, walk3Down, deathImg;
-
-    public void update() {
-        if (walkCounter > 20) {
-            if (walkAnimNum == 1) {
-//                soundManager.play(rnd.nextInt(2));
-                walkAnimNum = 2;
-            } else if (walkAnimNum == 2) {
-                walkAnimNum = 3;
-            } else if (walkAnimNum == 3) {
-//                soundManager.play(rnd.nextInt(2));
-                walkAnimNum = 4;
-            } else {
-                walkAnimNum = 1;
-            }
-            walkCounter = 0;
-        }
-
-        if (idleCounter == 10) {
-            walkAnimNum = 2;
-        }
-    }
 
     public void draw(Graphics2D g2) {
         g2.drawImage(getImage(), screenX, screenY, width, height, null);

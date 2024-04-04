@@ -44,7 +44,6 @@ public class GamePanel extends JPanel implements Runnable {
         long timer = 0;
         int fpsCounter = 0;
         while (thread != null) {
-
             time = System.nanoTime();
             delta += (time - last) / interval;
             timer += (time - last);

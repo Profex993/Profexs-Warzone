@@ -1,6 +1,6 @@
 package server.console.commands;
 
-import server.PlayerData;
+import server.PlayerServerSide;
 import server.console.Console;
 
 public class Command_PlayerList implements Command {
@@ -8,8 +8,8 @@ public class Command_PlayerList implements Command {
     public String execute(Console console) {
         if (!console.getCore().getPlayerList().isEmpty()) {
             StringBuilder out = new StringBuilder("{");
-            for (PlayerData playerData : console.getCore().getPlayerList()) {
-                out.append(playerData.toString()).append("\n");
+            for (PlayerServerSide playerServerSide : console.getCore().getPlayerList()) {
+                out.append(playerServerSide.toString()).append("\n");
             }
             out.append("}");
             return out.toString();

@@ -4,6 +4,8 @@ import client.entity.Player;
 import client.entity.PlayerMain;
 import shared.Constants;
 import shared.PlayerInput;
+import shared.PlayerInputToServer;
+import shared.ServerOutputToClient;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -17,14 +19,19 @@ public class ServerCommunication {
     private final BufferedReader in;
     private final PlayerMain playerMain;
     private final ArrayList<Player> playerList;
+    private final MouseHandler mouseHandler;
+    private final KeyHandler keyHandler;
 
 
-    public ServerCommunication(PlayerMain playerMain, String playerModel, ArrayList<Player> playerList, Socket socket, BufferedReader in, BufferedWriter out) {
+    public ServerCommunication(PlayerMain playerMain, String playerModel, ArrayList<Player> playerList,
+                               Socket socket, BufferedReader in, BufferedWriter out, KeyHandler keyHandler, MouseHandler mouseHandler) {
         this.playerMain = playerMain;
         this.playerList = playerList;
         this.out = out;
         this.socket = socket;
         this.in = in;
+        this.keyHandler = keyHandler;
+        this.mouseHandler = mouseHandler;
         try {
             out.write(playerMain.getName() + Constants.protocolPlayerVariableSplit + playerModel);
             out.newLine();
@@ -37,10 +44,12 @@ public class ServerCommunication {
 
     public void update() {
         try {
-            out.write(playerMain.outputToServer());
+            out.write(PlayerInputToServer.getFromPlayerInput(keyHandler, mouseHandler, playerMain.getScreenX(), playerMain.getScreenY()).toString());
             out.newLine();
             out.flush();
             String inputLine = in.readLine();
+            playerMain.updateFromServerInput(ServerOutputToClient.parseFromString(inputLine));
+            inputLine = in.readLine();
             if (!inputLine.equals("noPlayers")) {
                 String[] playerInputLines = inputLine.split(Constants.protocolPlayerLineEnd);
                 if (playerInputLines.length != playerList.size()) {

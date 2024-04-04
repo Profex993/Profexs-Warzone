@@ -9,7 +9,7 @@ import java.net.SocketException;
 import java.util.ArrayList;
 
 public class ServerCore {
-    private final ArrayList<PlayerData> playerList = new ArrayList<>();
+    private final ArrayList<PlayerServerSide> playerList = new ArrayList<>();
 
     public void runServer(int port) {
         new Thread(() -> {
@@ -34,7 +34,7 @@ public class ServerCore {
                         }
                     } while (test);
                     String[] playerInitData = in.readLine().split(Constants.protocolPlayerVariableSplit);  //[0] is name and [1] is player model
-                    PlayerData player = new PlayerData(playerInitData[0], playerInitData[1]);
+                    PlayerServerSide player = new PlayerServerSide(playerInitData[0], playerInitData[1]);
                     playerList.add(player);
                     Thread thread = new Thread(new ClientHandler(socket, in, out, player, playerList));
                     thread.start();
@@ -48,8 +48,8 @@ public class ServerCore {
     }
 
     private boolean checkNameAvailability(BufferedWriter out, String name) throws Exception {
-        for (PlayerData playerData : playerList) {
-            if (playerData.getId().equals(name)) {
+        for (PlayerServerSide playerServerSide : playerList) {
+            if (playerServerSide.getId().equals(name)) {
                 out.write("name taken");
                 out.newLine();
                 out.flush();
@@ -80,7 +80,7 @@ public class ServerCore {
         }
     }
 
-    public ArrayList<PlayerData> getPlayerList() {
+    public ArrayList<PlayerServerSide> getPlayerList() {
         return playerList;
     }
 }

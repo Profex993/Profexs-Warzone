@@ -21,22 +21,12 @@ public class Player extends Entity {
         super.draw(g2);
     }
 
-    public void update() {
-        if (walking) {
-            walkCounter++;
-            idleCounter = 0;
-        } else {
-            idleCounter++;
-        }
-        super.update();
-    }
-
     public void updateFromInputData(PlayerInput playerInput) {
         this.worldX = playerInput.x();
         this.worldY = playerInput.y();
         this.direction = playerInput.direction();
         this.directionFace = playerInput.directionFace();
-        this.walking = playerInput.walking();
+        this.walkAnimNum = playerInput.walkAnimNum();
     }
 
     public String getName() {
