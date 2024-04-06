@@ -4,6 +4,7 @@ import client.clientMain.ClientMain;
 import client.clientMain.GameCore;
 import client.clientMain.GamePanel;
 import client.clientMain.MouseHandler;
+import client.enums.GameState;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -15,7 +16,7 @@ public class Menu {
     public Menu(MouseHandler mouseHandler) {
         components.add(new MenuButton(20, 100, "Return to game", new Font("arial", Font.PLAIN, 20), mouseHandler,
                 () -> {
-                    GameCore.changeGameState(0);
+                    GameCore.changeGameState(GameState.GAME.intValue);
                     System.out.println("test");
                 }));
         components.add(new MenuButton(20, 130, "Exit", new Font("arial", Font.PLAIN, 20), mouseHandler,

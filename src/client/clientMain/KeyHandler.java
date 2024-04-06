@@ -1,5 +1,7 @@
 package client.clientMain;
 
+import client.enums.GameState;
+
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
@@ -22,10 +24,10 @@ public class KeyHandler implements KeyListener {
         } else if (e.getKeyCode() == KeyEvent.VK_D) {
             right = true;
         } else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-            if (GameCore.gameState == 0) {
-                GameCore.changeGameState(1);
+            if (GameCore.gameState == GameState.GAME.intValue) {
+                GameCore.changeGameState(GameState.PAUSED.intValue);
             } else {
-                GameCore.changeGameState(0);
+                GameCore.changeGameState(GameState.GAME.intValue);
             }
         }
     }

@@ -1,6 +1,7 @@
 package client.clientMain;
 
 
+import client.enums.GameState;
 import client.menu.Menu;
 
 public class UpdateManager implements Runnable {
@@ -43,7 +44,7 @@ public class UpdateManager implements Runnable {
 
     private void update() {
         serverCommunication.update();
-        if (GameCore.gameState == 1) {
+        if (GameCore.gameState == GameState.PAUSED.intValue) {
             menu.update();
         }
     }

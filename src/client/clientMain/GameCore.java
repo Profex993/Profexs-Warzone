@@ -2,6 +2,7 @@ package client.clientMain;
 
 import client.entity.MainPlayer;
 import client.entity.Player;
+import client.enums.GameState;
 import client.menu.Menu;
 
 import java.io.BufferedReader;
@@ -11,7 +12,7 @@ import java.util.ArrayList;
 
 public class GameCore {
     private final GamePanel gamePanel;
-    public static int gameState = 0;
+    public static int gameState = GameState.GAME.intValue;
 
     public GameCore(String name, String playerModel, Socket socket, BufferedReader in, BufferedWriter out) {
         MouseHandler mouseHandler = new MouseHandler();

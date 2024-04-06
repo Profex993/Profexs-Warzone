@@ -16,22 +16,18 @@ public class PlayerServerSide {
 
     public void updateFromPlayerInput(PlayerInputToServer input) {
         if (input.up()) {
-            System.out.println("up");
             worldY -= Constants.playerSpeed;
             walkCounter++;
             idleCounter = 0;
         } else if (input.down()) {
-            System.out.println("down");
             worldY += Constants.playerSpeed;
             walkCounter++;
             idleCounter = 0;
         } else if (input.left()) {
-            System.out.println("left");
             worldX -= Constants.playerSpeed;
             walkCounter++;
             idleCounter = 0;
         } else if (input.right()) {
-            System.out.println("right");
             worldX += Constants.playerSpeed;
             walkCounter++;
             idleCounter = 0;
