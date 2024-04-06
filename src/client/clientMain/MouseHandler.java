@@ -8,12 +8,10 @@ public class MouseHandler implements MouseListener {
 
     @Override
     public void mouseClicked(MouseEvent e) {
-
     }
 
     @Override
     public void mousePressed(MouseEvent e) {
-
     }
 
     @Override
@@ -28,6 +26,10 @@ public class MouseHandler implements MouseListener {
     @Override
     public void mouseExited(MouseEvent e) {
 
+    }
+
+    public Rectangle getCursorRect() {
+        return new Rectangle((int) getX() - 10, (int) getY() - 10, 20, 20);
     }
 
     public double getX() {

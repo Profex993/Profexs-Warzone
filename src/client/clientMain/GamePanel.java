@@ -16,7 +16,6 @@ public class GamePanel extends JPanel implements Runnable {
     private final ArrayList<Player> playerList;
     private final TileManager tileManager;
 
-
     public GamePanel(MainPlayer player, ArrayList<Player> playerList, KeyHandler keyHandler, MouseHandler mouseHandler, TileManager tileManager) {
         this.setPreferredSize(new Dimension(screenWidth, screenHeight));
 //        this.setPreferredSize(screenSize);

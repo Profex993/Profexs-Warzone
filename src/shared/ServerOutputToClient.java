@@ -2,8 +2,7 @@ package shared;
 
 import server.PlayerServerSide;
 
-public record ServerOutputToClient(int x, int y, String direction, String directionFace,
-                                   int walkAnimNum) {
+public record ServerOutputToClient(int x, int y, String direction, String directionFace, int walkAnimNum) {
     public static ServerOutputToClient parseFromString(String line) {
         String[] parts = line.split(Constants.protocolPlayerVariableSplit);
         return new ServerOutputToClient(Integer.parseInt(parts[0]), Integer.parseInt(parts[1]), parts[2], parts[3],

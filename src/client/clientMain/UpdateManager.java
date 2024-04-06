@@ -1,5 +1,6 @@
 package client.clientMain;
 
+
 public class UpdateManager implements Runnable {
     private Thread thread;
     private final ServerCommunication serverCommunication;

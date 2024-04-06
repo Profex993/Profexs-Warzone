@@ -1,36 +1,38 @@
 package client.clientMain;
 
-import shared.enums.PlayerModel;
+import client.menu.MainMenu;
 
 import javax.swing.*;
 import java.io.*;
 import java.net.ConnectException;
 import java.net.Socket;
 import java.net.UnknownHostException;
-import java.util.Scanner;
 
 public class ClientMain {
+    static Socket socket = null;
+    static BufferedReader in = null;
+    static BufferedWriter out = null;
+
     public static void main(String[] args) {
-        Socket socket = null;
-        BufferedReader in = null;
-        BufferedWriter out = null;
-        Scanner scn = new Scanner(System.in);
+        MainMenu menu = new MainMenu();
+        menu.open();
+    }
+
+    public static void startGame(String ip, int port) throws Exception {
         try {
-            System.out.println("enter ip and port");
-            socket = new Socket(scn.nextLine(), scn.nextInt());
-//            socket = new Socket("192.168.123.188", 8080);
+            socket = new Socket(ip, port);
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
         } catch (ConnectException | UnknownHostException e) {
-            System.out.println("no server found");
-            System.exit(0);
+            throw new Exception("no server found");
         } catch (IOException e) {
             System.out.println(e.getMessage());
             throw new RuntimeException(e);
         }
+    }
 
-        String playerModel = PlayerModel.DEFAULT.name; //select player model
-        GameCore core = new GameCore(setName(socket, in, out, scn), playerModel, socket, in, out);
+    public static void lunch(String username, String playerModel) {
+        GameCore core = new GameCore(username, playerModel, socket, in, out);
 
         JFrame window = new JFrame();
         window.setTitle("game");
@@ -41,22 +43,24 @@ public class ClientMain {
         window.pack();
     }
 
-    private static String setName(Socket socket, BufferedReader in, BufferedWriter out, Scanner scn) {
-        String message = "enter username";
-        String username;
+    public static void setName(String username, String playerModel) throws Exception {
+        checkName(socket, in, out, username);
+        lunch(username, playerModel);
+    }
+
+    public static void checkName(Socket socket, BufferedReader in, BufferedWriter out, String username) throws Exception {
+        String message;
         try {
-            do {
-                System.out.println(message);
-                username = scn.next();
-                out.write(username);
-                out.newLine();
-                out.flush();
-                message = in.readLine();
-            } while (!message.equals("name available"));   // to do [a-zA-Z\d_]{1,15}
-            return username;
+            out.write(username);
+            out.newLine();
+            out.flush();
+            message = in.readLine();
         } catch (Exception e) {
             closeSocket(socket, in, out);
             throw new RuntimeException(e);
+        }
+        if (!message.equals("name available")) {
+            throw new Exception("name taken");
         }
     }
 
