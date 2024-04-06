@@ -21,6 +21,12 @@ public class KeyHandler implements KeyListener {
             left = true;
         } else if (e.getKeyCode() == KeyEvent.VK_D) {
             right = true;
+        } else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+            if (GameCore.gameState == 0) {
+                GameCore.changeGameState(1);
+            } else {
+                GameCore.changeGameState(0);
+            }
         }
     }
 

@@ -2,6 +2,7 @@ package client.clientMain;
 
 import client.entity.MainPlayer;
 import client.entity.Player;
+import client.menu.Menu;
 
 import javax.swing.*;
 import java.awt.*;
@@ -15,8 +16,11 @@ public class GamePanel extends JPanel implements Runnable {
     private final MainPlayer mainPlayer;
     private final ArrayList<Player> playerList;
     private final TileManager tileManager;
+    private final client.menu.Menu menu;
+    private final Font fpsFont = new Font("arial", Font.BOLD, 10);
 
-    public GamePanel(MainPlayer player, ArrayList<Player> playerList, KeyHandler keyHandler, MouseHandler mouseHandler, TileManager tileManager) {
+    public GamePanel(MainPlayer player, ArrayList<Player> playerList, KeyHandler keyHandler, MouseHandler mouseHandler,
+                     TileManager tileManager, Menu menu) {
         this.setPreferredSize(new Dimension(screenWidth, screenHeight));
 //        this.setPreferredSize(screenSize);
         this.setBackground(Color.black);
@@ -27,6 +31,7 @@ public class GamePanel extends JPanel implements Runnable {
         this.mainPlayer = player;
         this.playerList = playerList;
         this.tileManager = tileManager;
+        this.menu = menu;
     }
 
     public void startThread() {
@@ -64,13 +69,27 @@ public class GamePanel extends JPanel implements Runnable {
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;
         g2.setColor(Color.white);
+
+        switch (GameCore.gameState) {
+            case 0 -> //game
+                    drawGame(g2);
+            case 1 -> {
+                //menu
+                drawGame(g2);
+                menu.draw(g2);
+            }
+        }
+        g2.setFont(fpsFont);
+        g2.drawString(String.valueOf(currentFps), 5, 10);
+        g2.dispose();
+    }
+
+    public void drawGame(Graphics2D g2) {
         tileManager.draw(g2);
         mainPlayer.draw(g2);
         for (Player player : playerList) {
             player.draw(g2);
         }
-        g2.drawString(String.valueOf(currentFps), 5, 10);
-        g2.dispose();
     }
 
     public static int getScreenWidth() {

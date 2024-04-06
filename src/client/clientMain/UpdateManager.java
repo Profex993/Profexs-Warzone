@@ -1,11 +1,15 @@
 package client.clientMain;
 
 
+import client.menu.Menu;
+
 public class UpdateManager implements Runnable {
     private Thread thread;
     private final ServerCommunication serverCommunication;
+    private final Menu menu;
 
-    public UpdateManager(ServerCommunication serverCommunication) {
+    public UpdateManager(ServerCommunication serverCommunication, Menu menu) {
+        this.menu = menu;
         this.serverCommunication = serverCommunication;
     }
 
@@ -39,5 +43,8 @@ public class UpdateManager implements Runnable {
 
     private void update() {
         serverCommunication.update();
+        if (GameCore.gameState == 1) {
+            menu.update();
+        }
     }
 }

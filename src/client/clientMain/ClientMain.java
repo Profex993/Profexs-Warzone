@@ -73,4 +73,14 @@ public class ClientMain {
             throw new RuntimeException(e);
         }
     }
+
+    public static void closeSocket() {
+        try {
+            socket.close();
+            out.close();
+            in.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }
