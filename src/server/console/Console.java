@@ -47,11 +47,12 @@ public class Console {
 
     public int selectPort() {
         System.out.println("enter port number:");
-        try {
-            return Integer.parseInt(reader.readLine());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+//        try {
+//            return Integer.parseInt(reader.readLine());
+//        } catch (IOException e) {
+//            throw new RuntimeException(e);
+//        }
+        return 8080;
     }
 
     public void triggerExit() {

@@ -4,15 +4,9 @@ import shared.Constants;
 import shared.PlayerInputToServer;
 
 public class PlayerServerSide {
-    private final String id;
-    private final String playerModel;
+    private String id, playerModel;
     private int worldX = 0, worldY = 0, walkCounter, idleCounter, walkAnimNum = 1;
     private String direction = "down", directionFace;
-
-    public PlayerServerSide(String id, String playerModel) {
-        this.id = id;
-        this.playerModel = playerModel;
-    }
 
     public void updateFromPlayerInput(PlayerInputToServer input) {
         if (input.up()) {
@@ -75,6 +69,11 @@ public class PlayerServerSide {
         } else {
             directionFace = "left";
         }
+    }
+
+    public void setInitData(String id, String playerModel) {
+        this.id = id;
+        this.playerModel = playerModel;
     }
 
     public String getId() {

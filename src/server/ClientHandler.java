@@ -27,6 +27,8 @@ public class ClientHandler implements Runnable {
 
     @Override
     public void run() {
+        setName();
+
         while (socket.isConnected()) {
             try {
                 String line = in.readLine();
@@ -63,5 +65,52 @@ public class ClientHandler implements Runnable {
         }
         playerList.remove(player);
         ServerCore.closeSocket(socket, out, in);
+    }
+
+    public void setName() {
+        try {
+            String nameTest;
+            boolean test = true;
+            do {
+                nameTest = in.readLine();
+
+                if (checkNameValidity(nameTest, out)) {
+                    if (!checkNameAvailability(out, nameTest)) {
+                        test = false;
+                        out.write("name available");
+                        out.newLine();
+                        out.flush();
+                    }
+                }
+            } while (test);
+            String[] playerInitData = in.readLine().split(Constants.protocolPlayerVariableSplit);  //[0] is name and [1] is player model
+            player.setInitData(playerInitData[0], playerInitData[1]);
+        } catch (Exception e) {
+            ServerCore.closeSocket(socket, out, in);
+            playerList.remove(player);
+        }
+    }
+
+    private boolean checkNameAvailability(BufferedWriter out, String name) throws Exception {
+        for (PlayerServerSide playerServerSide : playerList) {
+            if (playerServerSide != player && playerServerSide.getId().equals(name)) {
+                out.write("name taken");
+                out.newLine();
+                out.flush();
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean checkNameValidity(String name, BufferedWriter out) throws Exception {
+        if (name.matches("[a-zA-Z\\d_]{1,15}")) {
+            return true;
+        } else {
+            out.write("invalid name");
+            out.newLine();
+            out.flush();
+            return false;
+        }
     }
 }
