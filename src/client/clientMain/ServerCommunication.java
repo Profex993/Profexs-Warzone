@@ -56,7 +56,7 @@ public class ServerCommunication {
                     if (playerInputLines.length > playerList.size()) {
                         for (String playerLine : playerInputLines) {
                             String[] playerData = playerLine.split(Constants.protocolPlayerVariableSplit);        //[0] is player name and [1] is player model
-                            if (!playerData[0].equals(mainPlayer.getName())) {
+                            if (!playerData[0].equals("null") && !playerData[0].equals(mainPlayer.getName())) {
                                 boolean nameExists = false;
                                 for (Player player : playerList) {
                                     if (player.getName().equals(playerData[0])) {
