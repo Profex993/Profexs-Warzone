@@ -28,7 +28,7 @@ public class ClientHandler implements Runnable {
     @Override
     public void run() {
         setName();
-
+        playerList.add(player);
         while (socket.isConnected()) {
             try {
                 String line = in.readLine();
@@ -87,7 +87,6 @@ public class ClientHandler implements Runnable {
             player.setInitData(playerInitData[0], playerInitData[1]);
         } catch (Exception e) {
             ServerCore.closeSocket(socket, out, in);
-            playerList.remove(player);
         }
     }
 
