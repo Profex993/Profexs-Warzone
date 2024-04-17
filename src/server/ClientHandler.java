@@ -1,5 +1,6 @@
 package server;
 
+import server.entity.PlayerServerSide;
 import shared.Constants;
 import shared.PlayerInput;
 import shared.PlayerInputToServer;

@@ -1,5 +1,7 @@
 package server;
 
+import server.entity.PlayerServerSide;
+
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -8,6 +10,11 @@ import java.util.ArrayList;
 
 public class ServerCore {
     private final ArrayList<PlayerServerSide> playerList = new ArrayList<>();
+    private final ServerUpdateManager serverUpdateManager = new ServerUpdateManager(playerList);
+
+    public ServerCore() {
+        serverUpdateManager.startThread();
+    }
 
     public void runServer(int port) {
         new Thread(() -> {
@@ -17,7 +24,7 @@ public class ServerCore {
                     Socket socket = serverSocket.accept();
                     BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                     BufferedWriter out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
-                    PlayerServerSide player = new PlayerServerSide();
+                    PlayerServerSide player = new PlayerServerSide(serverUpdateManager);
                     Thread thread = new Thread(new ClientHandler(socket, in, out, player, playerList));
                     thread.start();
                 }

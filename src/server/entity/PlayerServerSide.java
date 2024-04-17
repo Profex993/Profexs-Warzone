@@ -1,14 +1,36 @@
-package server;
+package server.entity;
 
+import server.ServerUpdateManager;
 import shared.Constants;
 import shared.PlayerInputToServer;
+import shared.weapon.Weapon_Core;
+import shared.weapon.Weapon_Sks;
+
+import java.awt.*;
 
 public class PlayerServerSide {
+    private final ServerUpdateManager updateManager;
     private String id, playerModel;
-    private int worldX = 0, worldY = 0, walkCounter, idleCounter, walkAnimNum = 1;
+    private int worldX = 0;
+    private int worldY = 0;
+    private int walkCounter;
+    private int idleCounter;
+    private int walkAnimNum = 1;
+    private double mouseX = 0, mouseY = 0;
     private String direction = "down", directionFace;
+    private boolean shootLock = true, shooting = false;
+    private final Rectangle solidArea;
+    private Weapon_Core weapon = Weapon_Sks.getServerSideWeapon();
+
+    public PlayerServerSide(ServerUpdateManager updateManager) {
+        this.updateManager = updateManager;
+        solidArea = new Rectangle(worldX, worldY, Constants.playerWidth, Constants.playerHeight);
+    }
 
     public void updateFromPlayerInput(PlayerInputToServer input) {
+        mouseX = input.mouseX();
+        mouseY = input.mouseY();
+
         if (input.up()) {
             worldY -= Constants.playerSpeed;
             walkCounter++;
@@ -28,6 +50,9 @@ public class PlayerServerSide {
         } else {
             idleCounter++;
         }
+
+        solidArea.x = worldX;
+        solidArea.y = worldY;
 
         if (walkCounter > 20) {
             if (walkAnimNum == 1) {
@@ -69,6 +94,16 @@ public class PlayerServerSide {
         } else {
             directionFace = "left";
         }
+
+        if (input.leftCLick() && shootLock) {
+            shooting = true;
+            shootLock = false;
+            weapon.shoot(updateManager.getProjectileList(), worldX, worldY, directionFace, (int) mouseX, (int) mouseY, id,
+                    input.screenX(), input.screenY());
+        } else if (!input.leftCLick() && !shootLock) {
+            shootLock = true;
+            shooting = false;
+        }
     }
 
     public void setInitData(String id, String playerModel) {
@@ -107,5 +142,21 @@ public class PlayerServerSide {
 
     public int getWalkAnimNum() {
         return walkAnimNum;
+    }
+
+    public double getMouseX() {
+        return mouseX;
+    }
+
+    public double getMouseY() {
+        return mouseY;
+    }
+
+    public boolean isShooting() {
+        return shooting;
+    }
+
+    public Rectangle getSolidArea() {
+        return solidArea;
     }
 }

@@ -9,6 +9,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 
+@SuppressWarnings("SameReturnValue")
 public class GamePanel extends JPanel implements Runnable {
     private static final Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
     public static final int screenWidth = screenSize.width, screenHeight = screenSize.height;

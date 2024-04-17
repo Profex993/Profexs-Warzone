@@ -1,6 +1,6 @@
 package shared;
 
-import server.PlayerServerSide;
+import server.entity.PlayerServerSide;
 
 public record ServerOutputToClient(int x, int y, String direction, String directionFace, int walkAnimNum) {
     public static ServerOutputToClient parseFromString(String line) {

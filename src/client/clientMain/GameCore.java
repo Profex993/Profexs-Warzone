@@ -15,9 +15,10 @@ public class GameCore {
     public static int gameState = GameState.GAME.intValue;
 
     public GameCore(String name, String playerModel, Socket socket, BufferedReader in, BufferedWriter out) {
+        ArrayList<Player> playerList = new ArrayList<>();
         MouseHandler mouseHandler = new MouseHandler();
         KeyHandler keyHandler = new KeyHandler();
-        MainPlayer mainPlayer = new MainPlayer(name, playerModel, 0, 0);
+        MainPlayer mainPlayer = new MainPlayer(name, playerModel, 0, 0, mouseHandler);
         Menu menu = new Menu(mouseHandler);
         TileManager tileManager;
         try {
@@ -26,11 +27,10 @@ public class GameCore {
             ClientMain.closeSocket(socket, in, out);
             throw new RuntimeException();
         }
-        ArrayList<Player> playerList = new ArrayList<>();
         gamePanel = new GamePanel(mainPlayer, playerList, keyHandler, mouseHandler, tileManager, menu);
         ServerCommunication serverCommunication = new ServerCommunication(mainPlayer, playerModel, playerList, socket, in, out,
                 keyHandler, mouseHandler);
-        UpdateManager updateManager = new UpdateManager(serverCommunication, menu);
+        UpdateManager updateManager = new UpdateManager(serverCommunication, menu, mainPlayer);
         updateManager.startThread();
         gamePanel.startThread();
     }

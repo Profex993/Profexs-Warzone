@@ -1,7 +1,7 @@
 package server.console.commands;
 
-import server.PlayerServerSide;
 import server.console.Console;
+import server.entity.PlayerServerSide;
 
 public class Command_PlayerList implements Command {
     @Override

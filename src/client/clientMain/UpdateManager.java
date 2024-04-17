@@ -1,17 +1,21 @@
 package client.clientMain;
 
 
+import client.entity.MainPlayer;
 import client.enums.GameState;
 import client.menu.Menu;
 
 public class UpdateManager implements Runnable {
+    public static int tick = 0;
     private Thread thread;
     private final ServerCommunication serverCommunication;
     private final Menu menu;
+    private final MainPlayer mainPlayer;
 
-    public UpdateManager(ServerCommunication serverCommunication, Menu menu) {
+    public UpdateManager(ServerCommunication serverCommunication, Menu menu, MainPlayer mainPlayer) {
         this.menu = menu;
         this.serverCommunication = serverCommunication;
+        this.mainPlayer =  mainPlayer;
     }
 
     public void startThread() {
@@ -35,6 +39,7 @@ public class UpdateManager implements Runnable {
             if (delta >= 1) {
                 update();
                 delta--;
+                tick++;
             }
             if (timer >= 1000000000) {
                 timer = 0;
@@ -44,6 +49,7 @@ public class UpdateManager implements Runnable {
 
     private void update() {
         serverCommunication.update();
+        mainPlayer.update();
         if (GameCore.gameState == GameState.PAUSED.intValue) {
             menu.update();
         }
