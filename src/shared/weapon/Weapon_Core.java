@@ -21,20 +21,20 @@ public class Weapon_Core {
 
         switch (direction) {
             case "down" -> {
-                screenX += 10;
-                screenY += 12;
+                worldX += 10;
+                worldY += 12;
             }
             case "right" -> {
-                screenX += 5;
-                screenY += 24;
+                worldX += 5;
+                worldY += 24;
             }
             case "left" -> {
-                screenX += 35;
-                screenY += 24;
+                worldX += 35;
+                worldY += 24;
             }
             case "up" -> {
-                screenX += 30;
-                screenY += 25;
+                worldX += 30;
+                worldY += 25;
             }
         }
 
