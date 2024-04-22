@@ -1,7 +1,6 @@
 package client.entity;
 
 import shared.Constants;
-import shared.weapon.Weapon_Sks;
 import shared.weapon.abstracts.Weapon;
 
 import javax.imageio.ImageIO;
@@ -17,7 +16,7 @@ public class Entity {
     protected String direction = "down";
     protected String directionFace = "down";
     protected int walkAnimNum = 1;
-    protected Weapon weapon = new Weapon_Sks();
+    protected Weapon weapon;
     protected BufferedImage walk1Right, walk2Right, walk3Right, walk1Left,
             walk2Left, walk3Left, walk1Up, walk2Up, walk3Up, walk1Down, walk2Down, walk3Down, deathImg;
 

@@ -1,5 +1,6 @@
 package shared.weapon.abstracts;
 
+import client.clientMain.SoundManager;
 import shared.weapon.Weapon_Core;
 
 import javax.imageio.ImageIO;
@@ -7,32 +8,53 @@ import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.net.URL;
 import java.util.Objects;
 
 public abstract class Weapon extends Weapon_Core {
     protected BufferedImage topImage, leftImage, rightImage, leftEmptyImage, rightEmptyImage, blastImage;
+    protected URL soundFire, soundReload, soundReloadEmpty;
     protected double rotation;
-    private boolean magazineAttached, blastTrigger;
-    private final boolean removeMagReloading, blastEachShot;
-    protected int blastImageType, blastTick;
+    private boolean blastTrigger;
+    private final boolean removeMagReloading, automatic;
+    private int blastTick;
+    private boolean drawBlast;
 
-    public Weapon(int damage, boolean automatic, int desiredWidth, int desiredHeight, boolean removeMagReloading, boolean blastEachShot) {
-        super(damage, automatic, desiredWidth, desiredHeight);
+    public Weapon(String name, int damage, boolean automatic, int desiredWidth, int desiredHeight, boolean removeMagReloading, int fireDelay, int magazineSize, int reloadDelay) {
+        super(name, damage, automatic, desiredWidth, desiredHeight, fireDelay, magazineSize, reloadDelay);
         this.removeMagReloading = removeMagReloading;
-        this.blastEachShot = blastEachShot;
-        getImg();
+        this.automatic = automatic;
+        getRes();
     }
 
-    public void triggerBlast(int tick) {
-        this.blastTick = tick + 16;
-        this.blastTrigger = true;
+    public void triggerBlast(int currentTick) {
+        if ((!automatic || currentFireLock < currentTick) && currentMagazineSize > 0 && !reloading) {
+            SoundManager.playSound(soundFire);
+            currentFireLock = currentTick + fireDelay;
+            currentMagazineSize--;
+
+            this.blastTick = currentTick + 16;
+            this.blastTrigger = true;
+        }
+    }
+
+    @Override
+    public void triggerReload(int currentTick) {
+        if (!reloading && currentMagazineSize < magazineSize) {
+            if (currentMagazineSize == 0) {
+                SoundManager.playSound(soundReloadEmpty);
+            } else {
+                SoundManager.playSound(soundReload);
+            }
+        }
+        super.triggerReload(currentTick);
     }
 
     public void draw(Graphics2D g2, String direction, int screenX, int screenY, int targetX, int targetY, int tick) {
 
     }
 
-    private void getImg() {
+    protected void getRes() {
         try {
             blastImage = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("prefab/muzzleBlast.png")));
         } catch (IOException e) {
@@ -40,14 +62,14 @@ public abstract class Weapon extends Weapon_Core {
         }
     }
 
-    public BufferedImage getImg(String direction) {
+    protected BufferedImage getImage(String direction) {
         switch (direction) {
             case "up", "down" -> {
                 return topImage;
             }
             case "left" -> {
                 if (removeMagReloading) {
-                    if (magazineAttached) {
+                    if (!reloading) {
                         return leftImage;
                     } else {
                         return leftEmptyImage;
@@ -58,7 +80,7 @@ public abstract class Weapon extends Weapon_Core {
             }
             case "right" -> {
                 if (removeMagReloading) {
-                    if (magazineAttached) {
+                    if (!reloading) {
                         return rightImage;
                     } else {
                         return rightEmptyImage;
@@ -81,7 +103,7 @@ public abstract class Weapon extends Weapon_Core {
         } else {
             mouseX = targetX - 30;
         }
-        BufferedImage img = getImg(direction);
+        BufferedImage img = getImage(direction);
         rotation = Math.atan2(mouseY - screenY, mouseX - screenX);
         AffineTransform transform = new AffineTransform();
         transform.translate(weaponX, weaponY);
@@ -94,18 +116,18 @@ public abstract class Weapon extends Weapon_Core {
 
         g2.drawImage(img, transform, null);
 
-        if (blastTrigger) {
+        if (blastTrigger && !(this instanceof Weapon_Pistol)) {
 
-            AffineTransform transform2 = getAffineTransform(weaponX, weaponY, direction);
+            AffineTransform transform2 = getBlastImgRotation(weaponX, weaponY, direction);
 
-            if (blastEachShot) {
+            if (!automatic) {
                 g2.drawImage(blastImage, transform2, null);
             } else {
-                if (blastImageType == 0) {
+                if (drawBlast) {
                     g2.drawImage(blastImage, transform2, null);
-                    blastImageType++;
+                    drawBlast = false;
                 } else {
-                    blastImageType--;
+                    drawBlast = true;
                 }
             }
 
@@ -115,7 +137,7 @@ public abstract class Weapon extends Weapon_Core {
         }
     }
 
-    private AffineTransform getAffineTransform(int weaponX, int weaponY, String direction) {
+    private AffineTransform getBlastImgRotation(int weaponX, int weaponY, String direction) {
         int blastX = weaponX;
         int blastY = weaponY;
         int xBarrel = 0;

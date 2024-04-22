@@ -2,6 +2,7 @@ package client.entity;
 
 import client.clientMain.UpdateManager;
 import shared.PlayerInput;
+import shared.weapon.abstracts.WeaponGenerator;
 
 import java.awt.*;
 
@@ -19,7 +20,9 @@ public class Player extends Entity {
         screenX = worldX - mainPlayer.getWorldX() + mainPlayer.getScreenX();
         screenY = worldY - mainPlayer.getWorldY() + mainPlayer.getScreenY();
         super.draw(g2);
-        weapon.draw(g2, directionFace, screenX, screenY, (int) mouseX, (int) mouseY, UpdateManager.tick);
+        if (weapon != null) {
+            weapon.draw(g2, directionFace, screenX, screenY, (int) mouseX, (int) mouseY, UpdateManager.tick);
+        }
     }
 
     public void updateFromInputData(PlayerInput playerInput) {
@@ -30,12 +33,25 @@ public class Player extends Entity {
         this.walkAnimNum = playerInput.walkAnimNum();
         this.mouseX = playerInput.mouseX();
         this.mouseY = playerInput.mouseY();
+        this.weapon = WeaponGenerator.getWeaponByName(playerInput.weapon());
 
-        if (playerInput.shooting() && shootLock) {
-            weapon.triggerBlast(UpdateManager.tick);
-            shootLock = false;
-        } else if (!playerInput.shooting() && !shootLock) {
+        if (playerInput.shooting()) {
+            if (!weapon.isAutomatic()) {
+                if (shootLock) {
+                    weapon.triggerBlast(UpdateManager.tick);
+                    shootLock = false;
+                }
+            } else {
+                weapon.triggerBlast(UpdateManager.tick);
+            }
+        } else if (!shootLock) {
             shootLock = true;
+        }
+
+        if (playerInput.reloading()) {
+            weapon.triggerReload(UpdateManager.tick);
+        } else if (weapon.isReloading()) {
+            weapon.reload(UpdateManager.tick);
         }
     }
 

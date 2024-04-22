@@ -7,12 +7,13 @@ import java.io.IOException;
 import java.util.Objects;
 
 public class Weapon_Sks extends Weapon_Rifle {
+    public static final String name = "SKS";
     public Weapon_Sks() {
-        super(0, false, 80, 30, false, true);
-        getImg();
+        super("SKS", 0, false, 80, 30, false, 0, 10, 4 * 120);
     }
 
-    private void getImg() {
+    protected void getRes() {
+        super.getRes();
         try {
             topImage = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("weapons/sksTop.png")));
             leftImage = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("weapons/sksLeft.png")));
@@ -23,6 +24,6 @@ public class Weapon_Sks extends Weapon_Rifle {
     }
 
     public static Weapon_Core getServerSideWeapon() {
-        return new Weapon_Core(0, false, 80, 30);
+        return new Weapon_Core("SKS", 0, false, 80, 30, 0, 10, 4 * 120);
     }
 }

@@ -6,7 +6,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
 public class KeyHandler implements KeyListener {
-    public boolean up, down, left, right;
+    public boolean up, down, left, right, reload;
 
     @Override
     public void keyTyped(KeyEvent e) {
@@ -23,6 +23,8 @@ public class KeyHandler implements KeyListener {
             left = true;
         } else if (e.getKeyCode() == KeyEvent.VK_D) {
             right = true;
+        } else if (e.getKeyCode() == KeyEvent.VK_R) {
+            reload = true;
         } else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
             if (GameCore.gameState == GameState.GAME.intValue) {
                 GameCore.changeGameState(GameState.PAUSED.intValue);
@@ -42,6 +44,8 @@ public class KeyHandler implements KeyListener {
             left = false;
         } else if (e.getKeyCode() == KeyEvent.VK_D) {
             right = false;
+        } else if (e.getKeyCode() == KeyEvent.VK_R) {
+            reload = false;
         }
     }
 }

@@ -3,8 +3,10 @@ package server.entity;
 import server.ServerUpdateManager;
 import shared.Constants;
 import shared.PlayerInputToServer;
+import shared.weapon.Weapon_AK;
 import shared.weapon.Weapon_Core;
-import shared.weapon.Weapon_Sks;
+import shared.weapon.abstracts.Weapon;
+import shared.weapon.abstracts.WeaponGenerator;
 
 import java.awt.*;
 
@@ -18,9 +20,9 @@ public class PlayerServerSide {
     private int walkAnimNum = 1;
     private double mouseX = 0, mouseY = 0;
     private String direction = "down", directionFace;
-    private boolean shootLock = true, shooting = false;
+    private boolean shootLock = true, shooting = false, reloadTrigger = false;
     private final Rectangle solidArea;
-    private Weapon_Core weapon = Weapon_Sks.getServerSideWeapon();
+    private Weapon_Core weapon = Weapon_AK.getServerSideWeapon();
 
     public PlayerServerSide(ServerUpdateManager updateManager) {
         this.updateManager = updateManager;
@@ -95,14 +97,30 @@ public class PlayerServerSide {
             directionFace = "left";
         }
 
-        if (input.leftCLick() && shootLock) {
-            shooting = true;
-            shootLock = false;
-            weapon.shoot(updateManager.getProjectileList(), worldX, worldY, directionFace, (int) mouseX, (int) mouseY, id,
-                    input.screenX(), input.screenY());
-        } else if (!input.leftCLick() && !shootLock) {
+        if (input.leftCLick()) {
+            if (weapon.isAutomatic()) {
+                weapon.shoot(updateManager.getProjectileList(), worldX, worldY, directionFace, (int) mouseX, (int) mouseY, id,
+                        input.screenX(), input.screenY(), updateManager.getTick());
+                shooting = true;
+            } else {
+                if (shootLock) {
+                    shooting = true;
+                    shootLock = false;
+                    weapon.shoot(updateManager.getProjectileList(), worldX, worldY, directionFace, (int) mouseX, (int) mouseY, id,
+                            input.screenX(), input.screenY(), 0);
+                }
+            }
+        } else if (!shootLock || shooting) {
             shootLock = true;
             shooting = false;
+        }
+
+        if (input.reload()) {
+            weapon.triggerReload(updateManager.getTick());
+            reloadTrigger = true;
+        } else if (weapon.isReloading()) {
+            reloadTrigger = false;
+            weapon.reload(updateManager.getTick());
         }
     }
 
@@ -158,5 +176,17 @@ public class PlayerServerSide {
 
     public Rectangle getSolidArea() {
         return solidArea;
+    }
+
+    public boolean isWeaponReloading() {
+        return reloadTrigger;
+    }
+
+    public String getWeaponName() {
+        return weapon.getName();
+    }
+
+    public void changeWeapon(Class<? extends Weapon> weaponClass) {
+        this.weapon = WeaponGenerator.getServerSideWeapon(weaponClass);
     }
 }

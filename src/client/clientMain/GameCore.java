@@ -18,7 +18,7 @@ public class GameCore {
         ArrayList<Player> playerList = new ArrayList<>();
         MouseHandler mouseHandler = new MouseHandler();
         KeyHandler keyHandler = new KeyHandler();
-        MainPlayer mainPlayer = new MainPlayer(name, playerModel, 0, 0, mouseHandler);
+        MainPlayer mainPlayer = new MainPlayer(name, playerModel, 0, 0, mouseHandler, keyHandler);
         Menu menu = new Menu(mouseHandler);
         TileManager tileManager;
         try {
