@@ -33,7 +33,9 @@ public class Player extends Entity {
         this.walkAnimNum = playerInput.walkAnimNum();
         this.mouseX = playerInput.mouseX();
         this.mouseY = playerInput.mouseY();
-        this.weapon = WeaponGenerator.getWeaponByName(playerInput.weapon());
+        if (weapon == null || !weapon.getName().equals(playerInput.weapon())) {
+            this.weapon = WeaponGenerator.getWeaponByName(playerInput.weapon());
+        }
 
         if (playerInput.shooting()) {
             if (!weapon.isAutomatic()) {
