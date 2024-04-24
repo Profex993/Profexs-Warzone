@@ -10,7 +10,7 @@ public class Weapon_Core {
     protected final int fireDelay, reloadDelay, magazineSize;
     protected int currentFireLock = 0, currentReloadLock = 0, currentMagazineSize;
     protected final int desiredWidth, desiredHeight;
-    private final boolean automatic;
+    protected final boolean automatic;
     protected boolean reloading = false;
 
     public Weapon_Core(String name, int damage, boolean automatic, int desiredWidth, int desiredHeight, int fireDelay, int magazineSize, int reloadDelay) {

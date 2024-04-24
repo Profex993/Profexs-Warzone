@@ -1,33 +1,87 @@
 package shared.weapon.abstracts;
 
 import java.awt.*;
+import java.awt.geom.AffineTransform;
 
 public abstract class Weapon_Rifle extends Weapon {
-    public Weapon_Rifle(String name, int damage, boolean automatic, int desiredWidth, int desiredHeight, boolean removeMagReloading, int fireDelay, int magazineSize, int reloadDelay) {
-        super(name, damage, automatic, desiredWidth, desiredHeight, removeMagReloading, fireDelay, magazineSize, reloadDelay);
+    private boolean drawBlast;
+
+    public Weapon_Rifle(String name, int damage, boolean automatic, int desiredWidth, int desiredHeight, boolean removeMagReloading,
+                        int fireDelay, int magazineSize, int reloadDelay, boolean sameReloadSound) {
+        super(name, damage, automatic, desiredWidth, desiredHeight, removeMagReloading, fireDelay, magazineSize, reloadDelay, sameReloadSound);
+        drawBlast = !automatic;
     }
 
     public void draw(Graphics2D g2, String direction, int screenX, int screenY, int targetX, int targetY, int tick) {
-        int weaponX = 0, weaponY = 0;
+        if (automatic && blastTrigger) {
+            drawBlast = !drawBlast;
+        }
+
         switch (direction) {
             case "down" -> {
-                weaponX = screenX + 8;
-                weaponY = screenY + 12;
+                screenX += 8;
+                if (drawBlast && blastTrigger) {
+                    screenY += 10;
+                } else {
+                    screenY += 12;
+                }
             }
             case "right" -> {
-                weaponX = screenX + 10;
-                weaponY = screenY + 20;
+                if (drawBlast && blastTrigger) {
+                    screenX += 8;
+                } else {
+                    screenX += 10;
+                }
+                screenY += 20;
             }
             case "left" -> {
-                weaponX = screenX + 35;
-                weaponY = screenY + 20;
+                if (drawBlast && blastTrigger) {
+                    screenX += 38;
+                } else {
+                    screenX += 35;
+                }
+                screenY += 20;
             }
             case "up" -> {
-                weaponX = screenX + 30;
-                weaponY = screenY + 25;
+                screenX += 30;
+                if (drawBlast && blastTrigger) {
+                    screenY += 28;
+                } else {
+                    screenY += 25;
+                }
             }
         }
 
-        drawCommon(g2, weaponX, weaponY, targetX, targetY, screenX, screenY, direction, tick);
+        drawCommon(g2, screenX, screenY, targetX, targetY, screenX, screenY, direction, tick);
+
+        if (blastTrigger && drawBlast) {
+            AffineTransform transform2 = getBlastImgRotation(screenX, screenY, direction);
+            g2.drawImage(blastImage, transform2, null);
+        }
+    }
+
+    private AffineTransform getBlastImgRotation(int weaponX, int weaponY, String direction) {
+        int xBarrel = 0;
+        int yBarrel = 0;
+
+        switch (direction) {
+            case "left", "right" -> yBarrel = -1;
+            case "up" -> {
+                xBarrel = -2;
+                yBarrel = 6;
+            }
+            case "down" -> {
+                xBarrel = 2;
+                yBarrel = 7;
+            }
+        }
+
+        weaponX += (int) Math.cos(rotation) * (desiredWidth - 2);
+        weaponY += (int) Math.sin(rotation) * (desiredWidth - 1);
+
+        AffineTransform transform2 = new AffineTransform();
+        transform2.translate(weaponX + xBarrel, weaponY + yBarrel);
+        transform2.rotate(rotation, 0, 8);
+        return transform2;
     }
 }

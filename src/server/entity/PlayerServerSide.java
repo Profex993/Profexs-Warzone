@@ -3,8 +3,8 @@ package server.entity;
 import server.ServerUpdateManager;
 import shared.Constants;
 import shared.PlayerInputToServer;
-import shared.weapon.Weapon_AK;
 import shared.weapon.Weapon_Core;
+import shared.weapon.Weapon_Sks;
 import shared.weapon.abstracts.Weapon;
 import shared.weapon.abstracts.WeaponGenerator;
 
@@ -22,7 +22,7 @@ public class PlayerServerSide {
     private String direction = "down", directionFace;
     private boolean shootLock = true, shooting = false, reloadTrigger = false;
     private final Rectangle solidArea;
-    private Weapon_Core weapon = Weapon_AK.getServerSideWeapon();
+    private Weapon_Core weapon = Weapon_Sks.getServerSideWeapon();
 
     public PlayerServerSide(ServerUpdateManager updateManager) {
         this.updateManager = updateManager;

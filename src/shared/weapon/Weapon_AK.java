@@ -10,7 +10,7 @@ public class Weapon_AK extends Weapon_Rifle {
     public static final String name = "AK";
     public Weapon_AK() {
         super(name, 0, true, 80, 30, true, 12,
-                30, 220);
+                30, 220, false);
     }
 
     @Override

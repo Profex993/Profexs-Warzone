@@ -15,15 +15,15 @@ public abstract class Weapon extends Weapon_Core {
     protected BufferedImage topImage, leftImage, rightImage, leftEmptyImage, rightEmptyImage, blastImage;
     protected URL soundFire, soundReload, soundReloadEmpty;
     protected double rotation;
-    private boolean blastTrigger;
-    private final boolean removeMagReloading, automatic;
+    protected boolean blastTrigger;
+    private final boolean removeMagReloading, sameReloadSound;
     private int blastTick;
-    private boolean drawBlast;
 
-    public Weapon(String name, int damage, boolean automatic, int desiredWidth, int desiredHeight, boolean removeMagReloading, int fireDelay, int magazineSize, int reloadDelay) {
+    public Weapon(String name, int damage, boolean automatic, int desiredWidth, int desiredHeight, boolean removeMagReloading,
+                  int fireDelay, int magazineSize, int reloadDelay, boolean sameReloadSound) {
         super(name, damage, automatic, desiredWidth, desiredHeight, fireDelay, magazineSize, reloadDelay);
         this.removeMagReloading = removeMagReloading;
-        this.automatic = automatic;
+        this.sameReloadSound = sameReloadSound;
         getRes();
     }
 
@@ -41,7 +41,7 @@ public abstract class Weapon extends Weapon_Core {
     @Override
     public void triggerReload(int currentTick) {
         if (!reloading && currentMagazineSize < magazineSize) {
-            if (currentMagazineSize == 0) {
+            if (currentMagazineSize == 0 && !sameReloadSound) {
                 SoundManager.playSound(soundReloadEmpty);
             } else {
                 SoundManager.playSound(soundReload);
@@ -96,74 +96,23 @@ public abstract class Weapon extends Weapon_Core {
     }
 
     protected void drawCommon(Graphics2D g2, int weaponX, int weaponY, int targetX, int targetY, int screenX, int screenY, String direction, int tick) {
-        int mouseX;
-        int mouseY = targetY - 30;
+        targetY -= 30;
         if (direction.equals("down")) {
-            mouseX = targetX - 15;
+            targetX -= 15;
         } else {
-            mouseX = targetX - 30;
+            targetX -= 30;
         }
         BufferedImage img = getImage(direction);
-        rotation = Math.atan2(mouseY - screenY, mouseX - screenX);
+        rotation = Math.atan2(targetY - screenY, targetX - screenX);
         AffineTransform transform = new AffineTransform();
         transform.translate(weaponX, weaponY);
         transform.rotate(rotation, 0, (double) img.getHeight() / 2);
-
-        double scaleX = desiredWidth / (double) img.getWidth();
-        double scaleY = desiredHeight / (double) img.getHeight();
-
-        transform.scale(scaleX, scaleY);
+        transform.scale(desiredWidth / (double) img.getWidth(), desiredHeight / (double) img.getHeight());
 
         g2.drawImage(img, transform, null);
 
-        if (blastTrigger && !(this instanceof Weapon_Pistol)) {
-
-            AffineTransform transform2 = getBlastImgRotation(weaponX, weaponY, direction);
-
-            if (!automatic) {
-                g2.drawImage(blastImage, transform2, null);
-            } else {
-                if (drawBlast) {
-                    g2.drawImage(blastImage, transform2, null);
-                    drawBlast = false;
-                } else {
-                    drawBlast = true;
-                }
-            }
-
-            if (tick > blastTick) {
-                blastTrigger = false;
-            }
+        if (blastTrigger && tick > blastTick) {
+            blastTrigger = false;
         }
-    }
-
-    private AffineTransform getBlastImgRotation(int weaponX, int weaponY, String direction) {
-        int blastX = weaponX;
-        int blastY = weaponY;
-        int xBarrel = 0;
-        int yBarrel = 0;
-
-        double blastOffsetX = Math.cos(rotation) * (desiredWidth - 2);
-        double blastOffsetY = Math.sin(rotation) * (desiredWidth - 1);
-
-        switch (direction) {
-            case "left", "right" -> yBarrel = -1;
-            case "up" -> {
-                xBarrel = -2;
-                yBarrel = 6;
-            }
-            case "down" -> {
-                xBarrel = 2;
-                yBarrel = 7;
-            }
-        }
-
-        blastX += (int) blastOffsetX;
-        blastY += (int) blastOffsetY;
-
-        AffineTransform transform2 = new AffineTransform();
-        transform2.translate(blastX + xBarrel, blastY + yBarrel);
-        transform2.rotate(rotation, 0, 8);
-        return transform2;
     }
 }

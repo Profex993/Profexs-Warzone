@@ -9,7 +9,8 @@ import java.util.Objects;
 public class Weapon_Sks extends Weapon_Rifle {
     public static final String name = "SKS";
     public Weapon_Sks() {
-        super("SKS", 0, false, 80, 30, false, 0, 10, 4 * 120);
+        super("SKS", 0, false, 80, 30, false,
+                0, 10, 360, true);
     }
 
     protected void getRes() {
@@ -18,6 +19,8 @@ public class Weapon_Sks extends Weapon_Rifle {
             topImage = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("weapons/sksTop.png")));
             leftImage = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("weapons/sksLeft.png")));
             rightImage = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("weapons/sksRight.png")));
+            this.soundFire = getClass().getClassLoader().getResource("sound/weapons/sksFire.wav");
+            this.soundReload = getClass().getClassLoader().getResource("sound/weapons/sksReload.wav");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

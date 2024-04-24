@@ -9,7 +9,8 @@ import java.util.Objects;
 public class Weapon_Makarov extends Weapon_Pistol {
     public static final String name = "Makarov";
     public Weapon_Makarov() {
-        super("Makarov", 0, false, 60, 30, false, 0, 8, 360);
+        super("Makarov", 0, false, 60, 30, false,
+                0, 8, 360, false);
     }
 
     @Override

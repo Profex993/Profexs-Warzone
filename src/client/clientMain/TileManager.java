@@ -134,6 +134,8 @@ public class TileManager {
     }
 
     public void draw(Graphics2D g2) {
+        int playerWorldX = player.getWorldX();
+        int playerWorldY = player.getWorldY();
         int worldCol = 0;
         int worldRow = 0;
 
@@ -141,10 +143,11 @@ public class TileManager {
             int tileNum = mapTileNumber[worldCol][worldRow];
             int worldX = worldCol * size;
             int worldY = worldRow * size;
-            int screenX = worldX - player.getWorldX() + player.getScreenX();
-            int screenY = worldY - player.getWorldY() + player.getScreenY();
-            if ((worldX + size > player.getWorldX() - player.getScreenX() && worldX - size < player.getWorldX() + player.getScreenX() &&
-                    worldY + size > player.getWorldY() - player.getScreenY() && worldY - size < worldY + player.getScreenY()) && tileNum != 0) {
+            int screenX = worldX - playerWorldX + player.getScreenX();
+            int screenY = worldY - playerWorldY + player.getScreenY();
+            if ((worldX + size > playerWorldX - player.getScreenX() && worldX - size < playerWorldX + player.getScreenX() &&
+                    worldY + size > playerWorldY - player.getScreenY() && worldY - size < playerWorldY + player.getScreenY())
+                    && tileNum != 0) {
                 g2.drawImage(tiles[tileNum].image(), screenX, screenY, size, size, null);
             }
             worldCol++;
