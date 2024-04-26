@@ -15,10 +15,7 @@ public class Menu {
 
     public Menu(MouseHandler mouseHandler) {
         components.add(new MenuButton(20, 100, "Return to game", new Font("arial", Font.PLAIN, 20), mouseHandler,
-                () -> {
-                    GameCore.changeGameState(GameState.GAME.intValue);
-                    System.out.println("test");
-                }));
+                () -> GameCore.changeGameState(GameState.GAME.intValue)));
         components.add(new MenuButton(20, 130, "Exit", new Font("arial", Font.PLAIN, 20), mouseHandler,
                 () -> {
                     ClientMain.closeSocket();

@@ -19,8 +19,11 @@ public class Player extends Entity {
     public void draw(Graphics2D g2) {
         screenX = worldX - mainPlayer.getWorldX() + mainPlayer.getScreenX();
         screenY = worldY - mainPlayer.getWorldY() + mainPlayer.getScreenY();
+        if (weaponDrawFirst && weapon != null) {
+            weapon.draw(g2, directionFace, screenX, screenY, (int) mouseX, (int) mouseY, UpdateManager.tick);
+        }
         super.draw(g2);
-        if (weapon != null) {
+        if (!weaponDrawFirst && weapon != null) {
             weapon.draw(g2, directionFace, screenX, screenY, (int) mouseX, (int) mouseY, UpdateManager.tick);
         }
     }

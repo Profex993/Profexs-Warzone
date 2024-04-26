@@ -18,12 +18,14 @@ public abstract class Weapon extends Weapon_Core {
     protected boolean blastTrigger;
     private final boolean removeMagReloading, sameReloadSound;
     private int blastTick;
+    protected boolean drawBlast;
 
     public Weapon(String name, int damage, boolean automatic, int desiredWidth, int desiredHeight, boolean removeMagReloading,
                   int fireDelay, int magazineSize, int reloadDelay, boolean sameReloadSound) {
         super(name, damage, automatic, desiredWidth, desiredHeight, fireDelay, magazineSize, reloadDelay);
         this.removeMagReloading = removeMagReloading;
         this.sameReloadSound = sameReloadSound;
+        drawBlast = !automatic;
         getRes();
     }
 
@@ -51,7 +53,9 @@ public abstract class Weapon extends Weapon_Core {
     }
 
     public void draw(Graphics2D g2, String direction, int screenX, int screenY, int targetX, int targetY, int tick) {
-
+        if (automatic && blastTrigger) {
+            drawBlast = !drawBlast;
+        }
     }
 
     protected void getRes() {

@@ -3,8 +3,8 @@ package server.entity;
 import server.ServerUpdateManager;
 import shared.Constants;
 import shared.PlayerInputToServer;
+import shared.weapon.Weapon_AK;
 import shared.weapon.Weapon_Core;
-import shared.weapon.Weapon_Sks;
 import shared.weapon.abstracts.Weapon;
 import shared.weapon.abstracts.WeaponGenerator;
 
@@ -13,16 +13,12 @@ import java.awt.*;
 public class PlayerServerSide {
     private final ServerUpdateManager updateManager;
     private String id, playerModel;
-    private int worldX = 0;
-    private int worldY = 0;
-    private int walkCounter;
-    private int idleCounter;
-    private int walkAnimNum = 1;
+    private int worldX = 0, worldY = 0, walkCounter, idleCounter, walkAnimNum = 1;
     private double mouseX = 0, mouseY = 0;
     private String direction = "down", directionFace;
     private boolean shootLock = true, shooting = false, reloadTrigger = false;
     private final Rectangle solidArea;
-    private Weapon_Core weapon = Weapon_Sks.getServerSideWeapon();
+    private Weapon_Core weapon = Weapon_AK.getServerSideWeapon();
 
     public PlayerServerSide(ServerUpdateManager updateManager) {
         this.updateManager = updateManager;

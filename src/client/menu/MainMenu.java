@@ -160,7 +160,7 @@ public class MainMenu {
 
         private void createDropBox() {
             String[] options = {PlayerModel.DEFAULT.name, PlayerModel.BANDIT.name, PlayerModel.BANDIT_2.name, PlayerModel.BANDIT_3.name,
-                    PlayerModel.HAZMAT_SUIT.name, PlayerModel.REBEL.name, PlayerModel.SCAVENGER.name, PlayerModel.SCIENTIST_2.name,
+                    PlayerModel.HAZMAT_SUIT.name, PlayerModel.REBEL.name, PlayerModel.SCAVENGER.name, PlayerModel.SCIENTIST.name, PlayerModel.SCIENTIST_2.name,
                     PlayerModel.SCIENTIST_3.name, PlayerModel.SCOUT.name, PlayerModel.SOLDIER.name, PlayerModel.SOLDIER_2.name};
             dropBox = new JComboBox<>(options);
             dropBox.addActionListener(e -> playerModelMenu.setPlayerImage(String.valueOf(dropBox.getSelectedItem())));

@@ -19,6 +19,7 @@ public class Entity {
     protected Weapon weapon;
     protected BufferedImage walk1Right, walk2Right, walk3Right, walk1Left,
             walk2Left, walk3Left, walk1Up, walk2Up, walk3Up, walk1Down, walk2Down, walk3Down, deathImg;
+    protected boolean weaponDrawFirst;
 
     public void draw(Graphics2D g2) {
         g2.drawImage(getImage(), screenX, screenY, width, height, null);
@@ -53,6 +54,7 @@ public class Entity {
     private BufferedImage getImage() {
         switch (directionFace) {
             case "down" -> {
+                weaponDrawFirst = false;
                 if (walkAnimNum == 1) {
                     return walk1Down;
                 } else if (walkAnimNum == 2) {
@@ -64,6 +66,7 @@ public class Entity {
                 }
             }
             case "right" -> {
+                weaponDrawFirst = false;
                 if (walkAnimNum == 1) {
                     return walk1Right;
                 } else if (walkAnimNum == 2) {
@@ -75,6 +78,7 @@ public class Entity {
                 }
             }
             case "left" -> {
+                weaponDrawFirst = true;
                 if (walkAnimNum == 1) {
                     return walk1Left;
                 } else if (walkAnimNum == 2) {
@@ -86,6 +90,7 @@ public class Entity {
                 }
             }
             case "up" -> {
+                weaponDrawFirst = true;
                 if (walkAnimNum == 1) {
                     return walk1Up;
                 } else if (walkAnimNum == 2) {

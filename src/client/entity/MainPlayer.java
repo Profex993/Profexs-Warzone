@@ -55,8 +55,11 @@ public class MainPlayer extends Entity {
     }
 
     public void draw(Graphics2D g2) {
+        if (weaponDrawFirst && weapon != null) {
+            weapon.draw(g2, directionFace, screenX, screenY, (int) mouseHandler.getX(), (int) mouseHandler.getY(), UpdateManager.tick);
+        }
         super.draw(g2);
-        if (weapon != null) {
+        if (!weaponDrawFirst && weapon != null) {
             weapon.draw(g2, directionFace, screenX, screenY, (int) mouseHandler.getX(), (int) mouseHandler.getY(), UpdateManager.tick);
         }
     }
@@ -80,4 +83,6 @@ public class MainPlayer extends Entity {
     public int getScreenY() {
         return screenY;
     }
+
+
 }

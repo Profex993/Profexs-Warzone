@@ -4,19 +4,15 @@ import java.awt.*;
 import java.awt.geom.AffineTransform;
 
 public abstract class Weapon_Rifle extends Weapon {
-    private boolean drawBlast;
+
 
     public Weapon_Rifle(String name, int damage, boolean automatic, int desiredWidth, int desiredHeight, boolean removeMagReloading,
                         int fireDelay, int magazineSize, int reloadDelay, boolean sameReloadSound) {
         super(name, damage, automatic, desiredWidth, desiredHeight, removeMagReloading, fireDelay, magazineSize, reloadDelay, sameReloadSound);
-        drawBlast = !automatic;
     }
 
     public void draw(Graphics2D g2, String direction, int screenX, int screenY, int targetX, int targetY, int tick) {
-        if (automatic && blastTrigger) {
-            drawBlast = !drawBlast;
-        }
-
+        super.draw(g2, direction, screenX, screenY, targetX, targetY, tick);
         switch (direction) {
             case "down" -> {
                 screenX += 8;
@@ -61,8 +57,13 @@ public abstract class Weapon_Rifle extends Weapon {
     }
 
     private AffineTransform getBlastImgRotation(int weaponX, int weaponY, String direction) {
+        int blastX = weaponX;
+        int blastY = weaponY;
         int xBarrel = 0;
         int yBarrel = 0;
+
+        double blastOffsetX = Math.cos(rotation) * (desiredWidth - 2);
+        double blastOffsetY = Math.sin(rotation) * (desiredWidth - 1);
 
         switch (direction) {
             case "left", "right" -> yBarrel = -1;
@@ -76,11 +77,11 @@ public abstract class Weapon_Rifle extends Weapon {
             }
         }
 
-        weaponX += (int) Math.cos(rotation) * (desiredWidth - 2);
-        weaponY += (int) Math.sin(rotation) * (desiredWidth - 1);
+        blastX += (int) blastOffsetX;
+        blastY += (int) blastOffsetY;
 
         AffineTransform transform2 = new AffineTransform();
-        transform2.translate(weaponX + xBarrel, weaponY + yBarrel);
+        transform2.translate(blastX + xBarrel, blastY + yBarrel);
         transform2.rotate(rotation, 0, 8);
         return transform2;
     }

@@ -32,6 +32,10 @@ public class ServerCommunication {
         this.in = in;
         this.keyHandler = keyHandler;
         this.mouseHandler = mouseHandler;
+        startCommunication(playerModel);
+    }
+
+    private void startCommunication(String playerModel) {
         try {
             out.write(mainPlayer.getName() + Constants.protocolPlayerVariableSplit + playerModel);
             out.newLine();
@@ -47,60 +51,74 @@ public class ServerCommunication {
             out.write(PlayerInputToServer.getFromPlayerInput(keyHandler, mouseHandler, mainPlayer.getScreenX(), mainPlayer.getScreenY()).toString());
             out.newLine();
             out.flush();
+
             String inputLine = in.readLine();
             mainPlayer.updateFromServerInput(ServerOutputToClient.parseFromString(inputLine));
             inputLine = in.readLine();
-            if (!inputLine.equals("noPlayers")) {
-                String[] playerInputLines = inputLine.split(Constants.protocolPlayerLineEnd);
-                if (playerInputLines.length != playerList.size()) {
-                    if (playerInputLines.length > playerList.size()) {
-                        for (String playerLine : playerInputLines) {
-                            String[] playerData = playerLine.split(Constants.protocolPlayerVariableSplit);        //[0] is player name and [1] is player model
-                            if (!playerData[0].equals(mainPlayer.getName())) {
-                                boolean nameExists = false;
-                                for (Player player : playerList) {
-                                    if (player.getName().equals(playerData[0])) {
-                                        nameExists = true;
-                                        break;
-                                    }
-                                }
-                                if (!nameExists) {
-                                    Player newPlayer = new Player(mainPlayer, playerData[0], playerData[1]);
-                                    playerList.add(newPlayer);
-                                }
-                            }
-                        }
-                    } else {
-                        ArrayList<Player> newPlayerList = new ArrayList<>();
-                        for (Player player : playerList) {
-                            for (String name : playerInputLines) {
-                                if (name.equals(player.getName())) {
-                                    newPlayerList.add(player);
-                                    break;
-                                }
-                            }
-                        }
-                        playerList.removeIf(player -> !newPlayerList.contains(player));
-                    }
-                }
-                inputLine = in.readLine();
-                String[] playerInputs = inputLine.split(Constants.protocolPlayerLineEnd);
-                for (String input : playerInputs) {
-                    PlayerInput playerInput = PlayerInput.parseFromString(input);
-                    for (Player player : playerList) {
-                        if (player.getName().equals(playerInput.id())) {
-                            player.updateFromInputData(playerInput);
-                        }
-                    }
-                }
-            } else {
+            if (inputLine.equals("noPlayers")) {
                 if (!playerList.isEmpty()) {
                     playerList.clear();
                 }
+            } else {
+                updatePlayerList(inputLine);
+                inputLine = in.readLine();
+                updatePlayers(inputLine);
             }
         } catch (IOException e) {
             ClientMain.closeSocket(socket, in, out);
             throw new RuntimeException(e);
         }
+    }
+
+    private void updatePlayers(String inputLine) throws IOException {
+        String[] playerInputs = inputLine.split(Constants.protocolPlayerLineEnd);
+        for (String input : playerInputs) {
+            PlayerInput playerInput = PlayerInput.parseFromString(input);
+            for (Player player : playerList) {
+                if (player.getName().equals(playerInput.id())) {
+                    player.updateFromInputData(playerInput);
+                }
+            }
+        }
+    }
+
+    private void updatePlayerList(String inputLine) {
+        String[] playerInputLines = inputLine.split(Constants.protocolPlayerLineEnd);
+        if (playerInputLines.length != playerList.size()) {
+            if (playerInputLines.length > playerList.size()) {
+                for (String playerLine : playerInputLines) {
+                    String[] playerDataInput = playerLine.split(Constants.protocolPlayerVariableSplit);  //[0] is player name and [1] is player model
+                    PlayerData playerData = new PlayerData(playerDataInput[0], playerDataInput[1]);
+                    if (!playerData.name.equals(mainPlayer.getName())) {
+                        boolean nameExists = false;
+                        for (Player player : playerList) {
+                            if (player.getName().equals(playerData.name)) {
+                                nameExists = true;
+                                break;
+                            }
+                        }
+                        if (!nameExists) {
+                            Player newPlayer = new Player(mainPlayer, playerData.name, playerData.model);
+                            playerList.add(newPlayer);
+                        }
+                    }
+                }
+            } else {
+                ArrayList<Player> newPlayerList = new ArrayList<>();
+                for (Player player : playerList) {
+                    for (String name : playerInputLines) {
+                        if (name.equals(player.getName())) {
+                            newPlayerList.add(player);
+                            break;
+                        }
+                    }
+                }
+                playerList.removeIf(player -> !newPlayerList.contains(player));
+            }
+        }
+    }
+
+    private record PlayerData(String name, String model) {
+
     }
 }
