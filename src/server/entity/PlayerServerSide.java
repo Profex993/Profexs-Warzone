@@ -13,10 +13,10 @@ import java.awt.*;
 public class PlayerServerSide {
     private final ServerUpdateManager updateManager;
     private String id, playerModel;
-    private int worldX = 0, worldY = 0, walkCounter, idleCounter, walkAnimNum = 1;
+    private int worldX = 0, worldY = 0;
     private double mouseX = 0, mouseY = 0;
     private String direction = "down", directionFace;
-    private boolean shootLock = true, shooting = false, reloadTrigger = false;
+    private boolean shootLock = true, shooting = false, reloadTrigger = false, walking;
     private final Rectangle solidArea;
     private Weapon_Core weapon = Weapon_AK.getServerSideWeapon();
 
@@ -31,46 +31,22 @@ public class PlayerServerSide {
 
         if (input.up()) {
             worldY -= Constants.playerSpeed;
-            walkCounter++;
-            idleCounter = 0;
+            walking = true;
         } else if (input.down()) {
             worldY += Constants.playerSpeed;
-            walkCounter++;
-            idleCounter = 0;
+            walking = true;
         } else if (input.left()) {
             worldX -= Constants.playerSpeed;
-            walkCounter++;
-            idleCounter = 0;
+            walking = true;
         } else if (input.right()) {
             worldX += Constants.playerSpeed;
-            walkCounter++;
-            idleCounter = 0;
+            walking = true;
         } else {
-            idleCounter++;
+            walking = false;
         }
 
         solidArea.x = worldX;
         solidArea.y = worldY;
-
-        if (walkCounter > 20) {
-            if (walkAnimNum == 1) {
-                walkAnimNum = 2;
-            } else if (walkAnimNum == 2) {
-                walkAnimNum = 3;
-            } else if (walkAnimNum == 3) {
-                walkAnimNum = 4;
-            } else {
-                walkAnimNum = 1;
-            }
-        }
-
-        if (idleCounter == 10) {
-            walkAnimNum = 2;
-        }
-
-        if (walkCounter > 20) {
-            walkCounter = 0;
-        }
 
         if (input.up()) {
             direction = "up";
@@ -154,10 +130,6 @@ public class PlayerServerSide {
         return directionFace;
     }
 
-    public int getWalkAnimNum() {
-        return walkAnimNum;
-    }
-
     public double getMouseX() {
         return mouseX;
     }
@@ -180,6 +152,10 @@ public class PlayerServerSide {
 
     public String getWeaponName() {
         return weapon.getName();
+    }
+
+    public boolean isWalking() {
+        return walking;
     }
 
     public void changeWeapon(Class<? extends Weapon> weaponClass) {

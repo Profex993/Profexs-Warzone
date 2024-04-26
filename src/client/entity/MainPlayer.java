@@ -28,10 +28,36 @@ public class MainPlayer extends Entity {
         this.worldY = input.y();
         this.direction = input.direction();
         this.directionFace = input.directionFace();
-        this.walkAnimNum = input.walkAnimNum();
 
         if (weapon == null || !weapon.getName().equals(input.weapon())) {
             weapon = WeaponGenerator.getWeaponByName(input.weapon());
+        }
+
+        if (input.walking()) {
+            walkCounter++;
+        } else {
+            idleCounter++;
+        }
+
+        if (walkCounter > 20) {
+            if (walkAnimNum == 1) {
+                walkAnimNum = 2;
+            } else if (walkAnimNum == 2) {
+                walkAnimNum = 3;
+            } else if (walkAnimNum == 3) {
+                walkAnimNum = 4;
+            } else {
+                walkAnimNum = 1;
+            }
+        }
+
+        if (idleCounter >= 10) {
+            walkAnimNum = 2;
+            idleCounter = 0;
+        }
+
+        if (walkCounter > 20) {
+            walkCounter = 0;
         }
     }
 

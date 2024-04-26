@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.util.Objects;
 
 public class Entity {
-    protected int worldX, worldY, screenX, screenY;
+    protected int worldX, worldY, screenX, screenY, walkCounter = 0, idleCounter = 0;
     protected final int width = Constants.playerWidth, height = Constants.playerHeight;
     protected final String name;
     protected String direction = "down";
