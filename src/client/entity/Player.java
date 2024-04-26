@@ -31,7 +31,6 @@ public class Player extends Entity {
     public void updateFromInputData(PlayerInput playerInput) {
         this.worldX = playerInput.x();
         this.worldY = playerInput.y();
-        this.direction = playerInput.direction();
         this.directionFace = playerInput.directionFace();
         this.mouseX = playerInput.mouseX();
         this.mouseY = playerInput.mouseY();

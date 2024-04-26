@@ -1,4 +1,4 @@
-package client.menu;
+package client.userInterface.menu;
 
 import client.clientMain.MouseHandler;
 

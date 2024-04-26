@@ -3,7 +3,7 @@ package client.clientMain;
 
 import client.entity.MainPlayer;
 import client.enums.GameState;
-import client.menu.Menu;
+import client.userInterface.menu.Menu;
 
 public class UpdateManager implements Runnable {
     public static int tick = 0;

@@ -1,5 +1,7 @@
 package client.clientMain;
 
+import client.enums.GameState;
+
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -45,5 +47,13 @@ public class MouseHandler implements MouseListener {
 
     public double getY() {
         return MouseInfo.getPointerInfo().getLocation().getY();
+    }
+
+    public boolean isShooting() {
+        if (GameCore.gameState == GameState.GAME.intValue) {
+            return leftClick;
+        } else {
+            return  false;
+        }
     }
 }

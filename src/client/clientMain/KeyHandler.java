@@ -15,17 +15,21 @@ public class KeyHandler implements KeyListener {
 
     @Override
     public void keyPressed(KeyEvent e) {
-        if (e.getKeyCode() == KeyEvent.VK_W) {
-            up = true;
-        } else if (e.getKeyCode() == KeyEvent.VK_S) {
-            down = true;
-        } else if (e.getKeyCode() == KeyEvent.VK_A) {
-            left = true;
-        } else if (e.getKeyCode() == KeyEvent.VK_D) {
-            right = true;
-        } else if (e.getKeyCode() == KeyEvent.VK_R) {
-            reload = true;
-        } else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+        if (GameCore.gameState == GameState.GAME.intValue) {
+            if (e.getKeyCode() == KeyEvent.VK_W) {
+                up = true;
+            } else if (e.getKeyCode() == KeyEvent.VK_S) {
+                down = true;
+            } else if (e.getKeyCode() == KeyEvent.VK_A) {
+                left = true;
+            } else if (e.getKeyCode() == KeyEvent.VK_D) {
+                right = true;
+            } else if (e.getKeyCode() == KeyEvent.VK_R) {
+                reload = true;
+            }
+        }
+
+        if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
             if (GameCore.gameState == GameState.GAME.intValue) {
                 GameCore.changeGameState(GameState.PAUSED.intValue);
             } else {
@@ -36,16 +40,18 @@ public class KeyHandler implements KeyListener {
 
     @Override
     public void keyReleased(KeyEvent e) {
-        if (e.getKeyCode() == KeyEvent.VK_W) {
-            up = false;
-        } else if (e.getKeyCode() == KeyEvent.VK_S) {
-            down = false;
-        } else if (e.getKeyCode() == KeyEvent.VK_A) {
-            left = false;
-        } else if (e.getKeyCode() == KeyEvent.VK_D) {
-            right = false;
-        } else if (e.getKeyCode() == KeyEvent.VK_R) {
-            reload = false;
+        if (GameCore.gameState == GameState.GAME.intValue) {
+            if (e.getKeyCode() == KeyEvent.VK_W) {
+                up = false;
+            } else if (e.getKeyCode() == KeyEvent.VK_S) {
+                down = false;
+            } else if (e.getKeyCode() == KeyEvent.VK_A) {
+                left = false;
+            } else if (e.getKeyCode() == KeyEvent.VK_D) {
+                right = false;
+            } else if (e.getKeyCode() == KeyEvent.VK_R) {
+                reload = false;
+            }
         }
     }
 }

@@ -25,6 +25,6 @@ public record PlayerInputToServer(boolean up, boolean down, boolean left, boolea
 
     public static PlayerInputToServer getFromPlayerInput(KeyHandler keyHandler, MouseHandler mouseHandler, int screenX, int screenY) {
         return new PlayerInputToServer(keyHandler.up, keyHandler.down, keyHandler.left, keyHandler.right,
-                mouseHandler.getX(), mouseHandler.getY(), screenX, screenY, mouseHandler.leftClick, keyHandler.reload);
+                mouseHandler.getX(), mouseHandler.getY(), screenX, screenY, mouseHandler.isShooting(), keyHandler.reload);
     }
 }

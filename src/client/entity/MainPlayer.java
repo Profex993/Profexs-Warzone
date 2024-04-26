@@ -5,6 +5,7 @@ import client.clientMain.KeyHandler;
 import client.clientMain.MouseHandler;
 import client.clientMain.UpdateManager;
 import shared.ServerOutputToClient;
+import shared.weapon.abstracts.Weapon;
 import shared.weapon.abstracts.WeaponGenerator;
 
 import java.awt.*;
@@ -13,6 +14,7 @@ public class MainPlayer extends Entity {
     private final MouseHandler mouseHandler;
     private final KeyHandler keyHandler;
     private boolean singleFireLock = true;
+
     public MainPlayer(String name, String playerModel, int worldX, int worldY, MouseHandler mouseHandler, KeyHandler keyHandler) {
         super(name, playerModel);
         screenX = GamePanel.getScreenWidth() / 2 - (48 / 2);
@@ -26,7 +28,6 @@ public class MainPlayer extends Entity {
     public void updateFromServerInput(ServerOutputToClient input) {
         this.worldX = input.x();
         this.worldY = input.y();
-        this.direction = input.direction();
         this.directionFace = input.directionFace();
 
         if (weapon == null || !weapon.getName().equals(input.weapon())) {
@@ -62,7 +63,7 @@ public class MainPlayer extends Entity {
     }
 
     public void update() {
-        if (mouseHandler.leftClick) {
+        if (mouseHandler.isShooting()) {
             if (!weapon.isAutomatic() && singleFireLock) {
                 weapon.triggerBlast(UpdateManager.tick);
                 singleFireLock = false;
@@ -109,6 +110,10 @@ public class MainPlayer extends Entity {
     public int getScreenY() {
         return screenY;
     }
-
-
+    public int getHealth() {
+        return health;
+    }
+    public Weapon getWeapon() {
+        return weapon;
+    }
 }

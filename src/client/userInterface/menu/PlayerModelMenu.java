@@ -1,4 +1,4 @@
-package client.menu;
+package client.userInterface.menu;
 
 import javax.imageio.ImageIO;
 import java.awt.*;

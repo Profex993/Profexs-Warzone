@@ -10,12 +10,10 @@ import java.io.IOException;
 import java.util.Objects;
 
 public class Entity {
-    protected int worldX, worldY, screenX, screenY, walkCounter = 0, idleCounter = 0;
+    protected int worldX, worldY, screenX, screenY, walkCounter = 0, idleCounter = 0, walkAnimNum = 1, health = 100;
     protected final int width = Constants.playerWidth, height = Constants.playerHeight;
     protected final String name;
-    protected String direction = "down";
     protected String directionFace = "down";
-    protected int walkAnimNum = 1;
     protected Weapon weapon;
     protected BufferedImage walk1Right, walk2Right, walk3Right, walk1Left,
             walk2Left, walk3Left, walk1Up, walk2Up, walk3Up, walk1Down, walk2Down, walk3Down, deathImg;

@@ -3,7 +3,7 @@ package client.clientMain;
 import client.entity.MainPlayer;
 import client.entity.Player;
 import client.enums.GameState;
-import client.menu.Menu;
+import client.userInterface.menu.Menu;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
