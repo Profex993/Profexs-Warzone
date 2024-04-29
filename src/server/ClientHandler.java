@@ -1,10 +1,10 @@
 package server;
 
 import server.entity.PlayerServerSide;
-import shared.Constants;
-import shared.PlayerInput;
-import shared.PlayerInputToServer;
-import shared.ServerOutputToClient;
+import shared.ConstantsShared;
+import shared.packets.PlayerInputToServer;
+import shared.packets.PlayerUpdateInput;
+import shared.packets.ServerOutputToClient;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -46,9 +46,9 @@ public class ClientHandler implements Runnable {
                     StringBuilder playerOut = new StringBuilder();
                     StringBuilder playerNames = new StringBuilder();
                     for (PlayerServerSide player : playerList) {
-                        playerNames.append(player.getId()).append(Constants.protocolPlayerVariableSplit)
-                                .append(player.getPlayerModel()).append(Constants.protocolPlayerLineEnd);
-                        playerOut.append(PlayerInput.getFromPlayerData(player).getString()).append(Constants.protocolPlayerLineEnd);
+                        playerNames.append(player.getId()).append(ConstantsShared.protocolPlayerVariableSplit)
+                                .append(player.getPlayerModel()).append(ConstantsShared.protocolPlayerLineEnd);
+                        playerOut.append(PlayerUpdateInput.getFromPlayerData(player).getString()).append(ConstantsShared.protocolPlayerLineEnd);
                     }
                     out.write(playerNames.toString());
                     out.newLine();
@@ -84,7 +84,7 @@ public class ClientHandler implements Runnable {
                     }
                 }
             } while (test);
-            String[] playerInitData = in.readLine().split(Constants.protocolPlayerVariableSplit);  //[0] is name and [1] is player model
+            String[] playerInitData = in.readLine().split(ConstantsShared.protocolPlayerVariableSplit);  //[0] is name and [1] is player model
             player.setInitData(playerInitData[0], playerInitData[1]);
         } catch (Exception e) {
             ServerCore.closeSocket(socket, out, in);

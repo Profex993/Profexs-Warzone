@@ -2,10 +2,10 @@ package client.clientMain;
 
 import client.entity.MainPlayer;
 import client.entity.Player;
-import shared.Constants;
-import shared.PlayerInput;
-import shared.PlayerInputToServer;
-import shared.ServerOutputToClient;
+import shared.ConstantsShared;
+import shared.packets.PlayerInputToServer;
+import shared.packets.PlayerUpdateInput;
+import shared.packets.ServerOutputToClient;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -37,7 +37,7 @@ public class ServerCommunication {
 
     private void startCommunication(String playerModel) {
         try {
-            out.write(mainPlayer.getName() + Constants.protocolPlayerVariableSplit + playerModel);
+            out.write(mainPlayer.getName() + ConstantsShared.protocolPlayerVariableSplit + playerModel);
             out.newLine();
             out.flush();
         } catch (IOException e) {
@@ -71,23 +71,23 @@ public class ServerCommunication {
     }
 
     private void updatePlayers(String inputLine) throws IOException {
-        String[] playerInputs = inputLine.split(Constants.protocolPlayerLineEnd);
+        String[] playerInputs = inputLine.split(ConstantsShared.protocolPlayerLineEnd);
         for (String input : playerInputs) {
-            PlayerInput playerInput = PlayerInput.parseFromString(input);
+            PlayerUpdateInput playerUpdateInput = PlayerUpdateInput.parseFromString(input);
             for (Player player : playerList) {
-                if (player.getName().equals(playerInput.id())) {
-                    player.updateFromInputData(playerInput);
+                if (player.getName().equals(playerUpdateInput.id())) {
+                    player.updateFromInputData(playerUpdateInput);
                 }
             }
         }
     }
 
     private void updatePlayerList(String inputLine) {
-        String[] playerInputLines = inputLine.split(Constants.protocolPlayerLineEnd);
+        String[] playerInputLines = inputLine.split(ConstantsShared.protocolPlayerLineEnd);
         if (playerInputLines.length != playerList.size()) {
             if (playerInputLines.length > playerList.size()) {
                 for (String playerLine : playerInputLines) {
-                    String[] playerDataInput = playerLine.split(Constants.protocolPlayerVariableSplit);  //[0] is player name and [1] is player model
+                    String[] playerDataInput = playerLine.split(ConstantsShared.protocolPlayerVariableSplit);  //[0] is player name and [1] is player model
                     PlayerData playerData = new PlayerData(playerDataInput[0], playerDataInput[1]);
                     if (!playerData.name.equals(mainPlayer.getName())) {
                         boolean nameExists = false;

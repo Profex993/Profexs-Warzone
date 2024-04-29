@@ -1,7 +1,7 @@
 package client.entity;
 
 import client.clientMain.UpdateManager;
-import shared.PlayerInput;
+import shared.packets.PlayerUpdateInput;
 import shared.weapon.abstracts.WeaponGenerator;
 
 import java.awt.*;
@@ -19,26 +19,31 @@ public class Player extends Entity {
     public void draw(Graphics2D g2) {
         screenX = worldX - mainPlayer.getWorldX() + mainPlayer.getScreenX();
         screenY = worldY - mainPlayer.getWorldY() + mainPlayer.getScreenY();
-        if (weaponDrawFirst && weapon != null) {
-            weapon.draw(g2, directionFace, screenX, screenY, (int) mouseX, (int) mouseY, UpdateManager.tick);
-        }
-        super.draw(g2);
-        if (!weaponDrawFirst && weapon != null) {
-            weapon.draw(g2, directionFace, screenX, screenY, (int) mouseX, (int) mouseY, UpdateManager.tick);
+        if (death) {
+            g2.drawImage(deathImg, screenX, screenY, 70, 60, null);
+        } else {
+            if (weaponDrawFirst && weapon != null) {
+                weapon.draw(g2, directionFace, screenX, screenY, (int) mouseX, (int) mouseY, UpdateManager.tick);
+            }
+            super.draw(g2);
+            if (!weaponDrawFirst && weapon != null) {
+                weapon.draw(g2, directionFace, screenX, screenY, (int) mouseX, (int) mouseY, UpdateManager.tick);
+            }
         }
     }
 
-    public void updateFromInputData(PlayerInput playerInput) {
-        this.worldX = playerInput.x();
-        this.worldY = playerInput.y();
-        this.directionFace = playerInput.directionFace();
-        this.mouseX = playerInput.mouseX();
-        this.mouseY = playerInput.mouseY();
-        if (weapon == null || !weapon.getName().equals(playerInput.weapon())) {
-            this.weapon = WeaponGenerator.getWeaponByName(playerInput.weapon());
+    public void updateFromInputData(PlayerUpdateInput input) {
+        this.death = input.death();
+        this.worldX = input.x();
+        this.worldY = input.y();
+        this.directionFace = input.directionFace();
+        this.mouseX = input.mouseX();
+        this.mouseY = input.mouseY();
+        if (weapon == null || !weapon.getName().equals(input.weapon())) {
+            this.weapon = WeaponGenerator.getWeaponByName(input.weapon());
         }
 
-        if (playerInput.shooting()) {
+        if (input.shooting()) {
             if (!weapon.isAutomatic()) {
                 if (shootLock) {
                     weapon.triggerBlast(UpdateManager.tick);
@@ -51,13 +56,13 @@ public class Player extends Entity {
             shootLock = true;
         }
 
-        if (playerInput.reloading()) {
+        if (input.reloading()) {
             weapon.triggerReload(UpdateManager.tick);
         } else if (weapon.isReloading()) {
             weapon.reload(UpdateManager.tick);
         }
 
-        if (playerInput.walking()) {
+        if (input.walking()) {
             walkCounter++;
         } else {
             idleCounter++;

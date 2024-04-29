@@ -1,5 +1,6 @@
 package shared.weapon;
 
+import server.entity.PlayerServerSide;
 import server.entity.ProjectileServerSide;
 
 import java.util.ArrayList;
@@ -26,7 +27,7 @@ public class Weapon_Core {
     }
 
     public void shoot(ArrayList<ProjectileServerSide> projectileList, int worldX, int worldY, String direction, int mouseX, int mouseY,
-                      String id, int screenX, int screenY, int currentTick) {
+                      PlayerServerSide player, int screenX, int screenY, int currentTick) {
 
         if ((!automatic || currentFireLock < currentTick) && currentMagazineSize > 0 && !reloading) {
             currentFireLock = currentTick + fireDelay;
@@ -58,7 +59,7 @@ public class Weapon_Core {
                 mouseX -= 30;
             }
             double rotation = Math.atan2(mouseY - screenY, mouseX - screenX);
-            projectileList.add(new ProjectileServerSide(rotation, worldX, worldY, id));
+            projectileList.add(new ProjectileServerSide(rotation, worldX, worldY, player, damage));
         }
     }
 

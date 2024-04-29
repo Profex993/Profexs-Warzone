@@ -5,7 +5,6 @@ import client.entity.Player;
 import client.enums.GameState;
 import client.userInterface.GameUI;
 import client.userInterface.menu.Menu;
-import shared.Constants;
 
 import javax.swing.*;
 import java.awt.*;

@@ -9,7 +9,7 @@ import java.util.Objects;
 public class Weapon_AK extends Weapon_Rifle {
     public static final String name = "AK";
     public Weapon_AK() {
-        super(name, 0, true, 80, 30, true, 12,
+        super(name, 20, true, 80, 30, true, 12,
                 30, 220, false);
     }
 
@@ -31,7 +31,7 @@ public class Weapon_AK extends Weapon_Rifle {
     }
 
     public static Weapon_Core getServerSideWeapon() {
-        return new Weapon_Core(name, 0, true, 120, 30,
+        return new Weapon_Core(name, 20, true, 120, 30,
                 12, 30, 220);
     }
 }

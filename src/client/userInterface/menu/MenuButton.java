@@ -14,7 +14,7 @@ public class MenuButton implements MenuComponent {
     public MenuButton(int x, int y, String text, Font font, MouseHandler mouseHandler, Runnable onCLick) {
         this.font = font;
         this.text = text;
-        int width = text.length() * font.getSize() / 2;
+        int width = (int) (text.length() * font.getSize() / 1.75);
         this.triggerArea = new Rectangle(x, y, width, (int) (font.getSize() * 1.25));
         this.mouseHandler = mouseHandler;
         this.onCLick = onCLick;
@@ -27,8 +27,10 @@ public class MenuButton implements MenuComponent {
     }
 
     public void draw(Graphics2D g2) {
+        g2.setColor(Color.white);
         g2.setFont(font);
-        g2.draw(triggerArea);
+        g2.fill(triggerArea);
+        g2.setColor(Color.black);
         g2.drawString(text, triggerArea.x, triggerArea.y + font.getSize());
     }
 }

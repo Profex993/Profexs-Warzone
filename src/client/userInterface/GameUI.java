@@ -1,7 +1,7 @@
 package client.userInterface;
 
+import client.clientMain.Constants;
 import client.entity.MainPlayer;
-import shared.Constants;
 
 import java.awt.*;
 

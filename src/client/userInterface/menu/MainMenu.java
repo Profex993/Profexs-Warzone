@@ -1,6 +1,7 @@
 package client.userInterface.menu;
 
 import client.clientMain.ClientMain;
+import client.clientMain.Constants;
 import client.clientMain.SoundManager;
 import shared.enums.PlayerModel;
 
@@ -14,7 +15,7 @@ import java.util.Objects;
 public class MainMenu {
     public void open() {
         JFrame window = new JFrame();
-        window.setTitle("game");
+        window.setTitle("Profex's warzone");
         Panel panel = new Panel(window);
         window.add(panel);
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -126,7 +127,7 @@ public class MainMenu {
             bottomPanel.add(rightPanel);
             userBox = new JTextField();
 
-            JButton ipJoin = new JButton("Join");
+            JButton ipJoin = new JButton("Find server");
             bottomPanel.add(ipJoin);
 
             ipJoin.addActionListener(e -> {
@@ -172,8 +173,11 @@ public class MainMenu {
             Graphics2D g2 = (Graphics2D) g;
             g2.drawImage(background, 0, 0, 400, 500, null);
             g2.setColor(Color.black);
-            g2.setFont(new Font("impact", Font.PLAIN, 100));
-            g2.drawString("Game", 20, 90);
+            g2.setFont(new Font("impact", Font.PLAIN, 55));
+            g2.drawString("Profex's warzone", 10, 70);
+            g2.setColor(Color.red);
+            g2.setFont(Constants.font25);
+            g2.drawString("Soundtrack by SUPREMER", 10, 485);
         }
     }
 }

@@ -4,7 +4,7 @@ import client.clientMain.GamePanel;
 import client.clientMain.KeyHandler;
 import client.clientMain.MouseHandler;
 import client.clientMain.UpdateManager;
-import shared.ServerOutputToClient;
+import shared.packets.ServerOutputToClient;
 import shared.weapon.abstracts.Weapon;
 import shared.weapon.abstracts.WeaponGenerator;
 
@@ -14,6 +14,7 @@ public class MainPlayer extends Entity {
     private final MouseHandler mouseHandler;
     private final KeyHandler keyHandler;
     private boolean singleFireLock = true;
+    private int health;
 
     public MainPlayer(String name, String playerModel, int worldX, int worldY, MouseHandler mouseHandler, KeyHandler keyHandler) {
         super(name, playerModel);
@@ -26,6 +27,8 @@ public class MainPlayer extends Entity {
     }
 
     public void updateFromServerInput(ServerOutputToClient input) {
+        this.health = input.health();
+        this.death = input.death();
         this.worldX = input.x();
         this.worldY = input.y();
         this.directionFace = input.directionFace();
@@ -63,31 +66,37 @@ public class MainPlayer extends Entity {
     }
 
     public void update() {
-        if (mouseHandler.isShooting()) {
-            if (!weapon.isAutomatic() && singleFireLock) {
-                weapon.triggerBlast(UpdateManager.tick);
-                singleFireLock = false;
-            } else if (weapon.isAutomatic()) {
-                weapon.triggerBlast(UpdateManager.tick);
+        if (!death) {
+            if (mouseHandler.isShooting()) {
+                if (!weapon.isAutomatic() && singleFireLock) {
+                    weapon.triggerBlast(UpdateManager.tick);
+                    singleFireLock = false;
+                } else if (weapon.isAutomatic()) {
+                    weapon.triggerBlast(UpdateManager.tick);
+                }
+            } else if (!singleFireLock) {
+                singleFireLock = true;
             }
-        } else if (!singleFireLock) {
-            singleFireLock = true;
-        }
 
-        if (keyHandler.reload) {
-            weapon.triggerReload(UpdateManager.tick);
-        } else if (weapon.isReloading()) {
-            weapon.reload(UpdateManager.tick);
+            if (keyHandler.reload) {
+                weapon.triggerReload(UpdateManager.tick);
+            } else if (weapon.isReloading()) {
+                weapon.reload(UpdateManager.tick);
+            }
         }
     }
 
     public void draw(Graphics2D g2) {
-        if (weaponDrawFirst && weapon != null) {
-            weapon.draw(g2, directionFace, screenX, screenY, (int) mouseHandler.getX(), (int) mouseHandler.getY(), UpdateManager.tick);
-        }
-        super.draw(g2);
-        if (!weaponDrawFirst && weapon != null) {
-            weapon.draw(g2, directionFace, screenX, screenY, (int) mouseHandler.getX(), (int) mouseHandler.getY(), UpdateManager.tick);
+        if (death) {
+            g2.drawImage(deathImg, screenX, screenY, null);
+        } else {
+            if (weaponDrawFirst && weapon != null) {
+                weapon.draw(g2, directionFace, screenX, screenY, (int) mouseHandler.getX(), (int) mouseHandler.getY(), UpdateManager.tick);
+            }
+            super.draw(g2);
+            if (!weaponDrawFirst && weapon != null) {
+                weapon.draw(g2, directionFace, screenX, screenY, (int) mouseHandler.getX(), (int) mouseHandler.getY(), UpdateManager.tick);
+            }
         }
     }
 

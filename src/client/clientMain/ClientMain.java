@@ -1,6 +1,6 @@
 package client.clientMain;
 
-import client.menu.MainMenu;
+import client.userInterface.menu.MainMenu;
 
 import javax.swing.*;
 import java.io.*;
@@ -35,7 +35,7 @@ public class ClientMain {
         GameCore core = new GameCore(username, playerModel, socket, in, out);
 
         JFrame window = new JFrame();
-        window.setTitle("game");
+        window.setTitle("Profex's warzone");
         window.setUndecorated(true);
         window.add(core.getGamePanel());
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
