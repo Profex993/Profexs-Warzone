@@ -13,9 +13,9 @@ import java.awt.*;
 public class PlayerServerSide {
     private final ServerUpdateManager updateManager;
     private String id, playerModel;
-    private int worldX = 0, worldY = 0, health = 100;
+    private int worldX = 0, worldY = 0, health = 100, kills, deaths, respawnDelay;
     private double mouseX = 0, mouseY = 0;
-    private String direction = "down", directionFace;
+    private String direction = "down", directionFace, killedBy = "";
     private boolean shootLock = true, shooting = false, reloadTrigger = false, walking, death;
     private final Rectangle solidArea;
     private Weapon_Core weapon = Weapon_AK.getServerSideWeapon();
@@ -98,6 +98,12 @@ public class PlayerServerSide {
         }
     }
 
+    public void update() {
+        if (death) {
+            respawn();
+        }
+    }
+
     public void setInitData(String id, String playerModel) {
         this.id = id;
         this.playerModel = playerModel;
@@ -107,12 +113,31 @@ public class PlayerServerSide {
         this.weapon = WeaponGenerator.getServerSideWeapon(weaponClass);
     }
 
-    public void removeHealth(int remove) {
+    public void removeHealth(int remove, PlayerServerSide enemyPlayer) {
         health -= remove;
-        if (health <= 0) {
+        if (health <= 0 && !death) {
             health = 0;
             death = true;
+            deaths++;
+            enemyPlayer.addKill();
+            killedBy = enemyPlayer.getId();
+            respawnDelay = updateManager.getTick() + 600;
         }
+    }
+
+    private void respawn() {
+        if (updateManager.getTick() >= respawnDelay) {
+            health = 100;
+            death = false;
+            killedBy = "";
+            worldX = 0;
+            worldY = 0;
+            weapon = WeaponGenerator.getServerSideWeapon(Weapon_AK.class);
+        }
+    }
+
+    public void addKill() {
+        kills++;
     }
 
     public String getId() {
@@ -174,5 +199,17 @@ public class PlayerServerSide {
 
     public boolean isDeath() {
         return death;
+    }
+
+    public int getKills() {
+        return kills;
+    }
+
+    public int getDeaths() {
+        return deaths;
+    }
+
+    public String getKilledBy() {
+        return killedBy;
     }
 }

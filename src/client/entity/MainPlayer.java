@@ -15,6 +15,7 @@ public class MainPlayer extends Entity {
     private final KeyHandler keyHandler;
     private boolean singleFireLock = true;
     private int health;
+    private String killedBy;
 
     public MainPlayer(String name, String playerModel, int worldX, int worldY, MouseHandler mouseHandler, KeyHandler keyHandler) {
         super(name, playerModel);
@@ -28,7 +29,14 @@ public class MainPlayer extends Entity {
 
     public void updateFromServerInput(ServerOutputToClient input) {
         this.health = input.health();
-        this.death = input.death();
+        if (death && !input.death()) {
+            death = false;
+        } else if (!death && input.death()) {
+            triggerDeath(input);
+            death = true;
+        }
+        kills = input.kills();
+        deaths = input.deaths();
         this.worldX = input.x();
         this.worldY = input.y();
         this.directionFace = input.directionFace();
@@ -100,10 +108,9 @@ public class MainPlayer extends Entity {
         }
     }
 
-    public String getName() {
-        return name;
+    private void triggerDeath(ServerOutputToClient input) {
+        killedBy = input.killedBy();
     }
-
     public int getWorldX() {
         return worldX;
     }
@@ -124,5 +131,9 @@ public class MainPlayer extends Entity {
     }
     public Weapon getWeapon() {
         return weapon;
+    }
+
+    public String getKilledBy() {
+        return killedBy;
     }
 }

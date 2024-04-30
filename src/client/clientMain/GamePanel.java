@@ -33,7 +33,7 @@ public class GamePanel extends JPanel implements Runnable {
         this.playerList = playerList;
         this.tileManager = tileManager;
         this.menu = menu;
-        gameUI = new GameUI(mainPlayer, screenWidth, screenHeight);
+        gameUI = new GameUI(mainPlayer, playerList, screenWidth, screenHeight, keyHandler);
     }
 
     public void startThread() {

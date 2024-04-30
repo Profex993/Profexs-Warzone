@@ -39,6 +39,8 @@ public class Player extends Entity {
         this.directionFace = input.directionFace();
         this.mouseX = input.mouseX();
         this.mouseY = input.mouseY();
+        this.kills = input.kills();
+        this.deaths = input.deaths();
         if (weapon == null || !weapon.getName().equals(input.weapon())) {
             this.weapon = WeaponGenerator.getWeaponByName(input.weapon());
         }
@@ -88,9 +90,5 @@ public class Player extends Entity {
         if (walkCounter > 20) {
             walkCounter = 0;
         }
-    }
-
-    public String getName() {
-        return name;
     }
 }

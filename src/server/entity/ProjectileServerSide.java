@@ -27,7 +27,7 @@ public class ProjectileServerSide {
 
         for (PlayerServerSide player : playerList) {
             if (solidArea.intersects(player.getSolidArea()) && this.originalPlayer != player) {
-                player.removeHealth(damage);
+                player.removeHealth(damage, originalPlayer);
                 projectileList.remove(this);
             }
         }

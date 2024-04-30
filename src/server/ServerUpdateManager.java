@@ -8,7 +8,7 @@ import java.util.ArrayList;
 public class ServerUpdateManager implements Runnable {
     private Thread thread;
     private int tick = 0;
-
+    private int gameTime = 0;
     private final ArrayList<PlayerServerSide> playerList;
     private final ArrayList<ProjectileServerSide> projectileList = new ArrayList<>();
 
@@ -22,7 +22,7 @@ public class ServerUpdateManager implements Runnable {
     }
     @Override
     public void run() {
-        double interval = 16666666; //16666666 60fps
+        double interval = 8333333; //16666666 60fps
         double delta = 0;
         long last = System.nanoTime();
         long time;
@@ -40,6 +40,7 @@ public class ServerUpdateManager implements Runnable {
             }
             if (timer >= 1000000000) {
                 timer = 0;
+                gameTime++;
             }
         }
     }
@@ -48,10 +49,17 @@ public class ServerUpdateManager implements Runnable {
         for (int i = 0; i < projectileList.size(); i++) {
             projectileList.get(i).update(playerList, projectileList);
         }
+        for (PlayerServerSide player : playerList) {
+            player.update();
+        }
     }
 
     public int getTick() {
         return tick;
+    }
+
+    public int getGameTime() {
+        return gameTime;
     }
 
     public ArrayList<ProjectileServerSide> getProjectileList() {
