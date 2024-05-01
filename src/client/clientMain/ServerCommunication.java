@@ -84,38 +84,42 @@ public class ServerCommunication {
 
     private void updatePlayerList(String inputLine) {
         String[] playerInputLines = inputLine.split(ConstantsShared.protocolPlayerLineEnd);
-        if (playerInputLines.length != playerList.size()) {
-            if (playerInputLines.length > playerList.size()) {
-                for (String playerLine : playerInputLines) {
-                    String[] playerDataInput = playerLine.split(ConstantsShared.protocolPlayerVariableSplit);  //[0] is player name and [1] is player model
-                    PlayerData playerData = new PlayerData(playerDataInput[0], playerDataInput[1]);
-                    if (!playerData.name.equals(mainPlayer.getName())) {
-                        boolean nameExists = false;
-                        for (Player player : playerList) {
-                            if (player.getName().equals(playerData.name)) {
-                                nameExists = true;
-                                break;
-                            }
-                        }
-                        if (!nameExists) {
-                            Player newPlayer = new Player(mainPlayer, playerData.name, playerData.model);
-                            playerList.add(newPlayer);
-                        }
-                    }
+        if (playerInputLines.length == playerList.size()) return;
+
+        if (playerInputLines.length > playerList.size()) {
+            addPlayer(playerInputLines);
+        } else {
+            removePlayer(playerInputLines);
+        }
+    }
+
+    private void removePlayer(String[] playerInputLines) {
+        ArrayList<Player> newPlayerList = new ArrayList<>();
+        for (Player player : playerList) {
+            for (String name : playerInputLines) {
+                if (name.equals(player.getName())) {
+                    newPlayerList.add(player);
+                    break;
                 }
-            } else {
-                ArrayList<Player> newPlayerList = new ArrayList<>();
-                for (Player player : playerList) {
-                    for (String name : playerInputLines) {
-                        if (name.equals(player.getName())) {
-                            newPlayerList.add(player);
-                            break;
-                        }
-                    }
-                }
-                playerList.removeIf(player -> !newPlayerList.contains(player));
             }
         }
+        playerList.removeIf(player -> !newPlayerList.contains(player));
+    }
+
+    private void addPlayer(String[] playerInputLines) {
+        for (String playerLine : playerInputLines) {
+            String[] playerDataInput = playerLine.split(ConstantsShared.protocolPlayerVariableSplit);  //[0] is player name and [1] is player model
+            PlayerData playerData = new PlayerData(playerDataInput[0], playerDataInput[1]);
+            if (!playerData.name.equals(mainPlayer.getName()) && isNewPlayer(playerData)) {
+                Player newPlayer = new Player(mainPlayer, playerData.name, playerData.model);
+                playerList.add(newPlayer);
+            }
+        }
+    }
+
+    private boolean isNewPlayer(PlayerData playerData) {
+        return playerList.stream()
+                .noneMatch(player -> player.getName().equals(playerData.name));
     }
 
     private record PlayerData(String name, String model) {

@@ -52,12 +52,6 @@ public class Weapon_Core {
                 }
             }
 
-//            mouseY -= 30;
-//            if (direction.equals("down")) {
-//                mouseX -= 15;
-//            } else {
-//                mouseX -= 30;
-//            }
             projectileList.add(new ProjectileServerSide(rotation, worldX, worldY, player, damage));
         }
     }

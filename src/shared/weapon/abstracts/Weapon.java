@@ -99,12 +99,6 @@ public abstract class Weapon extends Weapon_Core {
     }
 
     protected void drawCommon(Graphics2D g2, int weaponX, int weaponY, String direction, int tick, double rotation) {
-//        targetY -= 30;
-//        if (direction.equals("down")) {
-//            targetX -= 15;
-//        } else {
-//            targetX -= 30;
-//        }
         BufferedImage img = getImage(direction);
         AffineTransform transform = new AffineTransform();
         transform.translate(weaponX, weaponY);
