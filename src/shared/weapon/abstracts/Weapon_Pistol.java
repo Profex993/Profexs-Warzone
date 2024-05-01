@@ -8,8 +8,8 @@ public abstract class Weapon_Pistol extends Weapon {
         super(name, damage, automatic, desiredWidth, desiredHeight, removeMagReloading, fireDelay, magazineSize, reloadDelay, sameReloadSound);
     }
 
-    public void draw(Graphics2D g2, String direction, int screenX, int screenY, int targetX, int targetY, int tick) {
-        super.draw(g2, direction, screenX, screenY, targetX, targetY, tick);
+    public void draw(Graphics2D g2, String direction, int tick, double rotation, int screenX, int screenY) {
+        super.draw(g2, direction, tick, rotation, screenX, screenY);
         switch (direction) {
             case "down" -> {
                 screenX += 8;
@@ -43,6 +43,6 @@ public abstract class Weapon_Pistol extends Weapon {
             }
         }
 
-        drawCommon(g2, screenX, screenY, targetX, targetY, screenX, screenY, direction, tick);
+        drawCommon(g2, screenX, screenY, direction, tick, rotation);
     }
 }

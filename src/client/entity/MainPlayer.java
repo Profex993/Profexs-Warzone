@@ -4,6 +4,7 @@ import client.clientMain.GamePanel;
 import client.clientMain.KeyHandler;
 import client.clientMain.MouseHandler;
 import client.clientMain.UpdateManager;
+import client.clientMain.sound.SoundManager;
 import shared.packets.ServerOutputToClient;
 import shared.weapon.abstracts.Weapon;
 import shared.weapon.abstracts.WeaponGenerator;
@@ -39,6 +40,8 @@ public class MainPlayer extends Entity {
         deaths = input.deaths();
         this.worldX = input.x();
         this.worldY = input.y();
+        this.solidArea.x = worldX;
+        this.solidArea.y = worldY;
         this.directionFace = input.directionFace();
 
         if (weapon == null || !weapon.getName().equals(input.weapon())) {
@@ -54,10 +57,12 @@ public class MainPlayer extends Entity {
         if (walkCounter > 20) {
             if (walkAnimNum == 1) {
                 walkAnimNum = 2;
+                SoundManager.playSound(SoundManager.walk1);
             } else if (walkAnimNum == 2) {
                 walkAnimNum = 3;
             } else if (walkAnimNum == 3) {
                 walkAnimNum = 4;
+                SoundManager.playSound(SoundManager.walk2);
             } else {
                 walkAnimNum = 1;
             }
@@ -77,17 +82,23 @@ public class MainPlayer extends Entity {
         if (!death) {
             if (mouseHandler.isShooting()) {
                 if (!weapon.isAutomatic() && singleFireLock) {
-                    weapon.triggerBlast(UpdateManager.tick);
+                    if (weapon.triggerBlast(UpdateManager.tick)) {
+                        SoundManager.playSound(weapon.getFireSound());
+                    }
                     singleFireLock = false;
                 } else if (weapon.isAutomatic()) {
-                    weapon.triggerBlast(UpdateManager.tick);
+                    if (weapon.triggerBlast(UpdateManager.tick)) {
+                        SoundManager.playSound(weapon.getFireSound());
+                    }
                 }
             } else if (!singleFireLock) {
                 singleFireLock = true;
             }
 
             if (keyHandler.reload) {
-                weapon.triggerReload(UpdateManager.tick);
+                if (weapon.triggerReload(UpdateManager.tick)) {
+                    SoundManager.playSound(weapon.getReloadSound());
+                }
             } else if (weapon.isReloading()) {
                 weapon.reload(UpdateManager.tick);
             }
@@ -95,15 +106,16 @@ public class MainPlayer extends Entity {
     }
 
     public void draw(Graphics2D g2) {
+        double rotation = Math.atan2(mouseHandler.getY() - (screenY + (double) solidArea.width / 2), mouseHandler.getX() - (screenX + (double) solidArea.width / 2));
         if (death) {
             g2.drawImage(deathImg, screenX, screenY, null);
         } else {
             if (weaponDrawFirst && weapon != null) {
-                weapon.draw(g2, directionFace, screenX, screenY, (int) mouseHandler.getX(), (int) mouseHandler.getY(), UpdateManager.tick);
+                weapon.draw(g2, directionFace, UpdateManager.tick, rotation, screenX, screenY);
             }
             super.draw(g2);
             if (!weaponDrawFirst && weapon != null) {
-                weapon.draw(g2, directionFace, screenX, screenY, (int) mouseHandler.getX(), (int) mouseHandler.getY(), UpdateManager.tick);
+                weapon.draw(g2, directionFace, UpdateManager.tick, rotation, screenX, screenY);
             }
         }
     }
@@ -111,14 +123,6 @@ public class MainPlayer extends Entity {
     private void triggerDeath(ServerOutputToClient input) {
         killedBy = input.killedBy();
     }
-    public int getWorldX() {
-        return worldX;
-    }
-
-    public int getWorldY() {
-        return worldY;
-    }
-
     public int getScreenX() {
         return screenX;
     }

@@ -5,6 +5,7 @@ import shared.ConstantsShared;
 import shared.packets.PlayerInputToServer;
 import shared.weapon.Weapon_AK;
 import shared.weapon.Weapon_Core;
+import shared.weapon.Weapon_Makarov;
 import shared.weapon.abstracts.Weapon;
 import shared.weapon.abstracts.WeaponGenerator;
 
@@ -14,7 +15,7 @@ public class PlayerServerSide {
     private final ServerUpdateManager updateManager;
     private String id, playerModel;
     private int worldX = 0, worldY = 0, health = 100, kills, deaths, respawnDelay;
-    private double mouseX = 0, mouseY = 0;
+    private double rotation = 0;
     private String direction = "down", directionFace, killedBy = "";
     private boolean shootLock = true, shooting = false, reloadTrigger = false, walking, death;
     private final Rectangle solidArea;
@@ -27,9 +28,6 @@ public class PlayerServerSide {
 
     public void updateFromPlayerInput(PlayerInputToServer input) {
         if (!death) {
-            mouseX = input.mouseX();
-            mouseY = input.mouseY();
-
             if (input.up()) {
                 worldY -= ConstantsShared.playerSpeed;
                 walking = true;
@@ -59,12 +57,12 @@ public class PlayerServerSide {
                 direction = "right";
             }
 
-            double angle = Math.atan2(input.mouseY() - (input.screenY() + (double) 40 / 2), input.mouseX() - (input.screenX() + (double) 40 / 2));
-            if (angle >= -Math.PI / 4 && angle < Math.PI / 4) {
+            rotation = Math.atan2(input.mouseY() - (input.screenY() + (double) solidArea.width / 2), input.mouseX() - (input.screenX() + (double) solidArea.width / 2));
+            if (rotation >= -Math.PI / 4 && rotation < Math.PI / 4) {
                 directionFace = "right";
-            } else if (angle >= Math.PI / 4 && angle < 3 * Math.PI / 4) {
+            } else if (rotation >= Math.PI / 4 && rotation < 3 * Math.PI / 4) {
                 directionFace = "down";
-            } else if (angle >= -3 * Math.PI / 4 && angle < -Math.PI / 4) {
+            } else if (rotation >= -3 * Math.PI / 4 && rotation < -Math.PI / 4) {
                 directionFace = "up";
             } else {
                 directionFace = "left";
@@ -72,15 +70,15 @@ public class PlayerServerSide {
 
             if (input.leftCLick()) {
                 if (weapon.isAutomatic()) {
-                    weapon.shoot(updateManager.getProjectileList(), worldX, worldY, directionFace, (int) mouseX, (int) mouseY, this,
-                            input.screenX(), input.screenY(), updateManager.getTick());
+                    weapon.shoot(updateManager.getProjectileList(), worldX, worldY, directionFace, this, updateManager.getTick(),
+                            rotation);
                     shooting = true;
                 } else {
                     if (shootLock) {
                         shooting = true;
                         shootLock = false;
-                        weapon.shoot(updateManager.getProjectileList(), worldX, worldY, directionFace, (int) mouseX, (int) mouseY, this,
-                                input.screenX(), input.screenY(), 0);
+                        weapon.shoot(updateManager.getProjectileList(), worldX, worldY, directionFace, this, updateManager.getTick(),
+                                rotation);
                     }
                 }
             } else if (!shootLock || shooting) {
@@ -116,13 +114,17 @@ public class PlayerServerSide {
     public void removeHealth(int remove, PlayerServerSide enemyPlayer) {
         health -= remove;
         if (health <= 0 && !death) {
-            health = 0;
-            death = true;
-            deaths++;
+            death();
             enemyPlayer.addKill();
             killedBy = enemyPlayer.getId();
-            respawnDelay = updateManager.getTick() + 600;
         }
+    }
+
+    private void death() {
+        health = 0;
+        death = true;
+        deaths++;
+        respawnDelay = updateManager.getTick() + 600;
     }
 
     private void respawn() {
@@ -132,8 +134,14 @@ public class PlayerServerSide {
             killedBy = "";
             worldX = 0;
             worldY = 0;
-            weapon = WeaponGenerator.getServerSideWeapon(Weapon_AK.class);
+            changeWeapon(Weapon_Makarov.class);
         }
+    }
+
+    private void resetPlayer() {
+        deaths = 0;
+        kills = 0;
+        respawn();
     }
 
     public void addKill() {
@@ -163,14 +171,6 @@ public class PlayerServerSide {
 
     public String getDirectionFace() {
         return directionFace;
-    }
-
-    public double getMouseX() {
-        return mouseX;
-    }
-
-    public double getMouseY() {
-        return mouseY;
     }
 
     public boolean isShooting() {
@@ -211,5 +211,9 @@ public class PlayerServerSide {
 
     public String getKilledBy() {
         return killedBy;
+    }
+
+    public double getRotation() {
+        return rotation;
     }
 }

@@ -1,6 +1,5 @@
 package shared.weapon.abstracts;
 
-import client.clientMain.SoundManager;
 import shared.weapon.Weapon_Core;
 
 import javax.imageio.ImageIO;
@@ -14,7 +13,6 @@ import java.util.Objects;
 public abstract class Weapon extends Weapon_Core {
     protected BufferedImage topImage, leftImage, rightImage, leftEmptyImage, rightEmptyImage, blastImage;
     protected URL soundFire, soundReload, soundReloadEmpty;
-    protected double rotation;
     protected boolean blastTrigger;
     private final boolean removeMagReloading, sameReloadSound;
     private int blastTick;
@@ -29,30 +27,31 @@ public abstract class Weapon extends Weapon_Core {
         getRes();
     }
 
-    public void triggerBlast(int currentTick) {
+    public boolean triggerBlast(int currentTick) {
         if ((!automatic || currentFireLock < currentTick) && currentMagazineSize > 0 && !reloading) {
-            SoundManager.playSound(soundFire);
             currentFireLock = currentTick + fireDelay;
             currentMagazineSize--;
 
             this.blastTick = currentTick + 16;
             this.blastTrigger = true;
+            return true;
+        }
+        return false;
+    }
+
+    public URL getFireSound() {
+        return soundFire;
+    }
+
+    public URL getReloadSound() {
+        if (currentMagazineSize == 0 && !sameReloadSound) {
+            return soundReloadEmpty;
+        } else {
+            return soundReload;
         }
     }
 
-    @Override
-    public void triggerReload(int currentTick) {
-        if (!reloading && currentMagazineSize < magazineSize) {
-            if (currentMagazineSize == 0 && !sameReloadSound) {
-                SoundManager.playSound(soundReloadEmpty);
-            } else {
-                SoundManager.playSound(soundReload);
-            }
-        }
-        super.triggerReload(currentTick);
-    }
-
-    public void draw(Graphics2D g2, String direction, int screenX, int screenY, int targetX, int targetY, int tick) {
+    public void draw(Graphics2D g2, String direction, int tick, double rotation, int screenX, int screenY) {
         if (automatic && blastTrigger) {
             drawBlast = !drawBlast;
         }
@@ -99,15 +98,14 @@ public abstract class Weapon extends Weapon_Core {
         }
     }
 
-    protected void drawCommon(Graphics2D g2, int weaponX, int weaponY, int targetX, int targetY, int screenX, int screenY, String direction, int tick) {
-        targetY -= 30;
-        if (direction.equals("down")) {
-            targetX -= 15;
-        } else {
-            targetX -= 30;
-        }
+    protected void drawCommon(Graphics2D g2, int weaponX, int weaponY, String direction, int tick, double rotation) {
+//        targetY -= 30;
+//        if (direction.equals("down")) {
+//            targetX -= 15;
+//        } else {
+//            targetX -= 30;
+//        }
         BufferedImage img = getImage(direction);
-        rotation = Math.atan2(targetY - screenY, targetX - screenX);
         AffineTransform transform = new AffineTransform();
         transform.translate(weaponX, weaponY);
         transform.rotate(rotation, 0, (double) img.getHeight() / 2);

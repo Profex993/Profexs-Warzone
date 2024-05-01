@@ -26,8 +26,8 @@ public class Weapon_Core {
         this.reloadDelay = reloadDelay;
     }
 
-    public void shoot(ArrayList<ProjectileServerSide> projectileList, int worldX, int worldY, String direction, int mouseX, int mouseY,
-                      PlayerServerSide player, int screenX, int screenY, int currentTick) {
+    public void shoot(ArrayList<ProjectileServerSide> projectileList, int worldX, int worldY, String direction,
+                      PlayerServerSide player, int currentTick, double rotation) {
 
         if ((!automatic || currentFireLock < currentTick) && currentMagazineSize > 0 && !reloading) {
             currentFireLock = currentTick + fireDelay;
@@ -52,13 +52,12 @@ public class Weapon_Core {
                 }
             }
 
-            mouseY -= 30;
-            if (direction.equals("down")) {
-                mouseX -= 15;
-            } else {
-                mouseX -= 30;
-            }
-            double rotation = Math.atan2(mouseY - screenY, mouseX - screenX);
+//            mouseY -= 30;
+//            if (direction.equals("down")) {
+//                mouseX -= 15;
+//            } else {
+//                mouseX -= 30;
+//            }
             projectileList.add(new ProjectileServerSide(rotation, worldX, worldY, player, damage));
         }
     }
@@ -70,11 +69,13 @@ public class Weapon_Core {
         }
     }
 
-    public void triggerReload(int currentTick) {
+    public boolean triggerReload(int currentTick) {
         if (!reloading && currentMagazineSize < magazineSize) {
             reloading = true;
             currentReloadLock = currentTick + reloadDelay;
+            return true;
         }
+        return false;
     }
 
     public boolean isAutomatic() {

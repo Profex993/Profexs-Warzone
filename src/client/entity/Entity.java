@@ -18,6 +18,8 @@ public class Entity {
     protected BufferedImage walk1Right, walk2Right, walk3Right, walk1Left,
             walk2Left, walk3Left, walk1Up, walk2Up, walk3Up, walk1Down, walk2Down, walk3Down, deathImg;
     protected boolean weaponDrawFirst, death = false;
+    protected Rectangle solidArea = new Rectangle(worldX, worldY, ConstantsShared.playerWidth, ConstantsShared.playerHeight);
+    protected double rotation;
 
     public void draw(Graphics2D g2) {
         g2.drawImage(getImage(), screenX, screenY, width, height, null);
@@ -119,5 +121,17 @@ public class Entity {
 
     public String getName() {
         return name;
+    }
+
+    public Rectangle getSolidArea() {
+        return solidArea;
+    }
+
+    public int getWorldX() {
+        return worldX;
+    }
+
+    public int getWorldY() {
+        return worldY;
     }
 }

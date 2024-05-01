@@ -2,7 +2,7 @@ package client.userInterface.menu;
 
 import client.clientMain.ClientMain;
 import client.clientMain.Constants;
-import client.clientMain.SoundManager;
+import client.clientMain.sound.SoundManager;
 import shared.enums.PlayerModel;
 
 import javax.imageio.ImageIO;
@@ -115,12 +115,12 @@ public class MainMenu {
             bottomPanel = new JPanel(new GridLayout(1, 2));
             JPanel leftPanel = new JPanel(new BorderLayout());
             leftPanel.add(new JLabel("IP:"), BorderLayout.WEST);
-            ipBox = new JTextField();
+            ipBox = new JTextField("localhost");
             leftPanel.add(ipBox, BorderLayout.CENTER);
 
             JPanel rightPanel = new JPanel(new BorderLayout());
             rightPanel.add(new JLabel("Port:"), BorderLayout.WEST);
-            portBox = new JTextField();
+            portBox = new JTextField("8080");
             rightPanel.add(portBox, BorderLayout.CENTER);
 
             bottomPanel.add(leftPanel);
