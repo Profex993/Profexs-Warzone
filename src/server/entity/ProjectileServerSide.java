@@ -23,23 +23,16 @@ public class ProjectileServerSide {
     }
 
     public void update(ArrayList<PlayerServerSide> playerList, ArrayList<ProjectileServerSide> projectileList) {
-        double dx = Math.cos(rotation);
-        double dy = Math.sin(rotation);
-
-        solidArea.x += (int) (dx * ConstantsShared.projectileSpeed);
-        solidArea.y += (int) (dy * ConstantsShared.projectileSpeed);
+        solidArea.x += (int) (Math.cos(rotation) * ConstantsShared.projectileSpeed);
+        solidArea.y += (int) (Math.sin(rotation) * ConstantsShared.projectileSpeed);
 
         for (PlayerServerSide player : playerList) {
             if (solidArea.intersects(player.getSolidArea()) && this.originalPlayer != player) {
                 player.removeHealth(damage, originalPlayer);
                 projectileList.remove(this);
-            } else if (collisionManager.checkTileProjectile(this)) {
+            } else if (collisionManager.checkTileProjectile(solidArea)) {
                 projectileList.remove(this);
             }
         }
-    }
-
-    public Rectangle getSolidArea() {
-        return solidArea;
     }
 }

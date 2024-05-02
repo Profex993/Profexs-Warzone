@@ -1,10 +1,10 @@
 package server;
 
 import server.entity.PlayerServerSide;
-import server.entity.ProjectileServerSide;
 import shared.ConstantsShared;
 import shared.MapGenerator;
 
+import java.awt.*;
 import java.io.BufferedReader;
 import java.io.IOException;
 
@@ -40,6 +40,7 @@ public class CollisionManager {
         }
         br.close();
     }
+
     public boolean checkTile(PlayerServerSide player) {
         int leftX = player.getSolidArea().x + 4;
         int rightX = player.getSolidArea().x + player.getSolidArea().width - 4;
@@ -85,10 +86,10 @@ public class CollisionManager {
         return true;
     }
 
-    public boolean checkTileProjectile(ProjectileServerSide projectile) {
+    public boolean checkTileProjectile(Rectangle solidArea) {
         int tileSize = ConstantsShared.tileSize;
-        int tileX = projectile.getSolidArea().x / tileSize;
-        int tileY = projectile.getSolidArea().y / tileSize;
+        int tileX = solidArea.x / tileSize;
+        int tileY = solidArea.y / tileSize;
         if (tileX >= 0 && tileX < mapTileNumber.length && tileY >= 0 && tileY < mapTileNumber[0].length) {
             return tiles[mapTileNumber[tileX][tileY]];
         }
