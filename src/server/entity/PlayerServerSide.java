@@ -1,5 +1,7 @@
 package server.entity;
 
+import server.CollisionManager;
+import server.ServerCore;
 import server.ServerUpdateManager;
 import shared.ConstantsShared;
 import shared.packets.PlayerInputToServer;
@@ -10,43 +12,33 @@ import shared.weapon.abstracts.Weapon;
 import shared.weapon.abstracts.WeaponGenerator;
 
 import java.awt.*;
+import java.io.IOException;
 
 public class PlayerServerSide {
     private final ServerUpdateManager updateManager;
+    private final CollisionManager collisionManager;
     private String id, playerModel;
-    private int worldX = 0, worldY = 0, health = 100, kills, deaths, respawnDelay;
+    private int worldX = 100, worldY = 100, health = 100, kills, deaths, respawnDelay;
     private double rotation = 0;
     private String direction = "down", directionFace, killedBy = "";
     private boolean shootLock = true, shooting = false, reloadTrigger = false, walking, death;
     private final Rectangle solidArea;
     private Weapon_Core weapon = Weapon_AK.getServerSideWeapon();
 
-    public PlayerServerSide(ServerUpdateManager updateManager) {
+    public PlayerServerSide(ServerUpdateManager updateManager, CollisionManager collisionManager) {
         this.updateManager = updateManager;
         solidArea = new Rectangle(worldX, worldY, ConstantsShared.playerWidth, ConstantsShared.playerHeight);
+        this.collisionManager = collisionManager;
+
+        try {
+            collisionManager.loadMap(ServerCore.mapNum);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public void updateFromPlayerInput(PlayerInputToServer input) {
         if (!death) {
-            if (input.up()) {
-                worldY -= ConstantsShared.playerSpeed;
-                walking = true;
-            } else if (input.down()) {
-                worldY += ConstantsShared.playerSpeed;
-                walking = true;
-            } else if (input.left()) {
-                worldX -= ConstantsShared.playerSpeed;
-                walking = true;
-            } else if (input.right()) {
-                worldX += ConstantsShared.playerSpeed;
-                walking = true;
-            } else {
-                walking = false;
-            }
-
-            solidArea.x = worldX;
-            solidArea.y = worldY;
-
             if (input.up()) {
                 direction = "up";
             } else if (input.down()) {
@@ -56,6 +48,29 @@ public class PlayerServerSide {
             } else if (input.right()) {
                 direction = "right";
             }
+
+            if (collisionManager.checkTile(this)) {
+                if (input.up()) {
+                    worldY -= ConstantsShared.playerSpeed;
+                    walking = true;
+                } else if (input.down()) {
+                    worldY += ConstantsShared.playerSpeed;
+                    walking = true;
+                } else if (input.left()) {
+                    worldX -= ConstantsShared.playerSpeed;
+                    walking = true;
+                } else if (input.right()) {
+                    worldX += ConstantsShared.playerSpeed;
+                    walking = true;
+                } else {
+                    walking = false;
+                }
+            } else {
+                walking = false;
+            }
+
+            solidArea.x = worldX;
+            solidArea.y = worldY;
 
             rotation = Math.atan2(input.mouseY() - (input.screenY() + (double) solidArea.width / 2), input.mouseX() - (input.screenX() + (double) solidArea.width / 2));
             if (rotation >= -Math.PI / 4 && rotation < Math.PI / 4) {
@@ -71,14 +86,14 @@ public class PlayerServerSide {
             if (input.leftCLick()) {
                 if (weapon.isAutomatic()) {
                     weapon.shoot(updateManager.getProjectileList(), worldX, worldY, directionFace, this, updateManager.getTick(),
-                            rotation);
+                            rotation, collisionManager);
                     shooting = true;
                 } else {
                     if (shootLock) {
                         shooting = true;
                         shootLock = false;
                         weapon.shoot(updateManager.getProjectileList(), worldX, worldY, directionFace, this, updateManager.getTick(),
-                                rotation);
+                                rotation, collisionManager);
                     }
                 }
             } else if (!shootLock || shooting) {
@@ -215,5 +230,9 @@ public class PlayerServerSide {
 
     public double getRotation() {
         return rotation;
+    }
+
+    public String getDirection() {
+        return direction;
     }
 }

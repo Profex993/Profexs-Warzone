@@ -1,5 +1,6 @@
 package shared.weapon;
 
+import server.CollisionManager;
 import server.entity.PlayerServerSide;
 import server.entity.ProjectileServerSide;
 
@@ -27,7 +28,7 @@ public class Weapon_Core {
     }
 
     public void shoot(ArrayList<ProjectileServerSide> projectileList, int worldX, int worldY, String direction,
-                      PlayerServerSide player, int currentTick, double rotation) {
+                      PlayerServerSide player, int currentTick, double rotation, CollisionManager collisionManager) {
 
         if ((!automatic || currentFireLock < currentTick) && currentMagazineSize > 0 && !reloading) {
             currentFireLock = currentTick + fireDelay;
@@ -52,7 +53,7 @@ public class Weapon_Core {
                 }
             }
 
-            projectileList.add(new ProjectileServerSide(rotation, worldX, worldY, player, damage));
+            projectileList.add(new ProjectileServerSide(rotation, worldX, worldY, player, damage, collisionManager));
         }
     }
 

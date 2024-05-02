@@ -1,6 +1,7 @@
 package client.clientMain;
 
 import client.entity.MainPlayer;
+import shared.ConstantsShared;
 import shared.MapGenerator;
 
 import javax.imageio.ImageIO;
@@ -15,13 +16,12 @@ public class TileManager {
     private final String[] tiles;
     private final BufferedImage[] tileImages;
     private final int[][] mapTileNumber;
-    private final int maxWorldColum = 50, maxWorldRow = 50, size;
+    private final int maxWorldColum = ConstantsShared.maxWorldWidth, maxWorldRow = ConstantsShared.maxWorldHeight;
 
     public TileManager(MainPlayer mainPlayer) throws IOException {
         this.player = mainPlayer;
         tiles = MapGenerator.getTileSetImagePath();
         tileImages = new BufferedImage[tiles.length];
-        this.size = 48;
         mapTileNumber = new int[maxWorldColum][maxWorldRow];
         getTileImg();
     }
@@ -62,6 +62,7 @@ public class TileManager {
 
         while (worldCol < maxWorldColum && worldRow < maxWorldRow) {
             int tileNum = mapTileNumber[worldCol][worldRow];
+            int size = ConstantsShared.tileSize;
             int worldX = worldCol * size;
             int worldY = worldRow * size;
             int screenX = worldX - playerWorldX + player.getScreenX();
@@ -79,12 +80,4 @@ public class TileManager {
             }
         }
     }
-
-//    public Tile[] getTiles() {
-//        return tiles;
-//    }
-//
-//    public int[][] getMapTileNumber() {
-//        return mapTileNumber;
-//    }
 }

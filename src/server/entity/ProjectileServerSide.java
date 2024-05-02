@@ -1,5 +1,6 @@
 package server.entity;
 
+import server.CollisionManager;
 import shared.ConstantsShared;
 
 import java.awt.*;
@@ -10,12 +11,15 @@ public class ProjectileServerSide {
     private final Rectangle solidArea;
     private final PlayerServerSide originalPlayer;
     private final int damage;
+    private final CollisionManager collisionManager;
 
-    public ProjectileServerSide(double rotation, int worldX, int worldY, PlayerServerSide originalPlayer, int damage) {
+    public ProjectileServerSide(double rotation, int worldX, int worldY, PlayerServerSide originalPlayer, int damage,
+                                CollisionManager collisionManager) {
         this.rotation = rotation;
         this.solidArea = new Rectangle(worldX, worldY, 4, 4);
         this.originalPlayer = originalPlayer;
         this.damage = damage;
+        this.collisionManager = collisionManager;
     }
 
     public void update(ArrayList<PlayerServerSide> playerList, ArrayList<ProjectileServerSide> projectileList) {
@@ -29,7 +33,13 @@ public class ProjectileServerSide {
             if (solidArea.intersects(player.getSolidArea()) && this.originalPlayer != player) {
                 player.removeHealth(damage, originalPlayer);
                 projectileList.remove(this);
+            } else if (collisionManager.checkTileProjectile(this)) {
+                projectileList.remove(this);
             }
         }
+    }
+
+    public Rectangle getSolidArea() {
+        return solidArea;
     }
 }
