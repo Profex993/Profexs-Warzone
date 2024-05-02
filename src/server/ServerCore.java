@@ -11,6 +11,7 @@ import java.util.ArrayList;
 public class ServerCore {
     private final ArrayList<PlayerServerSide> playerList = new ArrayList<>();
     private final ServerUpdateManager serverUpdateManager = new ServerUpdateManager(playerList);
+    public final static int mapNum = 0; // this variable will be used for selecting map later
 
     public ServerCore() {
         serverUpdateManager.startThread();

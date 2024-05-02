@@ -30,8 +30,11 @@ public class ClientHandler implements Runnable {
     public void run() {
         setName();
         playerList.add(player);
-        while (socket.isConnected()) {
-            try {
+        try {
+            out.write(String.valueOf(ServerCore.mapNum));
+            out.newLine();
+            out.flush();
+            while (socket.isConnected()) {
                 String line = in.readLine();
                 PlayerInputToServer playerInputToServer;
                 if (!line.isEmpty()) {
@@ -59,11 +62,12 @@ public class ClientHandler implements Runnable {
                     out.newLine();
                 }
                 out.flush();
-            } catch (Exception e) {
-                playerList.remove(player);
-                ServerCore.closeSocket(socket, out, in);
             }
+        } catch (Exception e) {
+            playerList.remove(player);
+            ServerCore.closeSocket(socket, out, in);
         }
+
         playerList.remove(player);
         ServerCore.closeSocket(socket, out, in);
     }

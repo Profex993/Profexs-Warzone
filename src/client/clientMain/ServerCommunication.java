@@ -23,8 +23,8 @@ public class ServerCommunication {
     private final KeyHandler keyHandler;
 
 
-    public ServerCommunication(MainPlayer mainPlayer, String playerModel, ArrayList<Player> playerList,
-                               Socket socket, BufferedReader in, BufferedWriter out, KeyHandler keyHandler, MouseHandler mouseHandler) {
+    public ServerCommunication(MainPlayer mainPlayer, String playerModel, ArrayList<Player> playerList, Socket socket, BufferedReader in,
+                               BufferedWriter out, KeyHandler keyHandler, MouseHandler mouseHandler, TileManager tileManager) {
         this.mainPlayer = mainPlayer;
         this.playerList = playerList;
         this.out = out;
@@ -33,6 +33,12 @@ public class ServerCommunication {
         this.keyHandler = keyHandler;
         this.mouseHandler = mouseHandler;
         startCommunication(playerModel);
+
+        try {
+            tileManager.loadMap(Integer.parseInt(in.readLine()));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private void startCommunication(String playerModel) {

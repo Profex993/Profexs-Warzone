@@ -80,18 +80,19 @@ public class GameUI {
         g2.setColor(Constants.transparentColor);
         g2.fillRect(GamePanel.screenWidth / 2 - 300, 0, 600, leaderBoard.size() * 40 + 40);
         g2.setColor(Color.red);
+        g2.setFont(Constants.font25);
         g2.setStroke(new BasicStroke(2));
         g2.drawRect(GamePanel.screenWidth / 2 - 300, 0, 600, 40);
         g2.drawLine(GamePanel.screenWidth / 2 + 100, 0, GamePanel.screenWidth / 2 + 100, leaderBoard.size() * 40 + 40);
         g2.drawLine(GamePanel.screenWidth / 2 + 200, 0, GamePanel.screenWidth / 2 + 200, leaderBoard.size() * 40 + 40);
-        g2.drawString("Name:", GamePanel.screenWidth / 2 - 300 + 5, 25);
-        g2.drawString("Kills:", GamePanel.screenWidth / 2 + 100 + 5, 25);
-        g2.drawString("Deaths:", GamePanel.screenWidth / 2 + 200 + 5, 25);
+        g2.drawString("Name:", GamePanel.screenWidth / 2 - 295, 25);
+        g2.drawString("Kills:", GamePanel.screenWidth / 2 + 105, 25);
+        g2.drawString("Deaths:", GamePanel.screenWidth / 2 + 205, 25);
         for (int i = 0; i < leaderBoard.size(); i++) {
             g2.drawRect(GamePanel.screenWidth / 2 - 300, i * 40 + 40, 600, 40);
             g2.drawString(leaderBoard.get(i).getName(), GamePanel.screenWidth / 2 - 300 + 5, i * 40 + 65);
-            g2.drawString(String.valueOf(leaderBoard.get(i).getKills()), GamePanel.screenWidth / 2 + 100 + 5, i * 40 + 65);
-            g2.drawString(String.valueOf(leaderBoard.get(i).getDeaths()), GamePanel.screenWidth / 2 + 200 + 5, i * 40 + 65);
+            g2.drawString(String.valueOf(leaderBoard.get(i).getKills()), GamePanel.screenWidth / 2 + 105, i * 40 + 65);
+            g2.drawString(String.valueOf(leaderBoard.get(i).getDeaths()), GamePanel.screenWidth / 2 + 205, i * 40 + 65);
         }
     }
 

@@ -29,7 +29,7 @@ public class GameCore {
         }
         gamePanel = new GamePanel(mainPlayer, playerList, keyHandler, mouseHandler, tileManager, menu);
         ServerCommunication serverCommunication = new ServerCommunication(mainPlayer, playerModel, playerList, socket, in, out,
-                keyHandler, mouseHandler);
+                keyHandler, mouseHandler, tileManager);
         UpdateManager updateManager = new UpdateManager(serverCommunication, menu, mainPlayer);
         updateManager.startThread();
         gamePanel.startThread();
