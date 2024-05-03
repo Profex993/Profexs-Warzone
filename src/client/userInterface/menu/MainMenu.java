@@ -8,6 +8,8 @@ import shared.enums.PlayerModel;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.Objects;
@@ -35,7 +37,7 @@ public class MainMenu {
         private final JPanel mainPanel = new JPanel();
         private JComboBox<String> dropBox;
         private JTextField ipBox, portBox, userBox;
-        private final JButton nameJoin = new JButton("join");
+        private final JButton nameJoinButton = new JButton("join");
         private int walkAnimNum = 1;
         private final PlayerModelMenu playerModelMenu = new PlayerModelMenu();
 
@@ -44,7 +46,6 @@ public class MainMenu {
             this.setPreferredSize(screenSize);
             this.setBackground(Color.black);
             this.setDoubleBuffered(true);
-            this.setFocusable(true);
             try {
                 background = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("menu/mainMenuBackground.png")));
             } catch (IOException e) {
@@ -127,34 +128,65 @@ public class MainMenu {
             bottomPanel.add(rightPanel);
             userBox = new JTextField();
 
-            JButton ipJoin = new JButton("Find server");
-            bottomPanel.add(ipJoin);
+            JButton ipJoinButton = new JButton("Find server");
+            bottomPanel.add(ipJoinButton);
+            bottomPanel.setFocusable(true);
 
-            ipJoin.addActionListener(e -> {
-                try {
-                    ClientMain.startGame(ipBox.getText(), Integer.parseInt(portBox.getText()));
-                    swapButtons();
-                } catch (Exception ex) {
-                    System.out.println("no server");
+            ipJoinButton.addActionListener(e -> joinServer());
+            nameJoinButton.addActionListener(e -> enterName());
+
+            ipBox.addKeyListener(new KeyAdapter() {
+                @Override
+                public void keyPressed(KeyEvent e) {
+                    if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                        joinServer();
+                    }
                 }
             });
 
-            nameJoin.addActionListener(e -> {
-                try {
-                    ClientMain.setName(userBox.getText(), String.valueOf(dropBox.getSelectedItem()));
-                    SoundManager.stopMainMenuSoundtrack();
-                    window.dispose();
-                } catch (Exception ex) {
-                    System.out.println(ex.getMessage());
+            portBox.addKeyListener(new KeyAdapter() {
+                @Override
+                public void keyPressed(KeyEvent e) {
+                    if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                        joinServer();
+                    }
                 }
             });
+
+            userBox.addKeyListener(new KeyAdapter() {
+                @Override
+                public void keyPressed(KeyEvent e) {
+                    if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                        enterName();
+                    }
+                }
+            });
+        }
+
+        private void joinServer() {
+            try {
+                ClientMain.startGame(ipBox.getText(), Integer.parseInt(portBox.getText()));
+                swapButtons();
+            } catch (Exception ex) {
+                System.out.println("no server");
+            }
+        }
+
+        private void enterName() {
+            try {
+                ClientMain.setName(userBox.getText(), String.valueOf(dropBox.getSelectedItem()));
+                SoundManager.stopMainMenuSoundtrack();
+                window.dispose();
+            } catch (Exception ex) {
+                System.out.println(ex.getMessage());
+            }
         }
 
         public void swapButtons() {
             bottomPanel.removeAll();
             bottomPanel.add(new JLabel("Username:"));
             bottomPanel.add(userBox);
-            bottomPanel.add(nameJoin);
+            bottomPanel.add(nameJoinButton);
             bottomPanel.revalidate();
             bottomPanel.repaint();
         }

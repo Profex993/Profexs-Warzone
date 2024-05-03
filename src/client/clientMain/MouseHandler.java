@@ -7,7 +7,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
 public class MouseHandler implements MouseListener {
-    public boolean leftClick = false;
+    public boolean leftClick = false, rightClick = false;
 
     @Override
     public void mouseClicked(MouseEvent e) {
@@ -17,6 +17,8 @@ public class MouseHandler implements MouseListener {
     public void mousePressed(MouseEvent e) {
         if (e.getButton() == MouseEvent.BUTTON1) {
             leftClick = true;
+        } else if (e.getButton() == MouseEvent.BUTTON2) {
+            rightClick = true;
         }
     }
 
@@ -24,6 +26,8 @@ public class MouseHandler implements MouseListener {
     public void mouseReleased(MouseEvent e) {
         if (e.getButton() == MouseEvent.BUTTON1) {
             leftClick = false;
+        } else if (e.getButton() == MouseEvent.BUTTON2) {
+            rightClick = false;
         }
     }
 
@@ -53,7 +57,7 @@ public class MouseHandler implements MouseListener {
         if (GameCore.gameState == GameState.GAME.intValue) {
             return leftClick;
         } else {
-            return  false;
+            return false;
         }
     }
 }
