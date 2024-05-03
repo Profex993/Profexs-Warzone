@@ -17,11 +17,13 @@ public class ClientHandler implements Runnable {
     private final BufferedWriter out;
     private final BufferedReader in;
     private final ArrayList<PlayerServerSide> playerList;
+    private final ServerCore core;
 
-    public ClientHandler(Socket socket, BufferedReader in, BufferedWriter out, PlayerServerSide player, ArrayList<PlayerServerSide> players) {
+    public ClientHandler(Socket socket, BufferedReader in, BufferedWriter out, PlayerServerSide player, ServerCore core)  {
         this.player = player;
         this.socket = socket;
-        this.playerList = players;
+        this.core = core;
+        this.playerList = core.getPlayerList();
         this.in = in;
         this.out = out;
     }
@@ -64,11 +66,10 @@ public class ClientHandler implements Runnable {
                 out.flush();
             }
         } catch (Exception e) {
-            playerList.remove(player);
+            core.removePlayer(player);
             ServerCore.closeSocket(socket, out, in);
         }
-
-        playerList.remove(player);
+        core.removePlayer(player);
         ServerCore.closeSocket(socket, out, in);
     }
 

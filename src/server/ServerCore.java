@@ -27,7 +27,7 @@ public class ServerCore {
                     BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                     BufferedWriter out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
                     PlayerServerSide player = new PlayerServerSide(serverUpdateManager, collisionManager);
-                    Thread thread = new Thread(new ClientHandler(socket, in, out, player, playerList));
+                    Thread thread = new Thread(new ClientHandler(socket, in, out, player, this));
                     thread.start();
                 }
             } catch (SocketException ignored) {
@@ -37,7 +37,6 @@ public class ServerCore {
             }
         }).start();
     }
-
     public static void closeSocket(Socket socket, BufferedWriter out, BufferedReader in) {
         try {
             socket.close();
@@ -47,7 +46,9 @@ public class ServerCore {
             throw new RuntimeException(e);
         }
     }
-
+    public synchronized void removePlayer(PlayerServerSide playerServerSide) {
+        playerList.remove(playerServerSide);
+    }
     public ArrayList<PlayerServerSide> getPlayerList() {
         return playerList;
     }

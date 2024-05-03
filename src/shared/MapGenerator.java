@@ -16,45 +16,39 @@ public abstract class MapGenerator {
         return new BufferedReader(new FileReader(filePath));
     }
 
-    private record Tile(String path, boolean collision) {
-    }
+    private record Tile(String path, boolean collision) {}
 
     static {
         tiles = new Tile[70];
 
-        tiles[0] = new Tile("tiles/blackTile.png", false); //void
-        tiles[1] = new Tile("tiles/blackTile.png", false); //testVoid
-        tiles[2] = new Tile("tiles/grassTile.png", false); //grass
-        tiles[3] = new Tile("tiles/mountain.png", true); //borderMountain
-        tiles[4] = new Tile("tiles/grayTile.png", false);  //concreteFloor
-        tiles[5] = new Tile("tiles/brownTile.png", false); //dirt
-        tiles[6] = new Tile("tiles/woodTile.png", false); //woodFloor
-        tiles[7] = new Tile("tiles/borderTile2.png", true); //barbedWireHor
-        tiles[8] = new Tile("tiles/grayTile2.png", false); //road/concrete
-        tiles[9] = new Tile("tiles/grayTileDestroyed.png", false); //rubbish
-        tiles[10] = new Tile("tiles/metalTile.png", false); //metal
-        tiles[11] = new Tile("tiles/borderTile3.png", true); //barbedWireVer
-        tiles[12] = new Tile("tiles/borderTile4.png", true); //barbedWireCon
-
-        tiles[13] = new Tile("tiles/wallLeft.png", true); //concreteWallLeft
-        tiles[14] = new Tile("tiles/wallRight.png", true); //concreteWallRight
-        tiles[15] = new Tile("tiles/wallDown.png", true); //concreteWallDown
-        tiles[16] = new Tile("tiles/wallUp.png", true); //concreteWallUp
-
+        tiles[0] = new Tile("tiles/blackTile.png", false);
+        tiles[1] = new Tile("tiles/blackTile.png", false);
+        tiles[2] = new Tile("tiles/grassTile.png", false);
+        tiles[3] = new Tile("tiles/mountain.png", true);
+        tiles[4] = new Tile("tiles/grayTile.png", false);
+        tiles[5] = new Tile("tiles/brownTile.png", false);
+        tiles[6] = new Tile("tiles/woodTile.png", false);
+        tiles[7] = new Tile("tiles/borderTile2.png", true);
+        tiles[8] = new Tile("tiles/grayTile2.png", false);
+        tiles[9] = new Tile("tiles/grayTileDestroyed.png", false);
+        tiles[10] = new Tile("tiles/metalTile.png", false);
+        tiles[11] = new Tile("tiles/borderTile3.png", true);
+        tiles[12] = new Tile("tiles/borderTile4.png", true);
+        tiles[13] = new Tile("tiles/wallLeft.png", true);
+        tiles[14] = new Tile("tiles/wallRight.png", true);
+        tiles[15] = new Tile("tiles/wallDown.png", true);
+        tiles[16] = new Tile("tiles/wallUp.png", true);
         tiles[17] = new Tile("tiles/wallDownRightCorner.png", true);
         tiles[18] = new Tile("tiles/wallDownLeftCorner.png", true);
         tiles[19] = new Tile("tiles/wallUpRightCorner.png", true);
         tiles[20] = new Tile("tiles/wallUpLeftCorner.png", true);
-
         tiles[21] = new Tile("tiles/wallUpLeftCorner2.png", true);
         tiles[22] = new Tile("tiles/wallUpRightCorner2.png", true);
         tiles[23] = new Tile("tiles/wallDownLeftCorner2.png", true);
         tiles[24] = new Tile("tiles/wallDownRightCorner2.png", true);
-
         tiles[25] = new Tile("tiles/grayTile2.png", true);
         tiles[26] = new Tile("tiles/wallBottom.png", true);
         tiles[27] = new Tile("tiles/wallMid.png", true);
-
         tiles[28] = new Tile("tiles/wallUpLeft.png", true);
         tiles[29] = new Tile("tiles/wallUpRight.png", true);
         tiles[30] = new Tile("tiles/wallRight2.png", true);
@@ -68,19 +62,16 @@ public abstract class MapGenerator {
         tiles[38] = new Tile("tiles/rail2.png", false);
         tiles[39] = new Tile("tiles/railDown.png", false);
         tiles[40] = new Tile("tiles/rail2Down.png", false);
-
         tiles[41] = new Tile("tiles/fence1.png", true);
         tiles[42] = new Tile("tiles/fence2.png", true);
         tiles[43] = new Tile("tiles/fence3.png", true);
         tiles[44] = new Tile("tiles/fence4.png", true);
         tiles[45] = new Tile("tiles/fence5.png", true);
         tiles[46] = new Tile("tiles/fence6.png", true);
-
         tiles[47] = new Tile("tiles/swampWater.png", true);
         tiles[48] = new Tile("tiles/swampWater2.png", true);
         tiles[49] = new Tile("tiles/swampWater3.png", true);
         tiles[50] = new Tile("tiles/brownTile3.png", false);
-
         tiles[51] = new Tile("tiles/woodTile3.png", true);
         tiles[52] = new Tile("tiles/woodTile4.png", true);
         tiles[53] = new Tile("tiles/woodTile5.png", true);
@@ -98,8 +89,8 @@ public abstract class MapGenerator {
         tiles[65] = new Tile("tiles/woodTile16.png", true);
         tiles[66] = new Tile("tiles/woodTile17.png", true);
         tiles[67] = new Tile("tiles/grassTile3.png", true);
-        tiles[69] = new Tile("tiles/greenWall.png", true);
         tiles[68] = new Tile("tiles/floor.png", false);
+        tiles[69] = new Tile("tiles/greenWall.png", true);
     }
 
     public static String[] getTileSetImagePath() {
