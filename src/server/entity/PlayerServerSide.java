@@ -4,6 +4,7 @@ import server.CollisionManager;
 import server.ServerCore;
 import server.ServerUpdateManager;
 import shared.ConstantsShared;
+import shared.objects.Object;
 import shared.packets.PlayerInputToServer;
 import shared.weapon.Weapon_AK;
 import shared.weapon.Weapon_Core;
@@ -13,6 +14,7 @@ import shared.weapon.abstracts.WeaponGenerator;
 
 import java.awt.*;
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class PlayerServerSide {
     private final ServerUpdateManager updateManager;
@@ -24,11 +26,13 @@ public class PlayerServerSide {
     private boolean shootLock = true, shooting = false, reloadTrigger = false, walking, death;
     private final Rectangle solidArea;
     private Weapon_Core weapon = Weapon_AK.getServerSideWeapon();
+    private final ArrayList<Object> objectList;
 
-    public PlayerServerSide(ServerUpdateManager updateManager, CollisionManager collisionManager) {
+    public PlayerServerSide(ServerUpdateManager updateManager, CollisionManager collisionManager, ArrayList<Object> objectList) {
         this.updateManager = updateManager;
         solidArea = new Rectangle(worldX, worldY, ConstantsShared.playerWidth, ConstantsShared.playerHeight);
         this.collisionManager = collisionManager;
+        this.objectList = objectList;
 
         try {
             collisionManager.loadMap(ServerCore.mapNum);
@@ -108,6 +112,10 @@ public class PlayerServerSide {
                 reloadTrigger = false;
                 weapon.reload(updateManager.getTick());
             }
+
+            for (Object object : objectList) {
+                object.update(this, input);
+            }
         }
     }
 
@@ -147,8 +155,8 @@ public class PlayerServerSide {
             health = 100;
             death = false;
             killedBy = "";
-            worldX = 0;
-            worldY = 0;
+            worldX = 100;
+            worldY = 100;
             changeWeapon(Weapon_Makarov.class);
         }
     }

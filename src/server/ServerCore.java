@@ -1,6 +1,8 @@
 package server;
 
 import server.entity.PlayerServerSide;
+import shared.MapGenerator;
+import shared.objects.Object;
 
 import java.io.*;
 import java.net.ServerSocket;
@@ -13,6 +15,7 @@ public class ServerCore {
     private final ServerUpdateManager serverUpdateManager = new ServerUpdateManager(playerList);
     private final CollisionManager collisionManager = new CollisionManager();
     public final static int mapNum = 0; // this variable will be used for selecting map later
+    private final ArrayList<Object> objectList = MapGenerator.getMapObjects(mapNum);
 
     public ServerCore() {
         serverUpdateManager.startThread();
@@ -26,7 +29,7 @@ public class ServerCore {
                     Socket socket = serverSocket.accept();
                     BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                     BufferedWriter out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
-                    PlayerServerSide player = new PlayerServerSide(serverUpdateManager, collisionManager);
+                    PlayerServerSide player = new PlayerServerSide(serverUpdateManager, collisionManager, objectList);
                     Thread thread = new Thread(new ClientHandler(socket, in, out, player, this));
                     thread.start();
                 }

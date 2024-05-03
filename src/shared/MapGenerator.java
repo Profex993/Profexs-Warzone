@@ -1,8 +1,11 @@
 package shared;
 
+import shared.objects.Object;
+
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.util.ArrayList;
 
 public abstract class MapGenerator {
     private static final Tile[] tiles;
@@ -16,7 +19,21 @@ public abstract class MapGenerator {
         return new BufferedReader(new FileReader(filePath));
     }
 
-    private record Tile(String path, boolean collision) {}
+    public static ArrayList<Object> getMapObjects(int mapNum) {
+        ArrayList<Object> list = new ArrayList<>();
+        switch (mapNum) {
+            case 0 -> {
+                list.add(new Object(500, 500, 60, 60, true, "tiles/blackTile.png"));
+                list.add(new Object(1000, 1000, 60, 60, true, "tiles/blackTile.png"));
+
+            }
+        }
+
+        return list;
+    }
+
+    private record Tile(String path, boolean collision) {
+    }
 
     static {
         tiles = new Tile[70];

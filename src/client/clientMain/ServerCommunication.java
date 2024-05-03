@@ -21,10 +21,11 @@ public class ServerCommunication {
     private final ArrayList<Player> playerList;
     private final MouseHandler mouseHandler;
     private final KeyHandler keyHandler;
+    private final int mapNum;
 
 
     public ServerCommunication(MainPlayer mainPlayer, String playerModel, ArrayList<Player> playerList, Socket socket, BufferedReader in,
-                               BufferedWriter out, KeyHandler keyHandler, MouseHandler mouseHandler, TileManager tileManager) {
+                               BufferedWriter out, KeyHandler keyHandler, MouseHandler mouseHandler) {
         this.mainPlayer = mainPlayer;
         this.playerList = playerList;
         this.out = out;
@@ -35,7 +36,7 @@ public class ServerCommunication {
         startCommunication(playerModel);
 
         try {
-            tileManager.loadMap(Integer.parseInt(in.readLine()));
+            this.mapNum = Integer.parseInt(in.readLine());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -130,5 +131,9 @@ public class ServerCommunication {
 
     private record PlayerData(String name, String model) {
 
+    }
+
+    public int getMapNum() {
+        return mapNum;
     }
 }

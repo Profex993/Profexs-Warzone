@@ -4,6 +4,8 @@ import client.entity.MainPlayer;
 import client.entity.Player;
 import client.enums.GameState;
 import client.userInterface.menu.Menu;
+import shared.MapGenerator;
+import shared.objects.Object;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -20,17 +22,22 @@ public class GameCore {
         KeyHandler keyHandler = new KeyHandler();
         MainPlayer mainPlayer = new MainPlayer(name, playerModel, 0, 0, mouseHandler, keyHandler);
         Menu menu = new Menu(mouseHandler);
+        ServerCommunication serverCommunication = new ServerCommunication(mainPlayer, playerModel, playerList, socket, in, out,
+                keyHandler, mouseHandler);
+
         TileManager tileManager;
         try {
             tileManager = new TileManager(mainPlayer);
+            tileManager.loadMap(serverCommunication.getMapNum());
         } catch (Exception e) {
             ClientMain.closeSocket(socket, in, out);
             throw new RuntimeException();
         }
-        gamePanel = new GamePanel(mainPlayer, playerList, keyHandler, mouseHandler, tileManager, menu);
-        ServerCommunication serverCommunication = new ServerCommunication(mainPlayer, playerModel, playerList, socket, in, out,
-                keyHandler, mouseHandler, tileManager);
+
+        ArrayList<Object> objectList = MapGenerator.getMapObjects(serverCommunication.getMapNum());
+        gamePanel = new GamePanel(mainPlayer, playerList, objectList, keyHandler, mouseHandler, tileManager, menu);
         UpdateManager updateManager = new UpdateManager(serverCommunication, menu, mainPlayer);
+
         updateManager.startThread();
         gamePanel.startThread();
     }
