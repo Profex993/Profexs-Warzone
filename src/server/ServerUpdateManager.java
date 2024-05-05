@@ -28,7 +28,6 @@ public class ServerUpdateManager implements Runnable {
         long time;
         long timer = 0;
         while (thread != null) {
-
             time = System.nanoTime();
             delta += (time - last) / interval;
             timer += (time - last);

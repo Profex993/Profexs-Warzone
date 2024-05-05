@@ -14,8 +14,8 @@ public class ServerCore {
     private final ArrayList<PlayerServerSide> playerList = new ArrayList<>();
     private final ServerUpdateManager serverUpdateManager = new ServerUpdateManager(playerList);
     private final CollisionManager collisionManager = new CollisionManager();
-    public final static int mapNum = 0; // this variable will be used for selecting map later
-    private final ArrayList<Object> objectList = MapGenerator.getMapObjects(mapNum);
+    public final static int mapNumber = 0; // this variable will be used for selecting map later
+    private final ArrayList<Object> objectList = MapGenerator.getMapObjects(mapNumber);
 
     public ServerCore() {
         serverUpdateManager.startThread();

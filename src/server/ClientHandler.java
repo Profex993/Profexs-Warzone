@@ -2,12 +2,14 @@ package server;
 
 import server.entity.PlayerServerSide;
 import shared.ConstantsShared;
+import shared.packets.PlayerInitialData;
 import shared.packets.PlayerInputToServer;
 import shared.packets.PlayerUpdateInput;
 import shared.packets.ServerOutputToClient;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.IOException;
 import java.net.Socket;
 import java.util.ArrayList;
 
@@ -33,32 +35,15 @@ public class ClientHandler implements Runnable {
         setName();
         playerList.add(player);
         try {
-            out.write(String.valueOf(ServerCore.mapNum));
+            out.write(String.valueOf(ServerCore.mapNumber));
             out.newLine();
             out.flush();
             while (socket.isConnected()) {
                 String line = in.readLine();
-                PlayerInputToServer playerInputToServer;
-                if (!line.isEmpty()) {
-                    playerInputToServer = PlayerInputToServer.parseString(line);
-                } else {
-                    throw new Exception("player disconnected");
-                }
-                player.updateFromPlayerInput(playerInputToServer);
-                out.write(ServerOutputToClient.getFromPlayerData(player).toString());
-                out.newLine();
+                if (line.isEmpty()) break;
+                updatePlayer(line);
                 if (playerList.size() > 1) {
-                    StringBuilder playerOut = new StringBuilder();
-                    StringBuilder playerNames = new StringBuilder();
-                    for (PlayerServerSide player : playerList) {
-                        playerNames.append(player.getId()).append(ConstantsShared.protocolPlayerVariableSplit)
-                                .append(player.getPlayerModel()).append(ConstantsShared.protocolPlayerLineEnd);
-                        playerOut.append(PlayerUpdateInput.getFromPlayerData(player).getString()).append(ConstantsShared.protocolPlayerLineEnd);
-                    }
-                    out.write(playerNames.toString());
-                    out.newLine();
-                    out.write(playerOut.toString());
-                    out.newLine();
+                    sendPlayerData();
                 } else {
                     out.write("noPlayers");
                     out.newLine();
@@ -73,6 +58,28 @@ public class ClientHandler implements Runnable {
         ServerCore.closeSocket(socket, out, in);
     }
 
+    private void updatePlayer(String line) throws IOException {
+        PlayerInputToServer playerInputToServer;
+        playerInputToServer = PlayerInputToServer.parseString(line);
+        player.updateFromPlayerInput(playerInputToServer);
+        out.write(ServerOutputToClient.getFromPlayerData(player).toString());
+        out.newLine();
+    }
+
+    private void sendPlayerData() throws IOException {
+        StringBuilder playerOut = new StringBuilder();
+        StringBuilder playerNames = new StringBuilder();
+        for (PlayerServerSide player : playerList) {
+            playerNames.append(player.getId()).append(ConstantsShared.protocolPlayerVariableSplit)
+                    .append(player.getPlayerModel()).append(ConstantsShared.protocolPlayerLineEnd);
+            playerOut.append(PlayerUpdateInput.getFromPlayerData(player).getString()).append(ConstantsShared.protocolPlayerLineEnd);
+        }
+        out.write(playerNames.toString());
+        out.newLine();
+        out.write(playerOut.toString());
+        out.newLine();
+    }
+
     public void setName() {
         try {
             String nameTest;
@@ -81,7 +88,7 @@ public class ClientHandler implements Runnable {
                 nameTest = in.readLine();
 
                 if (checkNameValidity(nameTest, out)) {
-                    if (!checkNameAvailability(out, nameTest)) {
+                    if (checkNameAvailability(nameTest, out)) {
                         test = false;
                         out.write("name available");
                         out.newLine();
@@ -89,23 +96,23 @@ public class ClientHandler implements Runnable {
                     }
                 }
             } while (test);
-            String[] playerInitData = in.readLine().split(ConstantsShared.protocolPlayerVariableSplit);  //[0] is name and [1] is player model
-            player.setInitData(playerInitData[0], playerInitData[1]);
+
+            player.setInitData(PlayerInitialData.parseString(in.readLine()));
         } catch (Exception e) {
             ServerCore.closeSocket(socket, out, in);
         }
     }
 
-    private boolean checkNameAvailability(BufferedWriter out, String name) throws Exception {
+    private boolean checkNameAvailability(String name, BufferedWriter out) throws Exception {
         for (PlayerServerSide playerServerSide : playerList) {
             if (playerServerSide != player && playerServerSide.getId().equals(name)) {
                 out.write("name taken");
                 out.newLine();
                 out.flush();
-                return true;
+                return false;
             }
         }
-        return false;
+        return true;
     }
 
     private boolean checkNameValidity(String name, BufferedWriter out) throws Exception {

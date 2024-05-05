@@ -28,13 +28,13 @@ public class GameCore {
         TileManager tileManager;
         try {
             tileManager = new TileManager(mainPlayer);
-            tileManager.loadMap(serverCommunication.getMapNum());
+            tileManager.loadMap(serverCommunication.getMapNumber());
         } catch (Exception e) {
             ClientMain.closeSocket(socket, in, out);
             throw new RuntimeException();
         }
 
-        ArrayList<Object> objectList = MapGenerator.getMapObjects(serverCommunication.getMapNum());
+        ArrayList<Object> objectList = MapGenerator.getMapObjects(serverCommunication.getMapNumber());
         gamePanel = new GamePanel(mainPlayer, playerList, objectList, keyHandler, mouseHandler, tileManager, menu);
         UpdateManager updateManager = new UpdateManager(serverCommunication, menu, mainPlayer);
 

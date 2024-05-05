@@ -3,6 +3,7 @@ package client.clientMain;
 import client.entity.MainPlayer;
 import client.entity.Player;
 import shared.ConstantsShared;
+import shared.packets.PlayerInitialData;
 import shared.packets.PlayerInputToServer;
 import shared.packets.PlayerUpdateInput;
 import shared.packets.ServerOutputToClient;
@@ -21,7 +22,7 @@ public class ServerCommunication {
     private final ArrayList<Player> playerList;
     private final MouseHandler mouseHandler;
     private final KeyHandler keyHandler;
-    private final int mapNum;
+    private final int mapNumber;
 
 
     public ServerCommunication(MainPlayer mainPlayer, String playerModel, ArrayList<Player> playerList, Socket socket, BufferedReader in,
@@ -36,7 +37,7 @@ public class ServerCommunication {
         startCommunication(playerModel);
 
         try {
-            this.mapNum = Integer.parseInt(in.readLine());
+            this.mapNumber = Integer.parseInt(in.readLine());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -44,7 +45,8 @@ public class ServerCommunication {
 
     private void startCommunication(String playerModel) {
         try {
-            out.write(mainPlayer.getName() + ConstantsShared.protocolPlayerVariableSplit + playerModel);
+            PlayerInitialData data = new PlayerInitialData(mainPlayer.getName(), playerModel);
+            out.write(data.toString());
             out.newLine();
             out.flush();
         } catch (IOException e) {
@@ -89,7 +91,7 @@ public class ServerCommunication {
         }
     }
 
-    private void updatePlayerList(String inputLine) {
+    private void updatePlayerList(String inputLine) throws IOException {
         String[] playerInputLines = inputLine.split(ConstantsShared.protocolPlayerLineEnd);
         if (playerInputLines.length == playerList.size()) return;
 
@@ -113,27 +115,22 @@ public class ServerCommunication {
         playerList.removeIf(player -> !newPlayerList.contains(player));
     }
 
-    private void addPlayer(String[] playerInputLines) {
+    private void addPlayer(String[] playerInputLines) throws IOException {
         for (String playerLine : playerInputLines) {
-            String[] playerDataInput = playerLine.split(ConstantsShared.protocolPlayerVariableSplit);  //[0] is player name and [1] is player model
-            PlayerData playerData = new PlayerData(playerDataInput[0], playerDataInput[1]);
-            if (!playerData.name.equals(mainPlayer.getName()) && isNewPlayer(playerData)) {
-                Player newPlayer = new Player(mainPlayer, playerData.name, playerData.model);
+            PlayerInitialData data = PlayerInitialData.parseString(playerLine);
+            if (!data.name().equals(mainPlayer.getName()) && isNewPlayer(data)) {
+                Player newPlayer = new Player(mainPlayer, data.name(), data.playerModel());
                 playerList.add(newPlayer);
             }
         }
     }
 
-    private boolean isNewPlayer(PlayerData playerData) {
+    private boolean isNewPlayer(PlayerInitialData data) {
         return playerList.stream()
-                .noneMatch(player -> player.getName().equals(playerData.name));
+                .noneMatch(player -> player.getName().equals(data.name()));
     }
 
-    private record PlayerData(String name, String model) {
-
-    }
-
-    public int getMapNum() {
-        return mapNum;
+    public int getMapNumber() {
+        return mapNumber;
     }
 }

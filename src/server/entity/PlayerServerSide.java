@@ -5,6 +5,7 @@ import server.ServerCore;
 import server.ServerUpdateManager;
 import shared.ConstantsShared;
 import shared.objects.Object;
+import shared.packets.PlayerInitialData;
 import shared.packets.PlayerInputToServer;
 import shared.weapon.Weapon_AK;
 import shared.weapon.Weapon_Core;
@@ -35,7 +36,7 @@ public class PlayerServerSide {
         this.objectList = objectList;
 
         try {
-            collisionManager.loadMap(ServerCore.mapNum);
+            collisionManager.loadMap(ServerCore.mapNumber);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -125,9 +126,9 @@ public class PlayerServerSide {
         }
     }
 
-    public void setInitData(String id, String playerModel) {
-        this.id = id;
-        this.playerModel = playerModel;
+    public void setInitData(PlayerInitialData data) {
+        this.id = data.name();
+        this.playerModel = data.playerModel();
     }
 
     public void changeWeapon(Class<? extends Weapon> weaponClass) {
