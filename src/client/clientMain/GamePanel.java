@@ -109,7 +109,7 @@ public class GamePanel extends JPanel implements Runnable {
         }
 
         for (Object object : objectList) {
-            object.draw(g2, (int) mouseHandler.getX(), (int) mouseHandler.getY(), mainPlayer);
+            object.draw(g2, mainPlayer, (int) mouseHandler.getX(), (int) mouseHandler.getY());
         }
     }
 

@@ -36,7 +36,7 @@ public class GameCore {
 
         ArrayList<Object> objectList = MapGenerator.getMapObjects(serverCommunication.getMapNumber());
         gamePanel = new GamePanel(mainPlayer, playerList, objectList, keyHandler, mouseHandler, tileManager, menu);
-        UpdateManager updateManager = new UpdateManager(serverCommunication, menu, mainPlayer);
+        UpdateManager updateManager = new UpdateManager(serverCommunication, menu, mainPlayer, objectList, mouseHandler);
 
         updateManager.startThread();
         gamePanel.startThread();

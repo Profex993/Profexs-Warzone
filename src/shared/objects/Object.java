@@ -8,6 +8,7 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Objects;
 
 public class Object {
@@ -17,6 +18,7 @@ public class Object {
     private final Rectangle solidArea;
     private BufferedImage image;
     private final String imagePath;
+    private boolean interactText = false;
 
     public Object(int worldX, int worldY, int width, int height, boolean intractable, String imagePath) {
         this.worldX = worldX;
@@ -44,32 +46,48 @@ public class Object {
         image = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream(imagePath)));
     }
 
-    public void update(PlayerServerSide player, PlayerInputToServer input) {
-        if (!intractable && !input.rightClick()) return;
-
-        int screenX = worldX - player.getWorldX() + input.screenX();
-        int screenY = worldY - player.getWorldY() + input.screenY();
-        if (input.mouseX() > screenX && input.mouseX() < screenX + width &&
-                (input.mouseY() > screenY && input.mouseY() < screenY + height)) {
-            execute();
+    public void updateServerSide(PlayerServerSide player, PlayerInputToServer input, ArrayList<Object> objectList) {
+        System.out.println(input.rightClick());
+        if (!intractable) return;
+        if (input.rightClick()) {
+            int screenX = worldX - player.getWorldX() + input.screenX();
+            int screenY = worldY - player.getWorldY() + input.screenY();
+            if (input.mouseX() > screenX && input.mouseX() < screenX + width &&
+                    (input.mouseY() > screenY && input.mouseY() < screenY + height)) {
+                executeServerSide(player, objectList);
+            }
         }
     }
 
-    public void execute() {
-        System.out.println("test");
+    public void executeServerSide(PlayerServerSide player, ArrayList<Object> objectList) {
     }
 
-    public void draw(Graphics2D g2, int mouseX, int mouseY, MainPlayer player) {
+    public void updateClientSide(double mouseX, double mouseY, boolean interact, MainPlayer player, ArrayList<Object> objectList) {
+        if (intractable) {
+            int screenX = worldX - player.getWorldX() + player.getScreenX();
+            int screenY = worldY - player.getWorldY() + player.getScreenY();
+            if (mouseX > screenX && mouseX < screenX + width && (mouseY > screenY && mouseY < screenY + height)) {
+                interactText = true;
+                if (interact) {
+                    executeClientSide(objectList);
+                }
+            } else if (interactText) {
+                interactText = false;
+            }
+        }
+    }
+
+    public void executeClientSide(ArrayList<Object> objectList) {
+    }
+
+    public void draw(Graphics2D g2, MainPlayer player, int mouseX, int mouseY) {
         if (worldX + width > player.getWorldX() - player.getScreenX() && worldX - width < player.getWorldX() + player.getScreenX()
                 && worldY + height > player.getWorldY() - player.getScreenY() && worldY - height < worldY + player.getScreenY()) {
             int screenX = worldX - player.getWorldX() + player.getScreenX();
             int screenY = worldY - player.getWorldY() + player.getScreenY();
             g2.drawImage(image, screenX, screenY, width, height, null);
-
-            if (intractable) {
-                if (mouseX > screenX && mouseX < screenX + width && (mouseY > screenY && mouseY < screenY + height)) {
-                    g2.drawString("interact", mouseX, mouseY);
-                }
+            if (interactText) {
+                g2.drawString("interact", mouseX, mouseY);
             }
         }
     }
@@ -80,5 +98,10 @@ public class Object {
 
     public Rectangle getSolidArea() {
         return solidArea;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(worldX, worldY, width, height, collision, intractable, solidArea, imagePath, interactText);
     }
 }

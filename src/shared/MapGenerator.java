@@ -1,6 +1,7 @@
 package shared;
 
 import shared.objects.Object;
+import shared.objects.Object_Weapon.Object_Weapon_AK;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -23,9 +24,8 @@ public abstract class MapGenerator {
         ArrayList<Object> list = new ArrayList<>();
         switch (mapNum) {
             case 0 -> {
-                list.add(new Object(500, 500, 60, 60, true, "tiles/blackTile.png"));
-                list.add(new Object(1000, 1000, 60, 60, true, "tiles/blackTile.png"));
-
+                list.add(new Object_Weapon_AK(200, 200));
+                list.add(new Object_Weapon_AK(200, 200));
             }
         }
 
