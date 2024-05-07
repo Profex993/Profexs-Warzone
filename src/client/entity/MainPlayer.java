@@ -5,7 +5,7 @@ import client.clientMain.KeyHandler;
 import client.clientMain.MouseHandler;
 import client.clientMain.UpdateManager;
 import client.clientMain.sound.SoundManager;
-import shared.packets.ServerOutputToClient;
+import shared.packets.Packet_ServerOutputToClient;
 import shared.weapon.abstracts.Weapon;
 import shared.weapon.abstracts.WeaponGenerator;
 
@@ -28,7 +28,7 @@ public class MainPlayer extends Entity {
         this.keyHandler = keyHandler;
     }
 
-    public void updateFromServerInput(ServerOutputToClient input) {
+    public void updateFromServerInput(Packet_ServerOutputToClient input) {
         this.health = input.health();
         if (death && !input.death()) {
             death = false;
@@ -120,7 +120,7 @@ public class MainPlayer extends Entity {
         }
     }
 
-    private void triggerDeath(ServerOutputToClient input) {
+    private void triggerDeath(Packet_ServerOutputToClient input) {
         killedBy = input.killedBy();
     }
     public int getScreenX() {

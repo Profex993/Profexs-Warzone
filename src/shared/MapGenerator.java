@@ -2,6 +2,7 @@ package shared;
 
 import shared.objects.Object;
 import shared.objects.Object_Weapon.Object_Weapon_AK;
+import shared.objects.Object_Weapon.Object_Weapon_Makarov;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -25,7 +26,7 @@ public abstract class MapGenerator {
         switch (mapNum) {
             case 0 -> {
                 list.add(new Object_Weapon_AK(200, 200));
-                list.add(new Object_Weapon_AK(200, 200));
+                list.add(new Object_Weapon_Makarov(400, 400));
             }
         }
 

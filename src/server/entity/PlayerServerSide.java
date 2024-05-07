@@ -5,8 +5,8 @@ import server.ServerCore;
 import server.ServerUpdateManager;
 import shared.ConstantsShared;
 import shared.objects.Object;
-import shared.packets.PlayerInitialData;
-import shared.packets.PlayerInputToServer;
+import shared.packets.Packet_AddPlayer;
+import shared.packets.Packet_PlayerInputToServer;
 import shared.weapon.Weapon_Core;
 import shared.weapon.Weapon_Makarov;
 import shared.weapon.abstracts.Weapon;
@@ -27,13 +27,15 @@ public class PlayerServerSide {
     private final Rectangle solidArea;
     private Weapon_Core weapon = Weapon_Makarov.getServerSideWeapon();
     private final ArrayList<Object> objectList;
+    private final ServerCore core;
 
-    public PlayerServerSide(ServerUpdateManager updateManager, CollisionManager collisionManager, ArrayList<Object> objectList) {
+    public PlayerServerSide(ServerUpdateManager updateManager, CollisionManager collisionManager, ArrayList<Object> objectList,
+                            ServerCore core) {
         this.updateManager = updateManager;
         solidArea = new Rectangle(worldX, worldY, ConstantsShared.playerWidth, ConstantsShared.playerHeight);
         this.collisionManager = collisionManager;
         this.objectList = objectList;
-
+        this.core = core;
         try {
             collisionManager.loadMap(ServerCore.mapNumber);
         } catch (IOException e) {
@@ -41,7 +43,7 @@ public class PlayerServerSide {
         }
     }
 
-    public void updateFromPlayerInput(PlayerInputToServer input) {
+    public void updateFromPlayerInput(Packet_PlayerInputToServer input) {
         if (!death) {
             if (input.up()) {
                 direction = "up";
@@ -114,7 +116,7 @@ public class PlayerServerSide {
             }
 
             for (int i = 0; i < objectList.size(); i++) {
-                objectList.get(i).updateServerSide(this, input, objectList);
+                objectList.get(i).updateServerSide(this, input, core);
             }
         }
     }
@@ -125,7 +127,7 @@ public class PlayerServerSide {
         }
     }
 
-    public void setInitData(PlayerInitialData data) {
+    public void setInitData(Packet_AddPlayer data) {
         this.id = data.name();
         this.playerModel = data.playerModel();
     }

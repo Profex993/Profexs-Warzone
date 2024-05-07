@@ -1,6 +1,7 @@
 package client.clientMain;
 
 
+import client.clientMain.serverCommunication.ServerCommunication;
 import client.entity.MainPlayer;
 import client.enums.GameState;
 import client.userInterface.menu.Menu;
@@ -14,15 +15,13 @@ public class UpdateManager implements Runnable {
     private final ServerCommunication serverCommunication;
     private final Menu menu;
     private final MainPlayer mainPlayer;
-    private final ArrayList<Object> objectList;
+    private ArrayList<Object> objectList;
     private final MouseHandler mouseHandler;
 
-    public UpdateManager(ServerCommunication serverCommunication, Menu menu, MainPlayer mainPlayer, ArrayList<Object> objectList,
-                         MouseHandler mouseHandler) {
+    public UpdateManager(ServerCommunication serverCommunication, Menu menu, MainPlayer mainPlayer, MouseHandler mouseHandler) {
         this.menu = menu;
         this.serverCommunication = serverCommunication;
         this.mainPlayer = mainPlayer;
-        this.objectList = objectList;
         this.mouseHandler = mouseHandler;
     }
 
@@ -58,11 +57,15 @@ public class UpdateManager implements Runnable {
     private void update() {
         serverCommunication.update();
         mainPlayer.update();
-        for (int i = 0; i < objectList.size(); i++) {
-            objectList.get(i).updateClientSide(mouseHandler.getX(), mouseHandler.getY(), mouseHandler.rightClick, mainPlayer, objectList);
+        for (Object object : objectList) {
+            object.updateClientSide(mouseHandler.getX(), mouseHandler.getY(), mouseHandler.rightClick, mainPlayer);
         }
         if (GameCore.gameState == GameState.PAUSED.intValue) {
             menu.update();
         }
+    }
+
+    public void setObjectList(ArrayList<Object> objectList) {
+        this.objectList = objectList;
     }
 }

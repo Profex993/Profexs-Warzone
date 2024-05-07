@@ -1,10 +1,9 @@
 package shared.objects.Object_Weapon;
 
+import server.ServerCore;
 import server.entity.PlayerServerSide;
 import shared.objects.Object;
 import shared.weapon.abstracts.Weapon;
-
-import java.util.ArrayList;
 
 public class Object_Weapon extends Object {
     private final Class<? extends Weapon> weaponClass;
@@ -14,13 +13,8 @@ public class Object_Weapon extends Object {
     }
 
     @Override
-    public void executeServerSide(PlayerServerSide player, ArrayList<Object> objectList) {
+    public void executeServerSide(PlayerServerSide player, ServerCore core) {
         player.changeWeapon(weaponClass);
-        objectList.remove(this);
-    }
-
-    @Override
-    public void executeClientSide(ArrayList<Object> objectList) {
-        objectList.remove(this);
+        core.removeObject(this);
     }
 }

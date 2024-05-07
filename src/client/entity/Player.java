@@ -2,7 +2,7 @@ package client.entity;
 
 import client.clientMain.UpdateManager;
 import client.clientMain.sound.SoundManager;
-import shared.packets.PlayerUpdateInput;
+import shared.packets.Packet_PlayerUpdateInput;
 import shared.weapon.abstracts.WeaponGenerator;
 
 import java.awt.*;
@@ -32,7 +32,7 @@ public class Player extends Entity {
         }
     }
 
-    public void updateFromInputData(PlayerUpdateInput input) {
+    public void updateFromInputData(Packet_PlayerUpdateInput input) {
         this.death = input.death();
         this.worldX = input.x();
         this.worldY = input.y();

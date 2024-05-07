@@ -16,6 +16,7 @@ public class ServerCore {
     private final CollisionManager collisionManager = new CollisionManager();
     public final static int mapNumber = 0; // this variable will be used for selecting map later
     private final ArrayList<Object> objectList = MapGenerator.getMapObjects(mapNumber);
+    private final ArrayList<ClientHandler> clientHandlerList = new ArrayList<>();
 
     public ServerCore() {
         serverUpdateManager.startThread();
@@ -29,8 +30,10 @@ public class ServerCore {
                     Socket socket = serverSocket.accept();
                     BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                     BufferedWriter out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
-                    PlayerServerSide player = new PlayerServerSide(serverUpdateManager, collisionManager, objectList);
-                    Thread thread = new Thread(new ClientHandler(socket, in, out, player, this));
+                    PlayerServerSide player = new PlayerServerSide(serverUpdateManager, collisionManager, objectList, this);
+                    ClientHandler clientHandler = new ClientHandler(socket, in, out, player, this, playerList);
+                    clientHandlerList.add(clientHandler);
+                    Thread thread = new Thread(clientHandler);
                     thread.start();
                 }
             } catch (SocketException ignored) {
@@ -49,8 +52,34 @@ public class ServerCore {
             throw new RuntimeException(e);
         }
     }
-    public synchronized void removePlayer(PlayerServerSide playerServerSide) {
+
+    public void removeObject(Object remove) {
+        objectList.remove(remove);
+        for (ClientHandler clientHandler : clientHandlerList) {
+            clientHandler.getRemoveObject().add(remove.hashCode());
+        }
+    }
+
+    public void addObject(Object add) {
+        objectList.remove(add);
+        for (ClientHandler clientHandler : clientHandlerList) {
+            clientHandler.getAddObject().add(add);
+        }
+    }
+    public void removePlayer(PlayerServerSide playerServerSide) {
+        for (ClientHandler clientHandler : clientHandlerList) {
+            clientHandler.getRemovePlayer().add(playerServerSide.getId());
+        }
         playerList.remove(playerServerSide);
+    }
+
+    public void addPlayer(PlayerServerSide playerServerSide, ClientHandler originalClienthandler) {
+        for (ClientHandler clientHandler : clientHandlerList) {
+            if (originalClienthandler != clientHandler) {
+                clientHandler.getAddPlayerList().add(playerServerSide);
+            }
+        }
+        playerList.add(playerServerSide);
     }
     public ArrayList<PlayerServerSide> getPlayerList() {
         return playerList;

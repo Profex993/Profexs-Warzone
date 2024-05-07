@@ -11,7 +11,7 @@ import java.util.Objects;
 
 public class SoundManager {
     private static Clip mainMenuSoundtrack;
-    public static URL walk1, walk2;
+    public final static URL walk1, walk2;
 
     static {
         walk1 = Objects.requireNonNull(SoundManager.class.getClassLoader().getResource("sound/player/walk1.wav"));

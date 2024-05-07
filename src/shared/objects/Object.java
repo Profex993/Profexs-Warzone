@@ -1,14 +1,14 @@
 package shared.objects;
 
 import client.entity.MainPlayer;
+import server.ServerCore;
 import server.entity.PlayerServerSide;
-import shared.packets.PlayerInputToServer;
+import shared.packets.Packet_PlayerInputToServer;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Objects;
 
 public class Object {
@@ -46,30 +46,29 @@ public class Object {
         image = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream(imagePath)));
     }
 
-    public void updateServerSide(PlayerServerSide player, PlayerInputToServer input, ArrayList<Object> objectList) {
-        System.out.println(input.rightClick());
+    public void updateServerSide(PlayerServerSide player, Packet_PlayerInputToServer input, ServerCore core) {
         if (!intractable) return;
         if (input.rightClick()) {
             int screenX = worldX - player.getWorldX() + input.screenX();
             int screenY = worldY - player.getWorldY() + input.screenY();
             if (input.mouseX() > screenX && input.mouseX() < screenX + width &&
                     (input.mouseY() > screenY && input.mouseY() < screenY + height)) {
-                executeServerSide(player, objectList);
+                executeServerSide(player, core);
             }
         }
     }
 
-    public void executeServerSide(PlayerServerSide player, ArrayList<Object> objectList) {
+    public void executeServerSide(PlayerServerSide player, ServerCore core) {
     }
 
-    public void updateClientSide(double mouseX, double mouseY, boolean interact, MainPlayer player, ArrayList<Object> objectList) {
+    public void updateClientSide(double mouseX, double mouseY, boolean interact, MainPlayer player) {
         if (intractable) {
             int screenX = worldX - player.getWorldX() + player.getScreenX();
             int screenY = worldY - player.getWorldY() + player.getScreenY();
             if (mouseX > screenX && mouseX < screenX + width && (mouseY > screenY && mouseY < screenY + height)) {
                 interactText = true;
                 if (interact) {
-                    executeClientSide(objectList);
+                    executeClientSide();
                 }
             } else if (interactText) {
                 interactText = false;
@@ -77,7 +76,7 @@ public class Object {
         }
     }
 
-    public void executeClientSide(ArrayList<Object> objectList) {
+    public void executeClientSide() {
     }
 
     public void draw(Graphics2D g2, MainPlayer player, int mouseX, int mouseY) {
@@ -102,6 +101,6 @@ public class Object {
 
     @Override
     public int hashCode() {
-        return Objects.hash(worldX, worldY, width, height, collision, intractable, solidArea, imagePath, interactText);
+        return Objects.hash(worldX, worldY, width, height, collision, intractable, solidArea, imagePath);
     }
 }

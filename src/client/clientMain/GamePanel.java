@@ -19,13 +19,13 @@ public class GamePanel extends JPanel implements Runnable {
     private int currentFps = 0;
     private final MainPlayer mainPlayer;
     private final ArrayList<Player> playerList;
-    private final ArrayList<Object> objectList;
+    private ArrayList<Object> objectList = new ArrayList<>();
     private final TileManager tileManager;
     private final Menu menu;
     private final GameUI gameUI;
     private final MouseHandler mouseHandler;
 
-    public GamePanel(MainPlayer player, ArrayList<Player> playerList, ArrayList<Object> objectList, KeyHandler keyHandler, MouseHandler mouseHandler,
+    public GamePanel(MainPlayer player, ArrayList<Player> playerList, KeyHandler keyHandler, MouseHandler mouseHandler,
                      TileManager tileManager, Menu menu) {
         this.setPreferredSize(screenSize);
         this.setBackground(Color.black);
@@ -40,7 +40,6 @@ public class GamePanel extends JPanel implements Runnable {
         this.menu = menu;
         gameUI = new GameUI(mainPlayer, playerList, screenWidth, screenHeight, keyHandler);
 
-        this.objectList = objectList;
         try {
             for (Object object : objectList) {
                 object.initializeRes();
@@ -113,6 +112,19 @@ public class GamePanel extends JPanel implements Runnable {
         }
     }
 
+    public void setObjectList(ArrayList<Object> objectList) {
+        this.objectList = objectList;
+
+        try {
+            for (Object object : objectList) {
+                object.initializeRes();
+            }
+        } catch (IOException e) {
+            ClientMain.closeSocket();
+            throw new RuntimeException(e);
+        }
+    }
+
     public static int getScreenWidth() {
         return screenWidth;
     }
@@ -120,4 +132,6 @@ public class GamePanel extends JPanel implements Runnable {
     public static int getScreenHeight() {
         return screenHeight;
     }
+
+
 }

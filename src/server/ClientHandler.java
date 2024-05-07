@@ -1,11 +1,8 @@
 package server;
 
 import server.entity.PlayerServerSide;
-import shared.ConstantsShared;
-import shared.packets.PlayerInitialData;
-import shared.packets.PlayerInputToServer;
-import shared.packets.PlayerUpdateInput;
-import shared.packets.ServerOutputToClient;
+import shared.objects.Object;
+import shared.packets.*;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -20,34 +17,91 @@ public class ClientHandler implements Runnable {
     private final BufferedReader in;
     private final ArrayList<PlayerServerSide> playerList;
     private final ServerCore core;
+    private final ArrayList<PlayerServerSide> addPlayerList = new ArrayList<>();
+    private final ArrayList<String> removePlayer = new ArrayList<>();
+    private final ArrayList<Object> addObject = new ArrayList<>();
+    private final ArrayList<Integer> removeObject = new ArrayList<>();
+    private boolean changeMap = true;
 
-    public ClientHandler(Socket socket, BufferedReader in, BufferedWriter out, PlayerServerSide player, ServerCore core)  {
+    public ClientHandler(Socket socket, BufferedReader in, BufferedWriter out, PlayerServerSide player, ServerCore core,
+                         ArrayList<PlayerServerSide> playerList) {
         this.player = player;
         this.socket = socket;
         this.core = core;
-        this.playerList = core.getPlayerList();
+        this.playerList = playerList;
         this.in = in;
         this.out = out;
+
+        addPlayerList.addAll(playerList);
     }
 
     @Override
     public void run() {
         setName();
-        playerList.add(player);
+        core.addPlayer(player, this);
         try {
-            out.write(String.valueOf(ServerCore.mapNumber));
-            out.newLine();
-            out.flush();
             while (socket.isConnected()) {
-                String line = in.readLine();
-                if (line.isEmpty()) break;
-                updatePlayer(line);
-                if (playerList.size() > 1) {
-                    sendPlayerData();
-                } else {
-                    out.write("noPlayers");
-                    out.newLine();
+                String inputLine = in.readLine();
+                if (inputLine.isEmpty()) {
+                    break;
                 }
+                updatePlayer(inputLine);
+
+                int numberOfPackets = addPlayerList.size() + removePlayer.size() + removeObject.size()
+                        + playerList.size();
+
+
+                if (!playerList.isEmpty()) numberOfPackets--;
+                if (changeMap) numberOfPackets++;
+                out.write(String.valueOf(numberOfPackets));
+                out.newLine();
+
+                if (changeMap) {
+                    Packet_ChangeMap packetChangeMap = new Packet_ChangeMap(ServerCore.mapNumber);
+                    out.write(packetChangeMap.toString());
+                    out.newLine();
+                    changeMap = false;
+                }
+
+                if (!addPlayerList.isEmpty()) {
+                    for (PlayerServerSide player : addPlayerList) {
+                        if (this.player != player) {
+                            Packet_AddPlayer packet = new Packet_AddPlayer(player.getId(), player.getPlayerModel());
+                            out.write(packet.toString());
+                            out.newLine();
+                        }
+                    }
+                    addPlayerList.clear();
+                }
+
+                if (!removePlayer.isEmpty()) {
+                    for (String player : removePlayer) {
+                        Packet_RemovePlayer packet = new Packet_RemovePlayer(player);
+                        out.write(packet.toString());
+                        out.newLine();
+                    }
+                    removePlayer.clear();
+                }
+
+                if (!playerList.isEmpty()) {
+                    for (PlayerServerSide player : playerList) {
+                        if (this.player != player) {
+                            Packet_PlayerUpdateInput packet = Packet_PlayerUpdateInput.getFromPlayerData(player);
+                            out.write(packet.toString());
+                            out.newLine();
+                        }
+                    }
+                }
+
+                if (!removeObject.isEmpty()) {
+                    for (Integer hash : removeObject) {
+                        Packet_RemoveObject packet = Packet_RemoveObject.getFromObject(hash);
+                        out.write(packet.toString());
+                        out.newLine();
+                    }
+                    removeObject.clear();
+                }
+
                 out.flush();
             }
         } catch (Exception e) {
@@ -59,24 +113,8 @@ public class ClientHandler implements Runnable {
     }
 
     private void updatePlayer(String line) throws IOException {
-        PlayerInputToServer playerInputToServer;
-        playerInputToServer = PlayerInputToServer.parseString(line);
-        player.updateFromPlayerInput(playerInputToServer);
-        out.write(ServerOutputToClient.getFromPlayerData(player).toString());
-        out.newLine();
-    }
-
-    private void sendPlayerData() throws IOException {
-        StringBuilder playerOut = new StringBuilder();
-        StringBuilder playerNames = new StringBuilder();
-        for (PlayerServerSide player : playerList) {
-            playerNames.append(player.getId()).append(ConstantsShared.protocolPlayerVariableSplit)
-                    .append(player.getPlayerModel()).append(ConstantsShared.protocolPlayerLineEnd);
-            playerOut.append(PlayerUpdateInput.getFromPlayerData(player).getString()).append(ConstantsShared.protocolPlayerLineEnd);
-        }
-        out.write(playerNames.toString());
-        out.newLine();
-        out.write(playerOut.toString());
+        player.updateFromPlayerInput(Packet_PlayerInputToServer.parseString(line));
+        out.write(Packet_ServerOutputToClient.getFromPlayerData(player).toString());
         out.newLine();
     }
 
@@ -97,7 +135,7 @@ public class ClientHandler implements Runnable {
                 }
             } while (test);
 
-            player.setInitData(PlayerInitialData.parseString(in.readLine()));
+            player.setInitData(Packet_AddPlayerToServer.parseString(in.readLine()));
         } catch (Exception e) {
             ServerCore.closeSocket(socket, out, in);
         }
@@ -125,4 +163,21 @@ public class ClientHandler implements Runnable {
             return false;
         }
     }
+
+    public ArrayList<PlayerServerSide> getAddPlayerList() {
+        return addPlayerList;
+    }
+
+    public ArrayList<String> getRemovePlayer() {
+        return removePlayer;
+    }
+
+    public ArrayList<Object> getAddObject() {
+        return addObject;
+    }
+
+    public ArrayList<Integer> getRemoveObject() {
+        return removeObject;
+    }
+
 }
