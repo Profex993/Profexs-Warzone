@@ -1,13 +1,10 @@
 package client.entity;
 
-import client.clientMain.GamePanel;
-import client.clientMain.KeyHandler;
-import client.clientMain.MouseHandler;
-import client.clientMain.UpdateManager;
+import client.clientMain.*;
 import client.clientMain.sound.SoundManager;
 import shared.packets.Packet_ServerOutputToClient;
-import shared.weapon.abstracts.Weapon;
-import shared.weapon.abstracts.WeaponGenerator;
+import shared.weaponClasses.Weapon;
+import shared.weaponClasses.WeaponGenerator;
 
 import java.awt.*;
 
@@ -45,7 +42,12 @@ public class MainPlayer extends Entity {
         this.directionFace = input.directionFace();
 
         if (weapon == null || !weapon.getName().equals(input.weapon())) {
-            weapon = WeaponGenerator.getWeaponByName(input.weapon());
+            try {
+                weapon = WeaponGenerator.getWeaponByName(input.weapon());
+            } catch (Exception e) {
+                ClientMain.closeSocket();
+                throw new RuntimeException(e);
+            }
         }
 
         if (input.walking()) {

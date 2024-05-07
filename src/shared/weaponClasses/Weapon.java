@@ -1,6 +1,4 @@
-package shared.weapon.abstracts;
-
-import shared.weapon.Weapon_Core;
+package shared.weaponClasses;
 
 import javax.imageio.ImageIO;
 import java.awt.*;

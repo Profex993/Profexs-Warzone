@@ -1,9 +1,10 @@
 package client.entity;
 
+import client.clientMain.ClientMain;
 import client.clientMain.UpdateManager;
 import client.clientMain.sound.SoundManager;
 import shared.packets.Packet_PlayerUpdateInput;
-import shared.weapon.abstracts.WeaponGenerator;
+import shared.weaponClasses.WeaponGenerator;
 
 import java.awt.*;
 
@@ -42,7 +43,12 @@ public class Player extends Entity {
         this.kills = input.kills();
         this.deaths = input.deaths();
         if (weapon == null || !weapon.getName().equals(input.weapon())) {
-            this.weapon = WeaponGenerator.getWeaponByName(input.weapon());
+            try {
+                this.weapon = WeaponGenerator.getWeaponByName(input.weapon());
+            } catch (Exception e) {
+                ClientMain.closeSocket();
+                throw new RuntimeException(e);
+            }
         }
 
         if (input.shooting()) {

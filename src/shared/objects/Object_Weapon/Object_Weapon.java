@@ -3,7 +3,7 @@ package shared.objects.Object_Weapon;
 import server.ServerCore;
 import server.entity.PlayerServerSide;
 import shared.objects.Object;
-import shared.weapon.abstracts.Weapon;
+import shared.weaponClasses.Weapon;
 
 public class Object_Weapon extends Object {
     private final Class<? extends Weapon> weaponClass;

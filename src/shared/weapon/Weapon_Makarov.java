@@ -1,6 +1,7 @@
 package shared.weapon;
 
-import shared.weapon.abstracts.Weapon_Pistol;
+import shared.weaponClasses.Weapon_Core;
+import shared.weaponClasses.Weapon_Pistol;
 
 import javax.imageio.ImageIO;
 import java.io.IOException;

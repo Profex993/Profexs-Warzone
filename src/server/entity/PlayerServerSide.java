@@ -7,10 +7,10 @@ import shared.ConstantsShared;
 import shared.objects.Object;
 import shared.packets.Packet_AddPlayer;
 import shared.packets.Packet_PlayerInputToServer;
-import shared.weapon.Weapon_Core;
 import shared.weapon.Weapon_Makarov;
-import shared.weapon.abstracts.Weapon;
-import shared.weapon.abstracts.WeaponGenerator;
+import shared.weaponClasses.Weapon;
+import shared.weaponClasses.WeaponGenerator;
+import shared.weaponClasses.Weapon_Core;
 
 import java.awt.*;
 import java.io.IOException;
@@ -133,7 +133,12 @@ public class PlayerServerSide {
     }
 
     public void changeWeapon(Class<? extends Weapon> weaponClass) {
-        this.weapon = WeaponGenerator.getServerSideWeapon(weaponClass);
+        try {
+            this.weapon = WeaponGenerator.getServerSideWeapon(weaponClass);
+            System.out.println(weapon.getName());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public void removeHealth(int remove, PlayerServerSide enemyPlayer) {

@@ -1,4 +1,4 @@
-package shared.weapon.abstracts;
+package shared.weaponClasses;
 
 import java.awt.*;
 

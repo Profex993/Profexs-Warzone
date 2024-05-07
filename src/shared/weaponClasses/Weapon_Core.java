@@ -1,4 +1,4 @@
-package shared.weapon;
+package shared.weaponClasses;
 
 import server.CollisionManager;
 import server.entity.PlayerServerSide;
