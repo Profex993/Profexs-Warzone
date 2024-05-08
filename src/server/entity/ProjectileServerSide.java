@@ -30,9 +30,13 @@ public class ProjectileServerSide {
             if (solidArea.intersects(player.getSolidArea()) && this.originalPlayer != player) {
                 player.removeHealth(damage, originalPlayer);
                 projectileList.remove(this);
-            } else if (collisionManager.checkTileProjectile(solidArea)) {
+            } else if (collisionManager.checkTileProjectile(solidArea) || collisionManager.checkObjectProjectile(this)) {
                 projectileList.remove(this);
             }
         }
+    }
+
+    public Rectangle getSolidArea() {
+        return solidArea;
     }
 }

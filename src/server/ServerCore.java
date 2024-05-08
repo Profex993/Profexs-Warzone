@@ -12,11 +12,11 @@ import java.util.ArrayList;
 
 public class ServerCore {
     private final ArrayList<PlayerServerSide> playerList = new ArrayList<>();
-    private final ServerUpdateManager serverUpdateManager = new ServerUpdateManager(playerList);
-    private final CollisionManager collisionManager = new CollisionManager();
-    public final static int mapNumber = 0; // this variable will be used for selecting map later
     private final ArrayList<Object> objectList = MapGenerator.getMapObjects(mapNumber);
     private final ArrayList<ClientHandler> clientHandlerList = new ArrayList<>();
+    private final ServerUpdateManager serverUpdateManager = new ServerUpdateManager(playerList);
+    private final CollisionManager collisionManager = new CollisionManager(objectList);
+    public final static int mapNumber = 0; // this variable will be used for selecting map later
 
     public ServerCore() {
         serverUpdateManager.startThread();

@@ -1,5 +1,6 @@
 package shared;
 
+import shared.object.Object_Test;
 import shared.object.Object_Weapon_AK;
 import shared.object.Object_Weapon_Makarov;
 import shared.object.objectClasses.Object;
@@ -27,6 +28,7 @@ public abstract class MapGenerator {
             case 0 -> {
                 list.add(new Object_Weapon_AK(200, 200));
                 list.add(new Object_Weapon_Makarov(400, 400));
+                list.add(new Object_Test(300, 200));
             }
         }
 

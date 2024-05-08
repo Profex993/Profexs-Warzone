@@ -55,7 +55,7 @@ public class PlayerServerSide {
                 direction = "right";
             }
 
-            if (collisionManager.checkTile(this)) {
+            if (collisionManager.checkTile(this) && collisionManager.checkObject(this)) {
                 if (input.up()) {
                     worldY -= ConstantsShared.playerSpeed;
                     walking = true;

@@ -1,20 +1,25 @@
 package server;
 
 import server.entity.PlayerServerSide;
+import server.entity.ProjectileServerSide;
 import shared.ConstantsShared;
 import shared.MapGenerator;
+import shared.object.objectClasses.Object;
 
 import java.awt.*;
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class CollisionManager {
     private final int maxWorldColum = ConstantsShared.maxWorldWidth;
     private final int maxWorldRow = ConstantsShared.maxWorldHeight;
     private final int[][] mapTileNumber;
     private final boolean[] tiles;
+    private final ArrayList<Object> objectList;
 
-    public CollisionManager() {
+    public CollisionManager(ArrayList<Object> objectList) {
+        this.objectList = objectList;
         mapTileNumber = new int[maxWorldColum][maxWorldRow];
         tiles = MapGenerator.getTileSetCollision();
     }
@@ -92,6 +97,34 @@ public class CollisionManager {
         int tileY = solidArea.y / tileSize;
         if (tileX >= 0 && tileX < mapTileNumber.length && tileY >= 0 && tileY < mapTileNumber[0].length) {
             return tiles[mapTileNumber[tileX][tileY]];
+        }
+        return false;
+    }
+
+    public boolean checkObject(PlayerServerSide player) {
+        for (Object object : objectList) {
+            if (object.isCollision()) {
+                Rectangle modifiedPlayerSolidArea = player.getSolidArea();
+                switch (player.getDirection()) {
+                    case "up" -> modifiedPlayerSolidArea.y -= ConstantsShared.playerSpeed;
+                    case "down" -> modifiedPlayerSolidArea.y += ConstantsShared.playerSpeed;
+                    case "left" -> modifiedPlayerSolidArea.x -= ConstantsShared.playerSpeed;
+                    case "right" -> modifiedPlayerSolidArea.x += ConstantsShared.playerSpeed;
+                }
+
+                if (object.getSolidArea().intersects(modifiedPlayerSolidArea)) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    public boolean checkObjectProjectile(ProjectileServerSide projectile) {
+        for (Object object : objectList) {
+            if (object.isCollision() && object.getSolidArea().intersects(projectile.getSolidArea())) {
+                return true;
+            }
         }
         return false;
     }
