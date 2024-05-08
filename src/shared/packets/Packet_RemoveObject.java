@@ -1,6 +1,7 @@
 package shared.packets;
 
 import shared.ConstantsShared;
+import shared.object.objectClasses.Object;
 
 import java.io.IOException;
 
@@ -15,8 +16,8 @@ public record Packet_RemoveObject(int objectHash) {
         }
     }
 
-    public static Packet_RemoveObject getFromObject(int hash) {
-        return new Packet_RemoveObject(hash);
+    public static Packet_RemoveObject getFromObject(Object object) {
+        return new Packet_RemoveObject(object.hashCode());
     }
 
     public String toString() {

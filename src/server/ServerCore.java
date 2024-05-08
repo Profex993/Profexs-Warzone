@@ -56,20 +56,20 @@ public class ServerCore {
     public void removeObject(Object remove) {
         objectList.remove(remove);
         for (ClientHandler clientHandler : clientHandlerList) {
-            clientHandler.getRemoveObject().add(remove.hashCode());
+            clientHandler.getRemoveObjectRequestList().add(remove);
         }
     }
 
     public void addObject(Object add) {
         objectList.add(add);
         for (ClientHandler clientHandler : clientHandlerList) {
-            clientHandler.getAddObject().add(add);
+            clientHandler.getAddObjectRequestList().add(add);
         }
         System.out.println(add);
     }
     public void removePlayer(PlayerServerSide playerServerSide) {
         for (ClientHandler clientHandler : clientHandlerList) {
-            clientHandler.getRemovePlayer().add(playerServerSide.getId());
+            clientHandler.getRemovePlayerRequestList().add(playerServerSide);
         }
         playerList.remove(playerServerSide);
     }
@@ -77,7 +77,7 @@ public class ServerCore {
     public void addPlayer(PlayerServerSide playerServerSide, ClientHandler originalClienthandler) {
         for (ClientHandler clientHandler : clientHandlerList) {
             if (originalClienthandler != clientHandler) {
-                clientHandler.getAddPlayerList().add(playerServerSide);
+                clientHandler.getAddPlayerRequestList().add(playerServerSide);
             }
         }
         playerList.add(playerServerSide);

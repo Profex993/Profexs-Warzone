@@ -15,7 +15,7 @@ public class UpdateManager implements Runnable {
     private final ServerCommunication serverCommunication;
     private final Menu menu;
     private final MainPlayer mainPlayer;
-    private ArrayList<Object> objectList;
+    private ArrayList<Object> objectList = new ArrayList<>();
     private final MouseHandler mouseHandler;
 
     public UpdateManager(ServerCommunication serverCommunication, Menu menu, MainPlayer mainPlayer, MouseHandler mouseHandler) {

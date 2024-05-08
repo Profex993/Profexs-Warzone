@@ -17,11 +17,11 @@ public class ClientHandler implements Runnable {
     private final BufferedReader in;
     private final ArrayList<PlayerServerSide> playerList;
     private final ServerCore core;
-    private final ArrayList<PlayerServerSide> addPlayerList = new ArrayList<>();
-    private final ArrayList<String> removePlayer = new ArrayList<>();
-    private final ArrayList<Object> addObject = new ArrayList<>();
-    private final ArrayList<Integer> removeObject = new ArrayList<>();
-    private boolean changeMap = true;
+    private final ArrayList<PlayerServerSide> addPlayerRequestList = new ArrayList<>();
+    private final ArrayList<PlayerServerSide> removePlayerRequestList = new ArrayList<>();
+    private final ArrayList<Object> addObjectRequestList = new ArrayList<>(), removeObjectRequestList = new ArrayList<>();
+    private boolean changeMapRequestTrigger = true;
+    private final ArrayList<String> packetStringList = new ArrayList<>();
 
     public ClientHandler(Socket socket, BufferedReader in, BufferedWriter out, PlayerServerSide player, ServerCore core,
                          ArrayList<PlayerServerSide> playerList) {
@@ -32,7 +32,7 @@ public class ClientHandler implements Runnable {
         this.in = in;
         this.out = out;
 
-        addPlayerList.addAll(playerList);
+        addPlayerRequestList.addAll(playerList);
     }
 
     @Override
@@ -42,74 +42,21 @@ public class ClientHandler implements Runnable {
         try {
             while (socket.isConnected()) {
                 String inputLine = in.readLine();
-                if (inputLine.isEmpty()) {
-                    break;
-                }
+                if (inputLine.isEmpty()) break;
                 updatePlayer(inputLine);
 
-                int numberOfPackets = addPlayerList.size() + removePlayer.size() + removeObject.size()
-                        + playerList.size() + addObject.size();
-
-
-                if (!playerList.isEmpty()) numberOfPackets--;
-                if (changeMap) numberOfPackets++;
-                out.write(String.valueOf(numberOfPackets));
+                makePacketList();
+                out.write(String.valueOf(packetStringList.size()));
                 out.newLine();
-
-                if (changeMap) {
-                    Packet_ChangeMap packetChangeMap = new Packet_ChangeMap(ServerCore.mapNumber);
-                    out.write(packetChangeMap.toString());
-                    out.newLine();
-                    changeMap = false;
-                }
-
-                if (!addPlayerList.isEmpty()) {
-                    for (PlayerServerSide player : addPlayerList) {
-                        if (this.player != player) {
-                            Packet_AddPlayer packet = new Packet_AddPlayer(player.getId(), player.getPlayerModel());
-                            out.write(packet.toString());
-                            out.newLine();
-                        }
-                    }
-                    addPlayerList.clear();
-                }
-
-                if (!removePlayer.isEmpty()) {
-                    for (String player : removePlayer) {
-                        Packet_RemovePlayer packet = new Packet_RemovePlayer(player);
-                        out.write(packet.toString());
+                packetStringList.forEach(e -> {
+                    try {
+                        out.write(e);
                         out.newLine();
+                    } catch (IOException ex) {
+                        throw new RuntimeException(e);
                     }
-                    removePlayer.clear();
-                }
-
-                if (!playerList.isEmpty()) {
-                    for (PlayerServerSide player : playerList) {
-                        if (this.player != player) {
-                            Packet_PlayerUpdateInput packet = Packet_PlayerUpdateInput.getFromPlayerData(player);
-                            out.write(packet.toString());
-                            out.newLine();
-                        }
-                    }
-                }
-
-                if (!removeObject.isEmpty()) {
-                    for (Integer hash : removeObject) {
-                        Packet_RemoveObject packet = Packet_RemoveObject.getFromObject(hash);
-                        out.write(packet.toString());
-                        out.newLine();
-                    }
-                    removeObject.clear();
-                }
-
-                if (!addObject.isEmpty()) {
-                    for (Object object : addObject) {
-                        Packet_AddObject packet = Packet_AddObject.getFromObject(object);
-                        out.write(packet.toString());
-                        out.newLine();
-                    }
-                    addObject.clear();
-                }
+                });
+                if (!packetStringList.isEmpty()) packetStringList.clear();
 
                 out.flush();
             }
@@ -125,6 +72,57 @@ public class ClientHandler implements Runnable {
         player.updateFromPlayerInput(Packet_PlayerInputToServer.parseString(line));
         out.write(Packet_ServerOutputToClient.getFromPlayerData(player).toString());
         out.newLine();
+    }
+
+    private void makePacketList() {
+        if (changeMapRequestTrigger) {
+            Packet_ChangeMap packetChangeMap = new Packet_ChangeMap(ServerCore.mapNumber);
+            packetStringList.add(packetChangeMap.toString());
+            changeMapRequestTrigger = false;
+        }
+
+        if (!addPlayerRequestList.isEmpty()) {
+            for (PlayerServerSide player : addPlayerRequestList) {
+                if (this.player != player) {
+                    Packet_AddPlayer packet = new Packet_AddPlayer(player.getId(), player.getPlayerModel());
+                    packetStringList.add(packet.toString());
+                }
+            }
+            addPlayerRequestList.clear();
+        }
+
+        if (!removePlayerRequestList.isEmpty()) {
+            for (PlayerServerSide player : removePlayerRequestList) {
+                Packet_RemovePlayer packet = Packet_RemovePlayer.getFromPlayer(player);
+                packetStringList.add(packet.toString());
+            }
+            removePlayerRequestList.clear();
+        }
+
+        if (!playerList.isEmpty()) {
+            for (PlayerServerSide player : playerList) {
+                if (this.player != player) {
+                    Packet_PlayerUpdateInput packet = Packet_PlayerUpdateInput.getFromPlayerData(player);
+                    packetStringList.add(packet.toString());
+                }
+            }
+        }
+
+        if (!removeObjectRequestList.isEmpty()) {
+            for (Object Object : removeObjectRequestList) {
+                Packet_RemoveObject packet = Packet_RemoveObject.getFromObject(Object);
+                packetStringList.add(packet.toString());
+            }
+            removeObjectRequestList.clear();
+        }
+
+        if (!addObjectRequestList.isEmpty()) {
+            for (Object object : addObjectRequestList) {
+                Packet_AddObject packet = Packet_AddObject.getFromObject(object);
+                packetStringList.add(packet.toString());
+            }
+            addObjectRequestList.clear();
+        }
     }
 
     public void setName() {
@@ -173,20 +171,20 @@ public class ClientHandler implements Runnable {
         }
     }
 
-    public ArrayList<PlayerServerSide> getAddPlayerList() {
-        return addPlayerList;
+    public ArrayList<PlayerServerSide> getAddPlayerRequestList() {
+        return addPlayerRequestList;
     }
 
-    public ArrayList<String> getRemovePlayer() {
-        return removePlayer;
+    public ArrayList<PlayerServerSide> getRemovePlayerRequestList() {
+        return removePlayerRequestList;
     }
 
-    public ArrayList<Object> getAddObject() {
-        return addObject;
+    public ArrayList<Object> getAddObjectRequestList() {
+        return addObjectRequestList;
     }
 
-    public ArrayList<Integer> getRemoveObject() {
-        return removeObject;
+    public ArrayList<Object> getRemoveObjectRequestList() {
+        return removeObjectRequestList;
     }
 
 }

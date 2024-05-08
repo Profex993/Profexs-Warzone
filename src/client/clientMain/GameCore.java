@@ -6,8 +6,6 @@ import client.entity.Player;
 import client.enums.GameState;
 import client.userInterface.menu.Menu;
 import shared.MapGenerator;
-import shared.ObjectGenerator;
-import shared.object.Object_Test;
 import shared.object.objectClasses.Object;
 
 import java.io.BufferedReader;
@@ -48,11 +46,6 @@ public class GameCore {
 
     public void setMap(int mapNumber) {
         ArrayList<Object> newObjectList = MapGenerator.getMapObjects(mapNumber);
-        try {
-            newObjectList.add(ObjectGenerator.getObjectByWeapon(Object_Test.class.getSimpleName(), 300, 300));
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
         gamePanel.setObjectList(newObjectList);
         updateManager.setObjectList(newObjectList);
         objectList = newObjectList;
