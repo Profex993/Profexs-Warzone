@@ -102,8 +102,8 @@ public class GamePanel extends JPanel implements Runnable {
 
     public void drawGame(Graphics2D g2) {
         tileManager.draw(g2);
-        for (Object object : objectList) {
-            object.draw(g2, mainPlayer, (int) mouseHandler.getX(), (int) mouseHandler.getY());
+        for (int i = 0; i < objectList.size(); i++) {
+            objectList.get(i).draw(g2, mainPlayer, (int) mouseHandler.getX(), (int) mouseHandler.getY());
         }
         mainPlayer.draw(g2);
         for (Player player : playerList) {

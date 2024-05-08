@@ -7,6 +7,7 @@ import javax.imageio.ImageIO;
 import java.io.IOException;
 import java.util.Objects;
 
+@SuppressWarnings("unused")
 public class Weapon_Sks extends Weapon_Rifle {
     public static final String name = "SKS";
     public Weapon_Sks() {

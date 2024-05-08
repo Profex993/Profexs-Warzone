@@ -61,22 +61,16 @@ public class Object {
     public void executeServerSide(PlayerServerSide player, ServerCore core) {
     }
 
-    public void updateClientSide(double mouseX, double mouseY, boolean interact, MainPlayer player) {
+    public void updateClientSide(double mouseX, double mouseY, MainPlayer player) {
         if (intractable) {
             int screenX = worldX - player.getWorldX() + player.getScreenX();
             int screenY = worldY - player.getWorldY() + player.getScreenY();
             if (mouseX > screenX && mouseX < screenX + width && (mouseY > screenY && mouseY < screenY + height)) {
                 interactText = true;
-                if (interact) {
-                    executeClientSide();
-                }
             } else if (interactText) {
                 interactText = false;
             }
         }
-    }
-
-    public void executeClientSide() {
     }
 
     public void draw(Graphics2D g2, MainPlayer player, int mouseX, int mouseY) {

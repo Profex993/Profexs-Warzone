@@ -58,7 +58,7 @@ public class UpdateManager implements Runnable {
         serverCommunication.update();
         mainPlayer.update();
         for (Object object : objectList) {
-            object.updateClientSide(mouseHandler.getX(), mouseHandler.getY(), mouseHandler.rightClick, mainPlayer);
+            object.updateClientSide(mouseHandler.getX(), mouseHandler.getY(), mainPlayer);
         }
         if (GameCore.gameState == GameState.PAUSED.intValue) {
             menu.update();

@@ -7,6 +7,7 @@ import javax.imageio.ImageIO;
 import java.io.IOException;
 import java.util.Objects;
 
+@SuppressWarnings("unused")
 public class Weapon_Makarov extends Weapon_Pistol {
     public static final String name = "Makarov";
     public Weapon_Makarov() {
