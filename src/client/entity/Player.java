@@ -4,7 +4,7 @@ import client.clientMain.ClientMain;
 import client.clientMain.UpdateManager;
 import client.clientMain.sound.SoundManager;
 import shared.packets.Packet_PlayerUpdateInput;
-import shared.weaponClasses.WeaponGenerator;
+import shared.weapon.weaponClasses.WeaponGenerator;
 
 import java.awt.*;
 

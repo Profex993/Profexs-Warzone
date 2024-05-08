@@ -1,7 +1,7 @@
 package server;
 
 import server.entity.PlayerServerSide;
-import shared.objects.Object;
+import shared.object.objectClasses.Object;
 import shared.packets.*;
 
 import java.io.BufferedReader;
@@ -48,7 +48,7 @@ public class ClientHandler implements Runnable {
                 updatePlayer(inputLine);
 
                 int numberOfPackets = addPlayerList.size() + removePlayer.size() + removeObject.size()
-                        + playerList.size();
+                        + playerList.size() + addObject.size();
 
 
                 if (!playerList.isEmpty()) numberOfPackets--;
@@ -100,6 +100,15 @@ public class ClientHandler implements Runnable {
                         out.newLine();
                     }
                     removeObject.clear();
+                }
+
+                if (!addObject.isEmpty()) {
+                    for (Object object : addObject) {
+                        Packet_AddObject packet = Packet_AddObject.getFromObject(object);
+                        out.write(packet.toString());
+                        out.newLine();
+                    }
+                    addObject.clear();
                 }
 
                 out.flush();

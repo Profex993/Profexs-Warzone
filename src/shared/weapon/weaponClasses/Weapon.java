@@ -1,4 +1,4 @@
-package shared.weaponClasses;
+package shared.weapon.weaponClasses;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -59,6 +59,7 @@ public abstract class Weapon extends Weapon_Core {
         try {
             blastImage = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("prefab/muzzleBlast.png")));
         } catch (IOException e) {
+            e.printStackTrace();
             throw new RuntimeException();
         }
     }

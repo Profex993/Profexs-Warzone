@@ -1,4 +1,4 @@
-package shared.objects;
+package shared.object.objectClasses;
 
 import client.entity.MainPlayer;
 import server.ServerCore;
@@ -97,6 +97,14 @@ public class Object {
 
     public Rectangle getSolidArea() {
         return solidArea;
+    }
+
+    public int getWorldX() {
+        return worldX;
+    }
+
+    public int getWorldY() {
+        return worldY;
     }
 
     @Override

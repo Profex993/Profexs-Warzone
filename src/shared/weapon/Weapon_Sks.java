@@ -1,7 +1,7 @@
 package shared.weapon;
 
-import shared.weaponClasses.Weapon_Core;
-import shared.weaponClasses.Weapon_Rifle;
+import shared.weapon.weaponClasses.Weapon_Core;
+import shared.weapon.weaponClasses.Weapon_Rifle;
 
 import javax.imageio.ImageIO;
 import java.io.IOException;
@@ -23,6 +23,7 @@ public class Weapon_Sks extends Weapon_Rifle {
             this.soundFire = getClass().getClassLoader().getResource("sound/weapons/sksFire.wav");
             this.soundReload = getClass().getClassLoader().getResource("sound/weapons/sksReload.wav");
         } catch (IOException e) {
+            e.printStackTrace();
             throw new RuntimeException(e);
         }
     }

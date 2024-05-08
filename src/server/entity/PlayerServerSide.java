@@ -4,13 +4,13 @@ import server.CollisionManager;
 import server.ServerCore;
 import server.ServerUpdateManager;
 import shared.ConstantsShared;
-import shared.objects.Object;
+import shared.object.objectClasses.Object;
 import shared.packets.Packet_AddPlayer;
 import shared.packets.Packet_PlayerInputToServer;
 import shared.weapon.Weapon_Makarov;
-import shared.weaponClasses.Weapon;
-import shared.weaponClasses.WeaponGenerator;
-import shared.weaponClasses.Weapon_Core;
+import shared.weapon.weaponClasses.Weapon;
+import shared.weapon.weaponClasses.WeaponGenerator;
+import shared.weapon.weaponClasses.Weapon_Core;
 
 import java.awt.*;
 import java.io.IOException;

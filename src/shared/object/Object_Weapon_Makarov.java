@@ -1,5 +1,6 @@
-package shared.objects.Object_Weapon;
+package shared.object;
 
+import shared.object.objectClasses.Object_Weapon;
 import shared.weapon.Weapon_Makarov;
 
 public class Object_Weapon_Makarov extends Object_Weapon {

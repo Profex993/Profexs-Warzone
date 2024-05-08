@@ -1,7 +1,7 @@
 package shared.weapon;
 
-import shared.weaponClasses.Weapon_Core;
-import shared.weaponClasses.Weapon_Pistol;
+import shared.weapon.weaponClasses.Weapon_Core;
+import shared.weapon.weaponClasses.Weapon_Pistol;
 
 import javax.imageio.ImageIO;
 import java.io.IOException;
@@ -25,6 +25,7 @@ public class Weapon_Makarov extends Weapon_Pistol {
             this.soundReload = getClass().getClassLoader().getResource("sound/weapons/pmReload.wav");
             this.soundReloadEmpty = getClass().getClassLoader().getResource("sound/weapons/pmReloadEmpty.wav");
         } catch (IOException e) {
+            e.printStackTrace();
             throw new RuntimeException(e);
         }
     }

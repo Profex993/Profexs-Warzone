@@ -1,4 +1,4 @@
-package shared.weaponClasses;
+package shared.weapon.weaponClasses;
 
 import java.awt.*;
 import java.awt.geom.AffineTransform;

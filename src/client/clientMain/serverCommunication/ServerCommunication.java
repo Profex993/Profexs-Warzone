@@ -40,6 +40,7 @@ public class ServerCommunication {
         processMap.put(Packet_PlayerUpdateInput.head, new Packet_Process_PlayerUpdateInput());
         processMap.put(Packet_RemoveObject.head, new Packet_Process_RemoveObject());
         processMap.put(Packet_ChangeMap.head, new Packet_Process_ChangeMap());
+        processMap.put(Packet_AddObject.head, new packet_Process_AddObject());
     }
 
     private void startCommunication(String playerModel) {
@@ -70,9 +71,10 @@ public class ServerCommunication {
                 Packet packet = Packet.parseFromString(inputLine);
                 processMap.get(packet.head).process(core, packet.body());
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             ClientMain.closeSocket(socket, in, out);
-            throw new RuntimeException(e);
+            e.printStackTrace();
+            System.exit(1);
         }
     }
 

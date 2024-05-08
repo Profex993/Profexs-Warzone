@@ -1,4 +1,4 @@
-package shared.weaponClasses;
+package shared.weapon.weaponClasses;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
@@ -7,8 +7,7 @@ public abstract class WeaponGenerator {
     private static final String WEAPON_PACKAGE = "shared.weapon";
 
     public static Weapon getWeaponByName(String name) throws Exception {
-        String className = WEAPON_PACKAGE + ".Weapon_" + name;
-        Class<?> weaponClass = Class.forName(className);
+        Class<?> weaponClass = Class.forName(WEAPON_PACKAGE + ".Weapon_" + name);
         Constructor<?> constructor = weaponClass.getDeclaredConstructor();
 
         return (Weapon) constructor.newInstance();

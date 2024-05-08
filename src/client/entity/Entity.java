@@ -1,7 +1,7 @@
 package client.entity;
 
 import shared.ConstantsShared;
-import shared.weaponClasses.Weapon;
+import shared.weapon.weaponClasses.Weapon;
 
 import javax.imageio.ImageIO;
 import java.awt.*;

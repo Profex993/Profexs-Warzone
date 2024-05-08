@@ -2,7 +2,7 @@ package server;
 
 import server.entity.PlayerServerSide;
 import shared.MapGenerator;
-import shared.objects.Object;
+import shared.object.objectClasses.Object;
 
 import java.io.*;
 import java.net.ServerSocket;
@@ -61,10 +61,11 @@ public class ServerCore {
     }
 
     public void addObject(Object add) {
-        objectList.remove(add);
+        objectList.add(add);
         for (ClientHandler clientHandler : clientHandlerList) {
             clientHandler.getAddObject().add(add);
         }
+        System.out.println(add);
     }
     public void removePlayer(PlayerServerSide playerServerSide) {
         for (ClientHandler clientHandler : clientHandlerList) {

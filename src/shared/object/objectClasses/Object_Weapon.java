@@ -1,9 +1,9 @@
-package shared.objects.Object_Weapon;
+package shared.object.objectClasses;
 
 import server.ServerCore;
 import server.entity.PlayerServerSide;
-import shared.objects.Object;
-import shared.weaponClasses.Weapon;
+import shared.ObjectGenerator;
+import shared.weapon.weaponClasses.Weapon;
 
 public class Object_Weapon extends Object {
     private final Class<? extends Weapon> weaponClass;
@@ -14,6 +14,14 @@ public class Object_Weapon extends Object {
 
     @Override
     public void executeServerSide(PlayerServerSide player, ServerCore core) {
+        try {
+            core.addObject(ObjectGenerator.getObjectByWeapon("Object_Weapon_" + player.getWeaponName(),
+                    player.getWorldX(), player.getWorldY()));
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
         player.changeWeapon(weaponClass);
         core.removeObject(this);
     }

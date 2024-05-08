@@ -5,7 +5,7 @@ import client.clientMain.serverCommunication.ServerCommunication;
 import client.entity.MainPlayer;
 import client.enums.GameState;
 import client.userInterface.menu.Menu;
-import shared.objects.Object;
+import shared.object.objectClasses.Object;
 
 import java.util.ArrayList;
 

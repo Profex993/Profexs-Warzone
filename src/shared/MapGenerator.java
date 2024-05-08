@@ -1,8 +1,8 @@
 package shared;
 
-import shared.objects.Object;
-import shared.objects.Object_Weapon.Object_Weapon_AK;
-import shared.objects.Object_Weapon.Object_Weapon_Makarov;
+import shared.object.Object_Weapon_AK;
+import shared.object.Object_Weapon_Makarov;
+import shared.object.objectClasses.Object;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;

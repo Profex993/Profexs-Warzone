@@ -3,8 +3,8 @@ package client.entity;
 import client.clientMain.*;
 import client.clientMain.sound.SoundManager;
 import shared.packets.Packet_ServerOutputToClient;
-import shared.weaponClasses.Weapon;
-import shared.weaponClasses.WeaponGenerator;
+import shared.weapon.weaponClasses.Weapon;
+import shared.weapon.weaponClasses.WeaponGenerator;
 
 import java.awt.*;
 

@@ -5,7 +5,7 @@ import client.entity.Player;
 import client.enums.GameState;
 import client.userInterface.GameUI;
 import client.userInterface.menu.Menu;
-import shared.objects.Object;
+import shared.object.objectClasses.Object;
 
 import javax.swing.*;
 import java.awt.*;
@@ -102,13 +102,12 @@ public class GamePanel extends JPanel implements Runnable {
 
     public void drawGame(Graphics2D g2) {
         tileManager.draw(g2);
+        for (Object object : objectList) {
+            object.draw(g2, mainPlayer, (int) mouseHandler.getX(), (int) mouseHandler.getY());
+        }
         mainPlayer.draw(g2);
         for (Player player : playerList) {
             player.draw(g2);
-        }
-
-        for (Object object : objectList) {
-            object.draw(g2, mainPlayer, (int) mouseHandler.getX(), (int) mouseHandler.getY());
         }
     }
 
@@ -124,7 +123,6 @@ public class GamePanel extends JPanel implements Runnable {
             throw new RuntimeException(e);
         }
     }
-
     public static int getScreenWidth() {
         return screenWidth;
     }
@@ -132,6 +130,4 @@ public class GamePanel extends JPanel implements Runnable {
     public static int getScreenHeight() {
         return screenHeight;
     }
-
-
 }
