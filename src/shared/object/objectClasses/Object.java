@@ -3,6 +3,7 @@ package shared.object.objectClasses;
 import client.entity.MainPlayer;
 import server.ServerCore;
 import server.entity.PlayerServerSide;
+import shared.ConstantsShared;
 import shared.packets.Packet_PlayerInputToServer;
 
 import javax.imageio.ImageIO;
@@ -15,7 +16,7 @@ public class Object {
     protected final int worldX, worldY, width, height;
     private final boolean collision;
     protected final boolean intractable;
-    private final Rectangle solidArea;
+    private final Rectangle solidArea, triggerArea;
     private BufferedImage image;
     private final String imagePath;
     private boolean interactText = false;
@@ -29,6 +30,10 @@ public class Object {
         solidArea = null;
         collision = false;
         this.imagePath = imagePath;
+        triggerArea = new Rectangle(worldX - ConstantsShared.objectTriggerAreaOffset,
+                worldY - ConstantsShared.objectTriggerAreaOffset,
+                width + 2 * ConstantsShared.objectTriggerAreaOffset,
+                height + ConstantsShared.objectTriggerAreaOffset);
     }
 
     public Object(int worldX, int worldY, int width, int height, boolean intractable, String imagePath, Rectangle solidArea) {
@@ -40,22 +45,29 @@ public class Object {
         this.solidArea = solidArea;
         this.collision = true;
         this.imagePath = imagePath;
+        triggerArea = new Rectangle(worldX - ConstantsShared.objectTriggerAreaOffset,
+                worldY - ConstantsShared.objectTriggerAreaOffset,
+                width + 2 * ConstantsShared.objectTriggerAreaOffset,
+                (int) (height + 1.5 * ConstantsShared.objectTriggerAreaOffset));
     }
 
     public void initializeRes() throws IOException {
         image = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream(imagePath)));
     }
 
-    public void updateServerSide(PlayerServerSide player, Packet_PlayerInputToServer input, ServerCore core) {
+    public void tryInteracting(PlayerServerSide player, Packet_PlayerInputToServer input, ServerCore core) {
         if (!intractable) return;
-        if (input.rightClick()) {
-            int screenX = worldX - player.getWorldX() + input.screenX();
-            int screenY = worldY - player.getWorldY() + input.screenY();
-            if (input.mouseX() > screenX && input.mouseX() < screenX + width &&
-                    (input.mouseY() > screenY && input.mouseY() < screenY + height)) {
-                executeServerSide(player, core);
-            }
+        int screenX = worldX - player.getWorldX() + input.screenX();
+        int screenY = worldY - player.getWorldY() + input.screenY();
+
+        if (player.getSolidArea().intersects(triggerArea) &&
+                (input.mouseX() > screenX && input.mouseX() < screenX + width &&
+                        input.mouseY() > screenY && input.mouseY() < screenY + height)) {
+
+            executeServerSide(player, core);
         }
+
+
     }
 
     public void executeServerSide(PlayerServerSide player, ServerCore core) {

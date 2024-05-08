@@ -23,7 +23,7 @@ public class PlayerServerSide {
     private int worldX = 100, worldY = 100, health = 100, kills, deaths, respawnDelay;
     private double rotation = 0;
     private String direction = "down", directionFace, killedBy = "";
-    private boolean shootLock = true, shooting = false, reloadTrigger = false, walking, death;
+    private boolean shootLock = true, shooting = false, reloadTrigger = false, walking, death, interactTrigger = true;
     private final Rectangle solidArea;
     private Weapon_Core weapon = Weapon_Makarov.getServerSideWeapon();
     private final ArrayList<Object> objectList;
@@ -115,8 +115,13 @@ public class PlayerServerSide {
                 weapon.reload(updateManager.getTick());
             }
 
-            for (int i = 0; i < objectList.size(); i++) {
-                objectList.get(i).updateServerSide(this, input, core);
+            if (input.rightClick() && interactTrigger) {
+                for (int i = 0; i < objectList.size(); i++) {
+                    objectList.get(i).tryInteracting(this, input, core);
+                    interactTrigger = false;
+                }
+            } else if (!input.rightClick() && !interactTrigger) {
+                interactTrigger = true;
             }
         }
     }
