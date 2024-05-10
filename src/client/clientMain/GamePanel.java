@@ -103,19 +103,26 @@ public class GamePanel extends JPanel implements Runnable {
     public void drawGame(Graphics2D g2) {
         tileManager.draw(g2);
         for (int i = 0; i < objectList.size(); i++) {
-            objectList.get(i).draw(g2, mainPlayer, (int) mouseHandler.getX(), (int) mouseHandler.getY());
+            if (objectList.get(i).isDrawUnderPlayer()) {
+                objectList.get(i).draw(g2, mainPlayer, (int) mouseHandler.getX(), (int) mouseHandler.getY());
+            }
         }
         mainPlayer.draw(g2);
         for (Player player : playerList) {
             player.draw(g2);
         }
+        for (int i = 0; i < objectList.size(); i++) {
+            if (!objectList.get(i).isDrawUnderPlayer()) {
+                objectList.get(i).draw(g2, mainPlayer, (int) mouseHandler.getX(), (int) mouseHandler.getY());
+            }
+        }
     }
 
-    public void setObjectList(ArrayList<Object> objectList) {
-        this.objectList = objectList;
+    public void setObjectList(ArrayList<Object> objectListUnderPlayer) {
+        this.objectList = objectListUnderPlayer;
 
         try {
-            for (Object object : objectList) {
+            for (Object object : objectListUnderPlayer) {
                 object.initializeRes();
             }
         } catch (IOException e) {
@@ -123,6 +130,7 @@ public class GamePanel extends JPanel implements Runnable {
             throw new RuntimeException(e);
         }
     }
+
     public static int getScreenWidth() {
         return screenWidth;
     }

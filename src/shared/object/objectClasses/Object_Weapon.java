@@ -5,11 +5,11 @@ import server.entity.PlayerServerSide;
 import shared.ObjectGenerator;
 import shared.weapon.weaponClasses.Weapon;
 
-public class Object_Weapon extends Object {
+public abstract class Object_Weapon extends Object {
     private final Class<? extends Weapon> weaponClass;
 
     public Object_Weapon(int worldX, int worldY, int width, int height, String imagePath, Class<? extends Weapon> weaponClass) {
-        super(worldX, worldY, width, height, true, imagePath);
+        super(worldX, worldY, width, height, true, imagePath, true);
         this.weaponClass = weaponClass;
     }
 

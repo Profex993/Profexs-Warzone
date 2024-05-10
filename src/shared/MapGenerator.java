@@ -1,8 +1,6 @@
 package shared;
 
-import shared.object.Object_Test;
-import shared.object.Object_Weapon_AK;
-import shared.object.Object_Weapon_Makarov;
+import shared.object.*;
 import shared.object.objectClasses.Object;
 
 import java.io.BufferedReader;
@@ -26,9 +24,27 @@ public abstract class MapGenerator {
         ArrayList<Object> list = new ArrayList<>();
         switch (mapNum) {
             case 0 -> {
-                list.add(new Object_Weapon_AK(200, 200));
-                list.add(new Object_Weapon_Makarov(400, 400));
-                list.add(new Object_Test(300, 200));
+                list.add(new Object_Building_3(2050, 1730, 300, 600));
+                list.add(new Object_Building_1(48, 1604, 600, 300));
+                list.add(new Object_Building_2(648, 1600, 300, 300));
+                list.add(new Object_Building_4(1100, 1400, 700, 500));
+                list.add(new Object_Building_Bunker(700, -200));
+                list.add(new Object_Btr(992, 684));
+                list.add(new Object_Btr(1416, 864));
+                list.add(new Object_Bulldozer(2060, 1400));
+                list.add(new Object_Sandbags(1116, 1964, 200, 60));
+                list.add(new Object_Car(284, 1964));
+                list.add(new Object_Pipe(1716, 72, 200, 80));
+                list.add(new Object_Bricks(1984, 96, 168, 80));
+                list.add(new Object_Sandbags(1700, 324, 200, 60));
+                list.add(new Object_AmmoCase(1700, 272));
+                list.add(new Object_Antenna2(570, -500, 100, 800));
+                list.add(new Object_PowerBox2(548, 100, 60, 100));
+                list.add(new Object_PowerBox(485, 100, 60, 100));
+                list.add(new Object_Sandbags(516, 324, 200, 60));
+                list.add(new Object_Cable(52, 2120, 120, 100));
+                list.add(new Object_Cable(52, 2230, 120, 100));
+                list.add(new Object_AmmoCase(1316, 1964));
             }
         }
 
@@ -39,7 +55,7 @@ public abstract class MapGenerator {
     }
 
     static {
-        tiles = new Tile[70];
+        tiles = new Tile[74];
 
         tiles[0] = new Tile("tiles/blackTile.png", false);
         tiles[1] = new Tile("tiles/blackTile.png", false);
@@ -50,8 +66,8 @@ public abstract class MapGenerator {
         tiles[6] = new Tile("tiles/woodTile.png", false);
         tiles[7] = new Tile("tiles/borderTile2.png", true);
         tiles[8] = new Tile("tiles/grayTile2.png", false);
-        tiles[9] = new Tile("tiles/grayTileDestroyed.png", false);
-        tiles[10] = new Tile("tiles/metalTile.png", false);
+        tiles[9] = new Tile("tiles/grayTileDestroyed.png", true);
+        tiles[10] = new Tile("tiles/metalTile.png", true);
         tiles[11] = new Tile("tiles/borderTile3.png", true);
         tiles[12] = new Tile("tiles/borderTile4.png", true);
         tiles[13] = new Tile("tiles/wallLeft.png", true);
@@ -111,6 +127,10 @@ public abstract class MapGenerator {
         tiles[67] = new Tile("tiles/grassTile3.png", true);
         tiles[68] = new Tile("tiles/floor.png", false);
         tiles[69] = new Tile("tiles/greenWall.png", true);
+        tiles[70] = new Tile("tiles/heliportBase.png", false);
+        tiles[71] = new Tile("tiles/heliportVertical.png", false);
+        tiles[72] = new Tile("tiles/heliportHorizontal.png", false);
+        tiles[73] = new Tile("tiles/heliportVertical2.png", false);
     }
 
     public static String[] getTileSetImagePath() {

@@ -40,6 +40,10 @@ public class ServerUpdateManager implements Runnable {
             if (timer >= 1000000000) {
                 timer = 0;
                 gameTime++;
+
+                if (!playerList.isEmpty()) {
+                    System.out.println("x" + playerList.get(0).getWorldX() + " y" + playerList.get(0).getWorldY());
+                }
             }
         }
     }

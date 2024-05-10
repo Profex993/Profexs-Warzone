@@ -12,31 +12,33 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.Objects;
 
-public class Object {
+public abstract class Object {
     protected final int worldX, worldY, width, height;
-    private final boolean collision;
+    private final boolean collision, drawUnderPlayer;
     protected final boolean intractable;
     private final Rectangle solidArea, triggerArea;
     private BufferedImage image;
     private final String imagePath;
     private boolean interactText = false;
 
-    public Object(int worldX, int worldY, int width, int height, boolean intractable, String imagePath) {
+    public Object(int worldX, int worldY, int width, int height, boolean intractable, String imagePath, boolean drawUnderPlayer) {
         this.worldX = worldX;
         this.worldY = worldY;
         this.width = width;
         this.height = height;
         this.intractable = intractable;
-        solidArea = null;
-        collision = false;
+        this.solidArea = null;
+        this.collision = false;
         this.imagePath = imagePath;
-        triggerArea = new Rectangle(worldX - ConstantsShared.objectTriggerAreaOffset,
+        this.drawUnderPlayer = drawUnderPlayer;
+        this.triggerArea = new Rectangle(worldX - ConstantsShared.objectTriggerAreaOffset,
                 worldY - ConstantsShared.objectTriggerAreaOffset,
                 width + 2 * ConstantsShared.objectTriggerAreaOffset,
                 height + ConstantsShared.objectTriggerAreaOffset);
     }
 
-    public Object(int worldX, int worldY, int width, int height, boolean intractable, String imagePath, Rectangle solidArea) {
+    public Object(int worldX, int worldY, int width, int height, boolean intractable, String imagePath, Rectangle solidArea,
+                  boolean drawUnderPlayer) {
         this.worldX = worldX;
         this.worldY = worldY;
         this.width = width;
@@ -45,7 +47,8 @@ public class Object {
         this.solidArea = solidArea;
         this.collision = true;
         this.imagePath = imagePath;
-        triggerArea = new Rectangle(worldX - ConstantsShared.objectTriggerAreaOffset,
+        this.drawUnderPlayer = drawUnderPlayer;
+        this.triggerArea = new Rectangle(worldX - ConstantsShared.objectTriggerAreaOffset,
                 worldY - ConstantsShared.objectTriggerAreaOffset,
                 width + 2 * ConstantsShared.objectTriggerAreaOffset,
                 (int) (height + 1.5 * ConstantsShared.objectTriggerAreaOffset));
@@ -103,6 +106,10 @@ public class Object {
 
     public Rectangle getSolidArea() {
         return solidArea;
+    }
+
+    public boolean isDrawUnderPlayer() {
+        return drawUnderPlayer;
     }
 
     public int getWorldX() {

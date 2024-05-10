@@ -20,7 +20,7 @@ public class PlayerServerSide {
     private final ServerUpdateManager updateManager;
     private final CollisionManager collisionManager;
     private String id, playerModel;
-    private int worldX = 100, worldY = 100, health = 100, kills, deaths, respawnDelay;
+    private int worldX = 100, worldY = 500, health = 100, kills, deaths, respawnDelay;
     private double rotation = 0;
     private String direction = "down", directionFace, killedBy = "";
     private boolean shootLock = true, shooting = false, reloadTrigger = false, walking, death, interactTrigger = true;

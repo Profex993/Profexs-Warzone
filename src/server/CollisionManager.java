@@ -104,15 +104,15 @@ public class CollisionManager {
     public boolean checkObject(PlayerServerSide player) {
         for (Object object : objectList) {
             if (object.isCollision()) {
-                Rectangle modifiedPlayerSolidArea = player.getSolidArea();
+                Rectangle modifiedPlayerSolidArea = new Rectangle(player.getWorldX(), player.getWorldY(),
+                        ConstantsShared.playerWidth, ConstantsShared.playerHeight);
                 switch (player.getDirection()) {
                     case "up" -> modifiedPlayerSolidArea.y -= ConstantsShared.playerSpeed;
                     case "down" -> modifiedPlayerSolidArea.y += ConstantsShared.playerSpeed;
                     case "left" -> modifiedPlayerSolidArea.x -= ConstantsShared.playerSpeed;
                     case "right" -> modifiedPlayerSolidArea.x += ConstantsShared.playerSpeed;
                 }
-
-                if (object.getSolidArea().intersects(modifiedPlayerSolidArea)) {
+                if (modifiedPlayerSolidArea.intersects(object.getSolidArea())) {
                     return false;
                 }
             }
