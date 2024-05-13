@@ -15,12 +15,10 @@ public class MainPlayer extends Entity {
     private int health;
     private String killedBy;
 
-    public MainPlayer(String name, String playerModel, int worldX, int worldY, MouseHandler mouseHandler, KeyHandler keyHandler) {
-        super(name, playerModel);
+    public MainPlayer(String name, String playerModel, MouseHandler mouseHandler, KeyHandler keyHandler, GameCore core) {
+        super(name, playerModel, core);
         screenX = GamePanel.getScreenWidth() / 2 - (48 / 2);
         screenY = GamePanel.getScreenHeight() / 2 - (48 / 2);
-        this.worldX = worldX;
-        this.worldY = worldY;
         this.mouseHandler = mouseHandler;
         this.keyHandler = keyHandler;
     }
@@ -85,12 +83,12 @@ public class MainPlayer extends Entity {
         if (!death) {
             if (mouseHandler.isShooting()) {
                 if (!weapon.isAutomatic() && singleFireLock) {
-                    if (weapon.triggerBlast(UpdateManager.tick)) {
+                    if (weapon.triggerBlast(core.getTick())) {
                         SoundManager.playSound(weapon.getFireSound());
                     }
                     singleFireLock = false;
                 } else if (weapon.isAutomatic()) {
-                    if (weapon.triggerBlast(UpdateManager.tick)) {
+                    if (weapon.triggerBlast(core.getTick())) {
                         SoundManager.playSound(weapon.getFireSound());
                     }
                 }
@@ -99,28 +97,19 @@ public class MainPlayer extends Entity {
             }
 
             if (keyHandler.reload) {
-                if (weapon.triggerReload(UpdateManager.tick)) {
+                if (weapon.triggerReload(core.getTick())) {
                     SoundManager.playSound(weapon.getReloadSound());
                 }
             } else if (weapon.isReloading()) {
-                weapon.reload(UpdateManager.tick);
+                weapon.reload(core.getTick());
             }
         }
     }
 
     public void draw(Graphics2D g2) {
-        double rotation = Math.atan2(mouseHandler.getY() - (screenY + (double) solidArea.width / 2), mouseHandler.getX() - (screenX + (double) solidArea.width / 2));
-        if (death) {
-            g2.drawImage(deathImg, screenX, screenY, null);
-        } else {
-            if (weaponDrawFirst && weapon != null) {
-                weapon.draw(g2, directionFace, UpdateManager.tick, rotation, screenX, screenY);
-            }
-            super.draw(g2);
-            if (!weaponDrawFirst && weapon != null) {
-                weapon.draw(g2, directionFace, UpdateManager.tick, rotation, screenX, screenY);
-            }
-        }
+        rotation = Math.atan2(mouseHandler.getY() - (screenY + (double) solidArea.width / 2),
+                mouseHandler.getX() - (screenX + (double) solidArea.width / 2));
+        super.draw(g2);
     }
 
     private void triggerDeath(Packet_ServerOutputToClient input) {

@@ -12,7 +12,7 @@ public class Packet_Process_AddPlayer implements Packet_Process {
     public void process(GameCore core, String body) throws IOException {
         Packet_AddPlayer data = Packet_AddPlayer.parseString(body);
         if (!data.name().equals(core.getMainPlayer().getName()) && isNewPlayer(data, core.getPlayerList())) {
-            Player newPlayer = new Player(core.getMainPlayer(), data.name(), data.playerModel());
+            Player newPlayer = new Player(core.getMainPlayer(), data.name(), data.playerModel(), core);
             core.getPlayerList().add(newPlayer);
         }
     }

@@ -1,7 +1,7 @@
 package client.entity;
 
 import client.clientMain.ClientMain;
-import client.clientMain.UpdateManager;
+import client.clientMain.GameCore;
 import client.clientMain.sound.SoundManager;
 import shared.packets.Packet_PlayerUpdateInput;
 import shared.weapon.weaponClasses.WeaponGenerator;
@@ -12,25 +12,15 @@ public class Player extends Entity {
     private final MainPlayer mainPlayer;
     private boolean shootLock = true;
 
-    public Player(MainPlayer mainPlayer, String name, String playerModel) {
-        super(name, playerModel);
+    public Player(MainPlayer mainPlayer, String name, String playerModel, GameCore core) {
+        super(name, playerModel, core);
         this.mainPlayer = mainPlayer;
     }
 
     public void draw(Graphics2D g2) {
         screenX = worldX - mainPlayer.getWorldX() + mainPlayer.getScreenX();
         screenY = worldY - mainPlayer.getWorldY() + mainPlayer.getScreenY();
-        if (death) {
-            g2.drawImage(deathImg, screenX, screenY, 70, 60, null);
-        } else {
-            if (weaponDrawFirst && weapon != null) {
-                weapon.draw(g2, directionFace, UpdateManager.tick, rotation, screenX, screenY);
-            }
-            super.draw(g2);
-            if (!weaponDrawFirst && weapon != null) {
-                weapon.draw(g2, directionFace, UpdateManager.tick, rotation, screenX, screenY);
-            }
-        }
+        super.draw(g2);
     }
 
     public void updateFromInputData(Packet_PlayerUpdateInput input) {
@@ -55,13 +45,13 @@ public class Player extends Entity {
         if (input.shooting()) {
             if (!weapon.isAutomatic()) {
                 if (shootLock) {
-                    if (weapon.triggerBlast(UpdateManager.tick)) {
+                    if (weapon.triggerBlast(core.getTick())) {
                         SoundManager.playSound(mainPlayer, weapon.getFireSound(), worldX, worldY, 5000);
                     }
                     shootLock = false;
                 }
             } else {
-                if (weapon.triggerBlast(UpdateManager.tick)) {
+                if (weapon.triggerBlast(core.getTick())) {
                     SoundManager.playSound(mainPlayer, weapon.getFireSound(), worldX, worldY, 5000);
                 }
             }
@@ -70,11 +60,11 @@ public class Player extends Entity {
         }
 
         if (input.reloading()) {
-            if (weapon.triggerReload(UpdateManager.tick)) {
+            if (weapon.triggerReload(core.getTick())) {
                 SoundManager.playSound(mainPlayer, weapon.getReloadSound(), worldX, worldY, 1000);
             }
         } else if (weapon.isReloading()) {
-            weapon.reload(UpdateManager.tick);
+            weapon.reload(core.getTick());
         }
 
         if (input.walking()) {

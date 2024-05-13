@@ -1,7 +1,7 @@
 package client.userInterface.menu;
 
 import client.clientMain.*;
-import client.enums.GameState;
+import client.enums.GameStateClient;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -9,9 +9,9 @@ import java.util.ArrayList;
 public class Menu {
     private final ArrayList<MenuComponent> components = new ArrayList<>();
 
-    public Menu(MouseHandler mouseHandler) {
+    public Menu(MouseHandler mouseHandler, GameCore core) {
         components.add(new MenuButton(20, 100, "Return to game", Constants.font25, mouseHandler,
-                () -> GameCore.changeGameState(GameState.GAME.intValue)));
+                () -> core.setGameState(GameStateClient.GAME)));
         components.add(new MenuButton(20, 150, "Exit", Constants.font25, mouseHandler,
                 () -> {
                     ClientMain.closeSocket();

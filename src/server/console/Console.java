@@ -1,10 +1,7 @@
 package server.console;
 
 import server.ServerCore;
-import server.console.commands.Command;
-import server.console.commands.Command_Exit;
-import server.console.commands.Command_Help;
-import server.console.commands.Command_PlayerList;
+import server.console.commands.*;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -23,6 +20,7 @@ public class Console {
         commandList.put("help", new Command_Help());
         commandList.put("exit", new Command_Exit());
         commandList.put("players", new Command_PlayerList());
+        commandList.put("change match time", new Command_ChangeMatchTime());
     }
 
     public void startConsole() {

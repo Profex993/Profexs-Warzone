@@ -3,7 +3,7 @@ package client.clientMain;
 import client.clientMain.serverCommunication.ServerCommunication;
 import client.entity.MainPlayer;
 import client.entity.Player;
-import client.enums.GameState;
+import client.enums.GameStateClient;
 import client.userInterface.menu.Menu;
 import shared.MapGenerator;
 import shared.object.objectClasses.Object;
@@ -17,7 +17,8 @@ import java.util.ArrayList;
 public class GameCore {
     private final GamePanel gamePanel;
     private final UpdateManager updateManager;
-    public static int gameState = GameState.GAME.intValue;
+    private GameStateClient gameState = GameStateClient.GAME;
+    private int currentMatchTime;
     private final MainPlayer mainPlayer;
     private final ArrayList<Player> playerList;
     private final TileManager tileManager;
@@ -25,10 +26,10 @@ public class GameCore {
 
     public GameCore(String name, String playerModel, Socket socket, BufferedReader in, BufferedWriter out) {
         playerList = new ArrayList<>();
-        MouseHandler mouseHandler = new MouseHandler();
-        KeyHandler keyHandler = new KeyHandler();
-        Menu menu = new Menu(mouseHandler);
-        mainPlayer = new MainPlayer(name, playerModel, 0, 0, mouseHandler, keyHandler);
+        MouseHandler mouseHandler = new MouseHandler(this);
+        KeyHandler keyHandler = new KeyHandler(this);
+        Menu menu = new Menu(mouseHandler, this);
+        mainPlayer = new MainPlayer(name, playerModel, mouseHandler, keyHandler, this);
         ServerCommunication serverCommunication = new ServerCommunication(mainPlayer, playerModel, socket, in, out,
                 keyHandler, mouseHandler, this);
         try {
@@ -37,8 +38,8 @@ public class GameCore {
             ClientMain.closeSocket(socket, in, out);
             throw new RuntimeException();
         }
-        gamePanel = new GamePanel(mainPlayer, playerList, keyHandler, mouseHandler, tileManager, menu);
-        updateManager = new UpdateManager(serverCommunication, menu, mainPlayer, mouseHandler);
+        gamePanel = new GamePanel(mainPlayer, playerList, keyHandler, mouseHandler, tileManager, menu, this);
+        updateManager = new UpdateManager(serverCommunication, menu, mainPlayer, mouseHandler, this);
 
         updateManager.startThread();
         gamePanel.startThread();
@@ -57,6 +58,14 @@ public class GameCore {
         }
     }
 
+    public void setMatchTime(int set) {
+        currentMatchTime = set;
+    }
+
+    public void decreaseCurrentMatchTime() {
+        currentMatchTime--;
+    }
+
     public void addToObjectList(Object object) {
         try {
             object.initializeRes();
@@ -67,9 +76,14 @@ public class GameCore {
         }
     }
 
-    public static void changeGameState(int change) {
-        gameState = change;
+    public GameStateClient getGameState() {
+        return gameState;
     }
+
+    public void setGameState(GameStateClient gameState) {
+        this.gameState = gameState;
+    }
+
     public GamePanel getGamePanel() {
         return gamePanel;
     }
@@ -81,5 +95,12 @@ public class GameCore {
     }
     public ArrayList<Object> getObjectList() {
         return objectList;
+    }
+    public int getTick() {
+        return updateManager.getTick();
+    }
+
+    public int getCurrentMatchTime() {
+        return currentMatchTime;
     }
 }

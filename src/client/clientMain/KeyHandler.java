@@ -1,12 +1,17 @@
 package client.clientMain;
 
-import client.enums.GameState;
+import client.enums.GameStateClient;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
 public class KeyHandler implements KeyListener {
     public boolean up, down, left, right, reload, leaderBoard;
+    private final GameCore core;
+    private GameStateClient tempGameState;
+    public KeyHandler(GameCore core) {
+        this.core = core;
+    }
 
     @Override
     public void keyTyped(KeyEvent e) {
@@ -15,7 +20,7 @@ public class KeyHandler implements KeyListener {
 
     @Override
     public void keyPressed(KeyEvent e) {
-        if (GameCore.gameState == GameState.GAME.intValue) {
+        if (core.getGameState() == GameStateClient.GAME) {
             if (e.getKeyCode() == KeyEvent.VK_W) {
                 up = true;
             } else if (e.getKeyCode() == KeyEvent.VK_S) {
@@ -32,30 +37,29 @@ public class KeyHandler implements KeyListener {
         }
 
         if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-            if (GameCore.gameState == GameState.GAME.intValue) {
-                GameCore.changeGameState(GameState.PAUSED.intValue);
+            if (core.getGameState() == GameStateClient.GAME || core.getGameState() == GameStateClient.MATCH_END) {
+                tempGameState = core.getGameState();
+                core.setGameState(GameStateClient.PAUSED);
             } else {
-                GameCore.changeGameState(GameState.GAME.intValue);
+                core.setGameState(tempGameState);
             }
         }
     }
 
     @Override
     public void keyReleased(KeyEvent e) {
-        if (GameCore.gameState == GameState.GAME.intValue) {
-            if (e.getKeyCode() == KeyEvent.VK_W) {
-                up = false;
-            } else if (e.getKeyCode() == KeyEvent.VK_S) {
-                down = false;
-            } else if (e.getKeyCode() == KeyEvent.VK_A) {
-                left = false;
-            } else if (e.getKeyCode() == KeyEvent.VK_D) {
-                right = false;
-            } else if (e.getKeyCode() == KeyEvent.VK_R) {
-                reload = false;
-            } else if (e.getKeyCode() == KeyEvent.VK_T) {
-                leaderBoard = false;
-            }
+        if (e.getKeyCode() == KeyEvent.VK_W) {
+            up = false;
+        } else if (e.getKeyCode() == KeyEvent.VK_S) {
+            down = false;
+        } else if (e.getKeyCode() == KeyEvent.VK_A) {
+            left = false;
+        } else if (e.getKeyCode() == KeyEvent.VK_D) {
+            right = false;
+        } else if (e.getKeyCode() == KeyEvent.VK_R) {
+            reload = false;
+        } else if (e.getKeyCode() == KeyEvent.VK_T) {
+            leaderBoard = false;
         }
     }
 }

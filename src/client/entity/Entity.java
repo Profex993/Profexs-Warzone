@@ -1,5 +1,7 @@
 package client.entity;
 
+import client.clientMain.GameCore;
+import client.enums.GameStateClient;
 import shared.ConstantsShared;
 import shared.weapon.weaponClasses.Weapon;
 
@@ -20,15 +22,38 @@ public class Entity {
     protected boolean weaponDrawFirst, death = false;
     protected final Rectangle solidArea = new Rectangle(worldX, worldY, ConstantsShared.playerWidth, ConstantsShared.playerHeight);
     protected double rotation;
+    protected final GameCore core;
 
-    public void draw(Graphics2D g2) {
-        g2.drawImage(getImage(), screenX, screenY, width, height, null);
-        g2.drawString(name, screenX, screenY - 5);
+    public Entity(String name, String playerModel, GameCore core) {
+        this.name = name;
+        this.core = core;
+        setPlayerImage(playerModel);
     }
 
-    public Entity(String name, String playerModel) {
-        this.name = name;
-        setPlayerImage(playerModel);
+    public void draw(Graphics2D g2) {
+        if (core.getGameState() == GameStateClient.GAME) {
+            if (death) {
+                g2.drawImage(deathImg, screenX, screenY, null);
+            } else {
+                if (weaponDrawFirst && weapon != null) {
+                    weapon.draw(g2, directionFace, core.getTick(), rotation, screenX, screenY);
+                }
+                g2.drawImage(getImage(), screenX, screenY, width, height, null);
+                g2.drawString(name, screenX, screenY - 5);
+                if (!weaponDrawFirst && weapon != null) {
+                    weapon.draw(g2, directionFace, core.getTick(), rotation, screenX, screenY);
+                }
+            }
+        } else {
+            if (death) {
+                g2.drawImage(deathImg, screenX, screenY, null);
+            } else {
+                g2.drawImage(walk2Down, screenX, screenY, width, height, null);
+                g2.drawString(name, screenX, screenY - 5);
+                weapon.draw(g2, "left", core.getTick(), 2.86, screenX, screenY);
+            }
+        }
+
     }
 
     public void setPlayerImage(String dir) {

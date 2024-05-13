@@ -3,26 +3,29 @@ package client.clientMain;
 
 import client.clientMain.serverCommunication.ServerCommunication;
 import client.entity.MainPlayer;
-import client.enums.GameState;
+import client.enums.GameStateClient;
 import client.userInterface.menu.Menu;
 import shared.object.objectClasses.Object;
 
 import java.util.ArrayList;
 
 public class UpdateManager implements Runnable {
-    public static int tick = 0;
+    private int tick = 0;
     private Thread thread;
     private final ServerCommunication serverCommunication;
     private final Menu menu;
     private final MainPlayer mainPlayer;
     private ArrayList<Object> objectList = new ArrayList<>();
     private final MouseHandler mouseHandler;
+    private final GameCore core;
 
-    public UpdateManager(ServerCommunication serverCommunication, Menu menu, MainPlayer mainPlayer, MouseHandler mouseHandler) {
+    public UpdateManager(ServerCommunication serverCommunication, Menu menu, MainPlayer mainPlayer, MouseHandler mouseHandler,
+                         GameCore core) {
         this.menu = menu;
         this.serverCommunication = serverCommunication;
         this.mainPlayer = mainPlayer;
         this.mouseHandler = mouseHandler;
+        this.core = core;
     }
 
     public void startThread() {
@@ -50,6 +53,9 @@ public class UpdateManager implements Runnable {
             }
             if (timer >= 1000000000) {
                 timer = 0;
+                if (core.getCurrentMatchTime() > 0) {
+                    core.decreaseCurrentMatchTime();
+                }
             }
         }
     }
@@ -60,12 +66,16 @@ public class UpdateManager implements Runnable {
         for (Object object : objectList) {
             object.updateClientSide(mouseHandler.getX(), mouseHandler.getY(), mainPlayer);
         }
-        if (GameCore.gameState == GameState.PAUSED.intValue) {
+        if (core.getGameState() == GameStateClient.PAUSED) {
             menu.update();
         }
     }
 
     public void setObjectList(ArrayList<Object> objectList) {
         this.objectList = objectList;
+    }
+
+    public int getTick() {
+        return tick;
     }
 }

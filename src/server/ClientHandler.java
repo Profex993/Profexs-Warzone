@@ -1,6 +1,8 @@
 package server;
 
 import server.entity.PlayerServerSide;
+import server.enums.ServerMatchState;
+import shared.ConstantsShared;
 import shared.object.objectClasses.Object;
 import shared.packets.*;
 
@@ -20,17 +22,23 @@ public class ClientHandler implements Runnable {
     private final ArrayList<PlayerServerSide> addPlayerRequestList = new ArrayList<>();
     private final ArrayList<PlayerServerSide> removePlayerRequestList = new ArrayList<>();
     private final ArrayList<Object> addObjectRequestList = new ArrayList<>(), removeObjectRequestList = new ArrayList<>();
-    private boolean changeMapRequestTrigger = true;
+    private boolean changeMapRequestTrigger = true, endMatchRequestTrigger, startMatchRequestTrigger;
     private final ArrayList<String> packetStringList = new ArrayList<>();
 
     public ClientHandler(Socket socket, BufferedReader in, BufferedWriter out, PlayerServerSide player, ServerCore core,
-                         ArrayList<PlayerServerSide> playerList) {
+                         ArrayList<PlayerServerSide> playerList, ServerMatchState matchState) {
         this.player = player;
         this.socket = socket;
         this.core = core;
         this.playerList = playerList;
         this.in = in;
         this.out = out;
+
+        if (matchState == ServerMatchState.MATCH_OVER) {
+            triggerEndOfMatch();
+        } else if (matchState == ServerMatchState.MATCH) {
+            triggerStartOfMatch();
+        }
 
         addPlayerRequestList.addAll(playerList);
     }
@@ -76,9 +84,21 @@ public class ClientHandler implements Runnable {
 
     private void makePacketList() {
         if (changeMapRequestTrigger) {
-            Packet_ChangeMap packetChangeMap = new Packet_ChangeMap(ServerCore.mapNumber);
+            Packet_ChangeMap packetChangeMap = new Packet_ChangeMap(core.getMAP_NUMBER());
             packetStringList.add(packetChangeMap.toString());
             changeMapRequestTrigger = false;
+        }
+
+        if (endMatchRequestTrigger) {
+            Packet_EndMatch packet = new Packet_EndMatch(ConstantsShared.MATCH_OVER_TIME);
+            packetStringList.add(packet.toString());
+            endMatchRequestTrigger = false;
+        }
+
+        if (startMatchRequestTrigger) {
+            Packet_StartMatch packet = new Packet_StartMatch(core.getMATCH_TIME());
+            packetStringList.add(packet.toString());
+            startMatchRequestTrigger = false;
         }
 
         if (!addPlayerRequestList.isEmpty()) {
@@ -169,6 +189,14 @@ public class ClientHandler implements Runnable {
             out.flush();
             return false;
         }
+    }
+
+    public void triggerEndOfMatch() {
+        endMatchRequestTrigger = true;
+    }
+
+    public void triggerStartOfMatch() {
+        startMatchRequestTrigger = true;
     }
 
     public ArrayList<PlayerServerSide> getAddPlayerRequestList() {

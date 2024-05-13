@@ -1,6 +1,7 @@
 package client.userInterface;
 
 import client.clientMain.Constants;
+import client.clientMain.GameCore;
 import client.clientMain.GamePanel;
 import client.clientMain.KeyHandler;
 import client.entity.Entity;
@@ -16,28 +17,27 @@ public class GameUI {
     private final ArrayList<Player> playerList;
     private int deathScreenCounter = 0;
     private final KeyHandler keyHandler;
+    private final GameCore core;
 
-    public GameUI(MainPlayer player, ArrayList<Player> playerList, int screenWidth, int screenHeight, KeyHandler keyHandler) {
+    public GameUI(MainPlayer player, ArrayList<Player> playerList, int screenWidth, int screenHeight, KeyHandler keyHandler, GameCore core) {
         this.player = player;
         this.playerList = playerList;
         this.screenWidth = screenWidth;
         this.screenHeight = screenHeight;
         this.keyHandler = keyHandler;
+        this.core = core;
     }
 
     public void draw(Graphics2D g2) {
         g2.setColor(Color.red);
         if (player.isDeath()) {
-            if (keyHandler.leaderBoard) {
-                drawLeaderBoard(g2);
-            } else {
-                drawDeathScreen(g2);
-            }
+            drawDeathScreen(g2);
         } else {
             drawGameUI(g2);
 
             if (keyHandler.leaderBoard) {
                 drawLeaderBoard(g2);
+                g2.drawString(String.valueOf(core.getCurrentMatchTime()), 5, 30);
             }
         }
     }
@@ -55,6 +55,39 @@ public class GameUI {
             g2.drawString(player.getWeapon().getCurrentMagazineSize() + "/" + player.getWeapon().getMagazineSize(), screenWidth - 230, screenHeight - 90);
             g2.drawImage(player.getWeapon().getRightImage(), screenWidth - 230, screenHeight - 70, 180, 45, null);
         }
+
+        if (core.getCurrentMatchTime() < 3) {
+            System.out.println(core.getCurrentMatchTime());
+            drawCountDown(g2);
+        }
+    }
+
+    public void drawGameOver(Graphics2D g2) {
+        if (core.getCurrentMatchTime() > 3) {
+            drawLeaderBoard(g2);
+            g2.setFont(Constants.font100);
+            g2.setColor(Color.red);
+            g2.drawString("GAME OVER",
+                    (GamePanel.getScreenWidth() - g2.getFontMetrics().stringWidth("GAME OVER")) / 2,
+                    GamePanel.getScreenHeight() / 2 + 150);
+            g2.setFont(Constants.font50);
+            ArrayList<Entity> leaderBoard = makeLeaderBoard();
+            if (leaderBoard.get(0).getKills() != 0) {
+                g2.drawString("Winner is: " + leaderBoard.get(0).getName(),
+                        (GamePanel.getScreenWidth() - g2.getFontMetrics().stringWidth("Winner is: " + leaderBoard.get(0).getName())) / 2,
+                        GamePanel.getScreenHeight() / 2 + 250);
+            }
+        } else {
+            drawCountDown(g2);
+        }
+    }
+
+    private void drawCountDown(Graphics2D g2) {
+        g2.setFont(Constants.font100);
+        g2.setColor(Color.red);
+        g2.drawString(String.valueOf(core.getCurrentMatchTime()),
+                (GamePanel.getScreenWidth() - g2.getFontMetrics().stringWidth(String.valueOf(core.getCurrentMatchTime()))) / 2,
+                GamePanel.getScreenHeight() / 2 + 150);
     }
 
     private void drawDeathScreen(Graphics2D g2) {
@@ -99,7 +132,14 @@ public class GameUI {
     private ArrayList<Entity> makeLeaderBoard() {
         ArrayList<Entity> leaderBoard = new ArrayList<>(playerList);
         leaderBoard.add(player);
-        leaderBoard.sort((e1, e2) -> Integer.compare(e2.getKills(), e1.getKills()));
+        leaderBoard.sort((e1, e2) -> {
+            int compareKills = Integer.compare(e2.getKills(), e1.getKills());
+            if (compareKills != 0) {
+                return compareKills;
+            } else {
+                return Integer.compare(e1.getDeaths(), e2.getDeaths());
+            }
+        });
         return leaderBoard;
     }
 }

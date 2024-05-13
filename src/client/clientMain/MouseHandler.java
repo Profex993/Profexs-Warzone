@@ -1,6 +1,6 @@
 package client.clientMain;
 
-import client.enums.GameState;
+import client.enums.GameStateClient;
 
 import java.awt.*;
 import java.awt.event.MouseEvent;
@@ -8,6 +8,11 @@ import java.awt.event.MouseListener;
 
 public class MouseHandler implements MouseListener {
     public boolean leftClick = false, rightClick = false;
+    private final GameCore core;
+
+    public MouseHandler(GameCore core) {
+        this.core = core;
+    }
 
     @Override
     public void mouseClicked(MouseEvent e) {
@@ -55,7 +60,7 @@ public class MouseHandler implements MouseListener {
     }
 
     public boolean isShooting() {
-        if (GameCore.gameState == GameState.GAME.intValue) {
+        if (core.getGameState() == GameStateClient.GAME) {
             return leftClick;
         } else {
             return false;

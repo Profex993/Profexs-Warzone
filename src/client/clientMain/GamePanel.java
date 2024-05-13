@@ -2,7 +2,7 @@ package client.clientMain;
 
 import client.entity.MainPlayer;
 import client.entity.Player;
-import client.enums.GameState;
+import client.enums.GameStateClient;
 import client.userInterface.GameUI;
 import client.userInterface.menu.Menu;
 import shared.object.objectClasses.Object;
@@ -24,9 +24,10 @@ public class GamePanel extends JPanel implements Runnable {
     private final Menu menu;
     private final GameUI gameUI;
     private final MouseHandler mouseHandler;
+    private final GameCore core;
 
     public GamePanel(MainPlayer player, ArrayList<Player> playerList, KeyHandler keyHandler, MouseHandler mouseHandler,
-                     TileManager tileManager, Menu menu) {
+                     TileManager tileManager, Menu menu, GameCore core) {
         this.setPreferredSize(screenSize);
         this.setBackground(Color.black);
         this.setDoubleBuffered(true);
@@ -38,7 +39,8 @@ public class GamePanel extends JPanel implements Runnable {
         this.tileManager = tileManager;
         this.mouseHandler = mouseHandler;
         this.menu = menu;
-        gameUI = new GameUI(mainPlayer, playerList, screenWidth, screenHeight, keyHandler);
+        this.core = core;
+        gameUI = new GameUI(mainPlayer, playerList, screenWidth, screenHeight, keyHandler, core);
 
         try {
             for (Object object : objectList) {
@@ -86,12 +88,15 @@ public class GamePanel extends JPanel implements Runnable {
         Graphics2D g2 = (Graphics2D) g;
         g2.setColor(Color.white);
 
-        if (GameCore.gameState == GameState.GAME.intValue) {
+        if (core.getGameState() == GameStateClient.GAME) {
             drawGame(g2);
             gameUI.draw(g2);
-        } else if (GameCore.gameState == GameState.PAUSED.intValue) {
+        } else if (core.getGameState() == GameStateClient.PAUSED) {
             drawGame(g2);
             menu.draw(g2);
+        } else if (core.getGameState() == GameStateClient.MATCH_END) {
+            drawGame(g2);
+            gameUI.drawGameOver(g2);
         }
 
         g2.setColor(Color.white);

@@ -27,19 +27,19 @@ Player Spawns With Just a Basic Pistol But More weapons Can be Found on the Map 
 ![ak74Right](https://github.com/Profex993/java-multiplayer-game/assets/68472681/2b9df08c-cfde-45c6-aa74-7cd9a8cacdaf)
 ![sksRight](https://github.com/Profex993/java-multiplayer-game/assets/68472681/b4dfde82-db9e-41a3-8b26-a676c0510236)
 
-When a Player Gets Killed, They Will Respwan on a Random Location After Few Seconds.
+When a Player Gets Killed, They Will Respawn on a Random Location After Few Seconds.
 
 ![image](https://github.com/Profex993/java-multiplayer-game/assets/68472681/ed89f272-4837-4497-806b-2151dcd8db90)
 
 <h2>Controlls</h2>
-For Now, the Controlls Can Not Be Cahnged.
+For Now, the Controlls Can Not Be Changed.
 
 - W,S,A,D - Walking
 - T - LeaderBoard
 - Left Click - Shoot
 - Right Click - Interact
 
-  When Starting the Game, User Can Select Their Apperance and Than Fill in IP and Port to Connect to a Server. <br>
+  When Starting the Game, User Can Select Their Appearance and Than Fill in IP and Port to Connect to a Server. <br>
   If Connection is Established, User Has to Select a Nick Name. Nickname Must Be Shorter Than 16 Characters and Can Not Contain Some Characters. <br>
   Here is the Name Validation Regex: ```[a-zA-Z\\d_]{1,15}```
 
@@ -48,11 +48,11 @@ For Now, the Controlls Can Not Be Cahnged.
 
 <h2>Hosting Own Servers</h2>
 
-Hosting Your Own Server is Very Easy. The Jar Aplication Can be Downloaded on This Page. <br>
+Hosting Your Own Server is Very Easy. The Jar Application Can be Downloaded on This Page. <br>
 Server is Easy to Set Up.<br>
 The Server Will Ask You to Select a Port on Which You Want to Run the Server. <br>
 <strong>A FireWall Rule Might be Needed for This Port.</strong> <br>
-The Server has its Console in Which The Hoster Can Use Commands, Available Commands Can Be Found By Typing in  ```help```.
+The Server has its Console in Which The Host Can Use Commands, Available Commands Can Be Found By Typing in  ```help```.
 
 <h2>Credit</h2>
 
@@ -63,7 +63,7 @@ This Game is Developed by Profex With Some Help From Friends. <br>
 - SUPREMERCZ for Great Soundtrack and Help With Textures
 - *Anonymous* for Helping With Textures
 
-<h2>Instalation</h2>
+<h2>Installation</h2>
 
 Jar Builds of the Game and Server Can Be Found on This GitHub Page.<br>
 [Java 19.2](https://www.oracle.com/java/technologies/javase/jdk19-archive-downloads.html) is needed.

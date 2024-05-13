@@ -41,6 +41,8 @@ public class ServerCommunication {
         processMap.put(Packet_RemoveObject.head, new Packet_Process_RemoveObject());
         processMap.put(Packet_ChangeMap.head, new Packet_Process_ChangeMap());
         processMap.put(Packet_AddObject.head, new packet_Process_AddObject());
+        processMap.put(Packet_EndMatch.head, new Packet_Process_EndMatch());
+        processMap.put(Packet_StartMatch.head, new Packet_Process_StartMatch());
     }
 
     private void startCommunication(String playerModel) {
