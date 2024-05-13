@@ -12,7 +12,7 @@ public class Weapon_PM extends Weapon_Pistol {
     public static final String name = "PM";
 
     public Weapon_PM() {
-        super(name, 5, false, 60, 30, false,
+        super(name, 12, false, 60, 30, false,
                 0, 8, 250, false);
     }
 
@@ -33,6 +33,6 @@ public class Weapon_PM extends Weapon_Pistol {
     }
 
     public static Weapon_Core getServerSideWeapon() {
-        return new Weapon_Core(name, 5, false, 60, 30, 0, 8, 360);
+        return new Weapon_Core(name, 12, false, 60, 30, 0, 8, 360);
     }
 }

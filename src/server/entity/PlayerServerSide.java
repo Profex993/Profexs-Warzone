@@ -5,10 +5,12 @@ import server.ServerCore;
 import server.ServerUpdateManager;
 import server.enums.ServerMatchState;
 import shared.ConstantsShared;
+import shared.ObjectGenerator;
 import shared.object.objectClasses.Object;
 import shared.packets.Packet_AddPlayer;
 import shared.packets.Packet_PlayerInputToServer;
 import shared.weapon.Weapon_PM;
+import shared.weapon.Weapon_SKS;
 import shared.weapon.weaponClasses.Weapon;
 import shared.weapon.weaponClasses.WeaponGenerator;
 import shared.weapon.weaponClasses.Weapon_Core;
@@ -28,7 +30,7 @@ public class PlayerServerSide {
     private String direction = "down", directionFace, killedBy = "";
     private boolean shootLock = true, shooting = false, reloadTrigger = false, walking, death, interactTrigger = true;
     private final Rectangle solidArea;
-    private Weapon_Core weapon = Weapon_PM.getServerSideWeapon();
+    private Weapon_Core weapon = Weapon_SKS.getServerSideWeapon();
 
     public PlayerServerSide(ServerUpdateManager updateManager, CollisionManager collisionManager, ArrayList<Object> objectList,
                             ServerCore core) {
@@ -162,6 +164,11 @@ public class PlayerServerSide {
         death = true;
         deaths++;
         respawnDelay = updateManager.getTick() + 600;
+        try {
+            core.addObject(ObjectGenerator.getObjectByWeapon("Object_Weapon_" + weapon.getName(), worldX, worldY));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private void respawn() {

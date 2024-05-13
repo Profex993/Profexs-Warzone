@@ -12,7 +12,7 @@ public class Weapon_AK extends Weapon_Rifle {
     public static final String name = "AK";
 
     public Weapon_AK() {
-        super(name, 20, true, 80, 30, true, 12,
+        super(name, 10, true, 80, 30, true, 12,
                 30, 220, false);
     }
 
@@ -35,7 +35,7 @@ public class Weapon_AK extends Weapon_Rifle {
     }
 
     public static Weapon_Core getServerSideWeapon() {
-        return new Weapon_Core(name, 20, true, 120, 30,
+        return new Weapon_Core(name, 10, true, 120, 30,
                 12, 30, 220);
     }
 }
