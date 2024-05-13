@@ -10,6 +10,7 @@ import java.util.Objects;
 @SuppressWarnings("unused")
 public class Weapon_AK extends Weapon_Rifle {
     public static final String name = "AK";
+
     public Weapon_AK() {
         super(name, 20, true, 80, 30, true, 12,
                 30, 220, false);

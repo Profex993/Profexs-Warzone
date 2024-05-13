@@ -10,7 +10,7 @@ public record Packet_ServerOutputToClient(int x, int y, String directionFace, bo
 
     public static Packet_ServerOutputToClient parseFromString(String line) throws IOException {
         try {
-            String[] parts = line.split(ConstantsShared.protocolVariableSplit);
+            String[] parts = line.split(ConstantsShared.PROTOCOL_VARIABLE_SPLIT);
             return new Packet_ServerOutputToClient(Integer.parseInt(parts[0]), Integer.parseInt(parts[1]), parts[2],
                     Boolean.parseBoolean(parts[3]), parts[4], Integer.parseInt(parts[5]), Boolean.parseBoolean(parts[6]), parts[7],
                     Integer.parseInt(parts[8]), Integer.parseInt(parts[9]));
@@ -26,7 +26,7 @@ public record Packet_ServerOutputToClient(int x, int y, String directionFace, bo
     }
 
     public String toString() {
-        String split = ConstantsShared.protocolVariableSplit;
+        String split = ConstantsShared.PROTOCOL_VARIABLE_SPLIT;
         return x + split + y + split + directionFace + split + walking + split + weapon + split + health + split + death + split + killedBy
                 + split + kills + split + deaths;
     }

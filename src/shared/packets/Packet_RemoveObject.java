@@ -21,6 +21,6 @@ public record Packet_RemoveObject(int objectHash) {
     }
 
     public String toString() {
-        return head + ConstantsShared.protocolLineSplit + objectHash;
+        return head + ConstantsShared.PROTOCOL_LINE_SPLIT + objectHash;
     }
 }

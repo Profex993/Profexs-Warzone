@@ -13,14 +13,14 @@ import java.util.Objects;
 
 public class Entity {
     protected int worldX, worldY, screenX, screenY, walkCounter = 0, idleCounter = 0, walkAnimNum = 1, kills, deaths;
-    protected final int width = ConstantsShared.playerWidth, height = ConstantsShared.playerHeight;
+    protected final int width = ConstantsShared.PLAYER_WIDTH, height = ConstantsShared.PLAYER_HEIGHT;
     protected final String name;
     protected String directionFace = "down";
     protected Weapon weapon;
     protected BufferedImage walk1Right, walk2Right, walk3Right, walk1Left,
             walk2Left, walk3Left, walk1Up, walk2Up, walk3Up, walk1Down, walk2Down, walk3Down, deathImg;
     protected boolean weaponDrawFirst, death = false;
-    protected final Rectangle solidArea = new Rectangle(worldX, worldY, ConstantsShared.playerWidth, ConstantsShared.playerHeight);
+    protected final Rectangle solidArea = new Rectangle(worldX, worldY, ConstantsShared.PLAYER_WIDTH, ConstantsShared.PLAYER_HEIGHT);
     protected double rotation;
     protected final GameCore core;
 

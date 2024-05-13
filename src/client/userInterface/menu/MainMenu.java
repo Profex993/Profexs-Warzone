@@ -49,7 +49,8 @@ public class MainMenu {
             try {
                 background = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("menu/mainMenuBackground.png")));
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                ClientMain.showErrorWindowAndExit("can not load resources", e);
+                throw new RuntimeException();
             }
             createComponents();
             playerModelMenu.setPlayerImage(String.valueOf(dropBox.getSelectedItem()));
@@ -168,17 +169,20 @@ public class MainMenu {
                 ClientMain.startGame(ipBox.getText(), Integer.parseInt(portBox.getText()));
                 swapButtons();
             } catch (Exception ex) {
-                System.out.println("no server");
+                JOptionPane.showMessageDialog(null, "no server found", "Error",
+                        JOptionPane.INFORMATION_MESSAGE);
             }
         }
 
         private void enterName() {
             try {
-                ClientMain.setName(userBox.getText(), String.valueOf(dropBox.getSelectedItem()));
+                ClientMain.checkName(userBox.getText());
+                ClientMain.lunch(userBox.getText(), String.valueOf(dropBox.getSelectedItem()));
                 SoundManager.stopMainMenuSoundtrack();
                 window.dispose();
             } catch (Exception ex) {
-                System.out.println(ex.getMessage());
+                JOptionPane.showMessageDialog(null, ex.getMessage(), "Error",
+                        JOptionPane.INFORMATION_MESSAGE);
             }
         }
 

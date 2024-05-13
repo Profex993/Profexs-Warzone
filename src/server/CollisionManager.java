@@ -12,8 +12,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class CollisionManager {
-    private final int maxWorldColum = ConstantsShared.maxWorldWidth;
-    private final int maxWorldRow = ConstantsShared.maxWorldHeight;
+    private final int maxWorldColum = ConstantsShared.MAX_WORLD_WIDTH;
+    private final int maxWorldRow = ConstantsShared.MAX_WORLD_HEIGHT;
     private final int[][] mapTileNumber;
     private final boolean[] tiles;
     private final ArrayList<Object> objectList;
@@ -52,7 +52,7 @@ public class CollisionManager {
         int topY = player.getSolidArea().y + 26;
         int bottomY = player.getSolidArea().y + player.getSolidArea().height;
 
-        int tileSize = ConstantsShared.tileSize;
+        int tileSize = ConstantsShared.TILE_SIZE;
         int leftCol = leftX / tileSize;
         int rightCol = rightX / tileSize;
         int topRow = topY / tileSize;
@@ -61,25 +61,25 @@ public class CollisionManager {
         try {
             switch (player.getDirection()) {
                 case "up" -> {
-                    topRow = (topY - ConstantsShared.playerSpeed) / tileSize;
+                    topRow = (topY - ConstantsShared.PLAYER_SPEED) / tileSize;
                     if (tiles[mapTileNumber[leftCol][topRow]] || tiles[mapTileNumber[rightCol][topRow]]) {
                         return false;
                     }
                 }
                 case "down" -> {
-                    bottomRow = (bottomY + ConstantsShared.playerSpeed) / tileSize;
+                    bottomRow = (bottomY + ConstantsShared.PLAYER_SPEED) / tileSize;
                     if (tiles[mapTileNumber[leftCol][bottomRow]] || tiles[mapTileNumber[rightCol][bottomRow]]) {
                         return false;
                     }
                 }
                 case "left" -> {
-                    leftCol = (leftX - ConstantsShared.playerSpeed) / tileSize;
+                    leftCol = (leftX - ConstantsShared.PLAYER_SPEED) / tileSize;
                     if (tiles[mapTileNumber[leftCol][topRow]] || tiles[mapTileNumber[leftCol][bottomRow]]) {
                         return false;
                     }
                 }
                 case "right" -> {
-                    rightCol = (rightX + ConstantsShared.playerSpeed) / tileSize;
+                    rightCol = (rightX + ConstantsShared.PLAYER_SPEED) / tileSize;
                     if (tiles[mapTileNumber[rightCol][topRow]] || tiles[mapTileNumber[rightCol][bottomRow]]) {
                         return false;
                     }
@@ -92,7 +92,7 @@ public class CollisionManager {
     }
 
     public boolean checkTileProjectile(Rectangle solidArea) {
-        int tileSize = ConstantsShared.tileSize;
+        int tileSize = ConstantsShared.TILE_SIZE;
         int tileX = solidArea.x / tileSize;
         int tileY = solidArea.y / tileSize;
         if (tileX >= 0 && tileX < mapTileNumber.length && tileY >= 0 && tileY < mapTileNumber[0].length) {
@@ -105,12 +105,12 @@ public class CollisionManager {
         for (Object object : objectList) {
             if (object.isCollision()) {
                 Rectangle modifiedPlayerSolidArea = new Rectangle(player.getWorldX(), player.getWorldY(),
-                        ConstantsShared.playerWidth, ConstantsShared.playerHeight);
+                        ConstantsShared.PLAYER_WIDTH, ConstantsShared.PLAYER_HEIGHT);
                 switch (player.getDirection()) {
-                    case "up" -> modifiedPlayerSolidArea.y -= ConstantsShared.playerSpeed;
-                    case "down" -> modifiedPlayerSolidArea.y += ConstantsShared.playerSpeed;
-                    case "left" -> modifiedPlayerSolidArea.x -= ConstantsShared.playerSpeed;
-                    case "right" -> modifiedPlayerSolidArea.x += ConstantsShared.playerSpeed;
+                    case "up" -> modifiedPlayerSolidArea.y -= ConstantsShared.PLAYER_SPEED;
+                    case "down" -> modifiedPlayerSolidArea.y += ConstantsShared.PLAYER_SPEED;
+                    case "left" -> modifiedPlayerSolidArea.x -= ConstantsShared.PLAYER_SPEED;
+                    case "right" -> modifiedPlayerSolidArea.x += ConstantsShared.PLAYER_SPEED;
                 }
                 if (modifiedPlayerSolidArea.intersects(object.getSolidArea())) {
                     return false;

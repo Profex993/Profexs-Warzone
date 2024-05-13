@@ -11,11 +11,9 @@ import shared.packets.*;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
-import java.net.Socket;
 import java.util.HashMap;
 
 public class ServerCommunication {
-    private final Socket socket;
     private final BufferedWriter out;
     private final BufferedReader in;
     private final MainPlayer mainPlayer;
@@ -24,11 +22,10 @@ public class ServerCommunication {
     private final GameCore core;
     private final HashMap<String, Packet_Process> processMap = new HashMap<>();
 
-    public ServerCommunication(MainPlayer mainPlayer, String playerModel, Socket socket, BufferedReader in, BufferedWriter out,
-                               KeyHandler keyHandler, MouseHandler mouseHandler, GameCore core) {
+    public ServerCommunication(MainPlayer mainPlayer, String playerModel, BufferedReader in, BufferedWriter out, KeyHandler keyHandler,
+                               MouseHandler mouseHandler, GameCore core) {
         this.mainPlayer = mainPlayer;
         this.out = out;
-        this.socket = socket;
         this.in = in;
         this.keyHandler = keyHandler;
         this.mouseHandler = mouseHandler;
@@ -52,8 +49,7 @@ public class ServerCommunication {
             out.newLine();
             out.flush();
         } catch (IOException e) {
-            ClientMain.closeSocket(socket, in, out);
-            throw new RuntimeException(e);
+            ClientMain.showErrorWindowAndExit("server connection lost", e);
         }
     }
 
@@ -74,9 +70,7 @@ public class ServerCommunication {
                 processMap.get(packet.head).process(core, packet.body());
             }
         } catch (Exception e) {
-            ClientMain.closeSocket(socket, in, out);
-            e.printStackTrace();
-            System.exit(1);
+            ClientMain.showErrorWindowAndExit("server connection lost", e);
         }
     }
 
@@ -88,7 +82,7 @@ public class ServerCommunication {
     private record Packet(String head, String body) {
         public static Packet parseFromString(String inputLine) throws IOException {
             try {
-                String[] parts = inputLine.split(ConstantsShared.protocolLineSplit);
+                String[] parts = inputLine.split(ConstantsShared.PROTOCOL_LINE_SPLIT);
                 return new Packet(parts[0], parts[1]);
             } catch (Exception e) {
                 throw new IOException("corrupted input");

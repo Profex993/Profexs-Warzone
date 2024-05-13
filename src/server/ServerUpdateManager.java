@@ -9,13 +9,12 @@ import java.util.ArrayList;
 
 public class ServerUpdateManager implements Runnable {
     private Thread thread;
-    private int tick = 0;
-    private int gameTime = 0;
-    private ServerMatchState matchState = ServerMatchState.MATCH;
     private final ArrayList<PlayerServerSide> playerList;
     private final ArrayList<ProjectileServerSide> projectileList = new ArrayList<>();
     private final ArrayList<ClientHandler> clientHandlers;
     private final ServerCore core;
+    private int tick = 0;
+    private int gameTime = 0;
 
     public ServerUpdateManager(ArrayList<PlayerServerSide> playerList, ArrayList<ClientHandler> clientHandlers, ServerCore core) {
         this.playerList = playerList;
@@ -69,14 +68,14 @@ public class ServerUpdateManager implements Runnable {
     private void updateTime() {
         gameTime++;
 
-        if (matchState == ServerMatchState.MATCH && gameTime > core.getMATCH_TIME()) {
-            matchState = ServerMatchState.MATCH_OVER;
+        if (core.getMatchState() == ServerMatchState.MATCH && gameTime > core.getMATCH_TIME()) {
+            core.setMatchState(ServerMatchState.MATCH_OVER);
             gameTime = 0;
             for (ClientHandler clientHandler : clientHandlers) {
                 clientHandler.triggerEndOfMatch();
             }
-        } else if (matchState == ServerMatchState.MATCH_OVER && gameTime > ConstantsShared.MATCH_OVER_TIME) {
-            matchState = ServerMatchState.MATCH;
+        } else if (core.getMatchState() == ServerMatchState.MATCH_OVER && gameTime > ConstantsShared.MATCH_OVER_TIME) {
+            core.setMatchState(ServerMatchState.MATCH);
             gameTime = 0;
             for (ClientHandler clientHandler : clientHandlers) {
                 clientHandler.triggerStartOfMatch();
@@ -85,10 +84,6 @@ public class ServerUpdateManager implements Runnable {
                 player.resetPlayer();
             }
         }
-    }
-
-    public ServerMatchState getMatchState() {
-        return matchState;
     }
 
     public int getTick() {

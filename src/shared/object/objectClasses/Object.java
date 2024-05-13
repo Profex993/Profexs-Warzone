@@ -31,10 +31,10 @@ public abstract class Object {
         this.collision = false;
         this.imagePath = imagePath;
         this.drawUnderPlayer = drawUnderPlayer;
-        this.triggerArea = new Rectangle(worldX - ConstantsShared.objectTriggerAreaOffset,
-                worldY - ConstantsShared.objectTriggerAreaOffset,
-                width + 2 * ConstantsShared.objectTriggerAreaOffset,
-                height + ConstantsShared.objectTriggerAreaOffset);
+        this.triggerArea = new Rectangle(worldX - ConstantsShared.OBJECT_TRIGGER_AREA_OFFSET,
+                worldY - ConstantsShared.OBJECT_TRIGGER_AREA_OFFSET,
+                width + 2 * ConstantsShared.OBJECT_TRIGGER_AREA_OFFSET,
+                height + ConstantsShared.OBJECT_TRIGGER_AREA_OFFSET);
     }
 
     public Object(int worldX, int worldY, int width, int height, boolean intractable, String imagePath, Rectangle solidArea,
@@ -48,10 +48,10 @@ public abstract class Object {
         this.collision = true;
         this.imagePath = imagePath;
         this.drawUnderPlayer = drawUnderPlayer;
-        this.triggerArea = new Rectangle(worldX - ConstantsShared.objectTriggerAreaOffset,
-                worldY - ConstantsShared.objectTriggerAreaOffset,
-                width + 2 * ConstantsShared.objectTriggerAreaOffset,
-                (int) (height + 1.5 * ConstantsShared.objectTriggerAreaOffset));
+        this.triggerArea = new Rectangle(worldX - ConstantsShared.OBJECT_TRIGGER_AREA_OFFSET,
+                worldY - ConstantsShared.OBJECT_TRIGGER_AREA_OFFSET,
+                width + 2 * ConstantsShared.OBJECT_TRIGGER_AREA_OFFSET,
+                (int) (height + 1.5 * ConstantsShared.OBJECT_TRIGGER_AREA_OFFSET));
     }
 
     public void initializeRes() throws IOException {

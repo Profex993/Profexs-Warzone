@@ -16,7 +16,7 @@ public class TileManager {
     private final String[] tiles;
     private final BufferedImage[] tileImages;
     private final int[][] mapTileNumber;
-    private final int maxWorldColum = ConstantsShared.maxWorldWidth, maxWorldRow = ConstantsShared.maxWorldHeight;
+    private final int maxWorldColum = ConstantsShared.MAX_WORLD_WIDTH, maxWorldRow = ConstantsShared.MAX_WORLD_HEIGHT;
 
     public TileManager(MainPlayer mainPlayer) throws IOException {
         this.player = mainPlayer;
@@ -62,7 +62,7 @@ public class TileManager {
 
         while (worldCol < maxWorldColum && worldRow < maxWorldRow) {
             int tileNum = mapTileNumber[worldCol][worldRow];
-            int size = ConstantsShared.tileSize;
+            int size = ConstantsShared.TILE_SIZE;
             int worldX = worldCol * size;
             int worldY = worldRow * size;
             int screenX = worldX - playerWorldX + player.getScreenX();

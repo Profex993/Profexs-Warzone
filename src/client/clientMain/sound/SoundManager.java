@@ -42,8 +42,7 @@ public class SoundManager {
             clip.open(audioInputStream);
             clip.start();
         } catch (Exception e) {
-            ClientMain.closeSocket();
-            throw new RuntimeException(e);
+            ClientMain.showErrorWindowAndExit("can not load resources", e);
         }
     }
 
@@ -60,8 +59,7 @@ public class SoundManager {
                 gainControl.setValue((float) (Math.log(volume) / Math.log(10.0) * 50.0));
                 clip.start();
             } catch (Exception e) {
-                ClientMain.closeSocket();
-                throw new RuntimeException(e);
+                ClientMain.showErrorWindowAndExit("can not load resources", e);
             }
         }
     }

@@ -21,20 +21,20 @@ import java.util.ArrayList;
 public class PlayerServerSide {
     private final ServerUpdateManager updateManager;
     private final CollisionManager collisionManager;
-    private String id, playerModel;
+    private final ArrayList<Object> objectList;
+    private final ServerCore core;
+    private String name, playerModel;
     private int worldX = 100, worldY = 500, health = 100, kills, deaths, respawnDelay;
     private double rotation = 0;
     private String direction = "down", directionFace, killedBy = "";
     private boolean shootLock = true, shooting = false, reloadTrigger = false, walking, death, interactTrigger = true;
     private final Rectangle solidArea;
     private Weapon_Core weapon = Weapon_AK.getServerSideWeapon();
-    private final ArrayList<Object> objectList;
-    private final ServerCore core;
 
     public PlayerServerSide(ServerUpdateManager updateManager, CollisionManager collisionManager, ArrayList<Object> objectList,
                             ServerCore core) {
         this.updateManager = updateManager;
-        solidArea = new Rectangle(worldX, worldY, ConstantsShared.playerWidth, ConstantsShared.playerHeight);
+        solidArea = new Rectangle(worldX, worldY, ConstantsShared.PLAYER_WIDTH, ConstantsShared.PLAYER_HEIGHT);
         this.collisionManager = collisionManager;
         this.objectList = objectList;
         this.core = core;
@@ -58,7 +58,7 @@ public class PlayerServerSide {
                 directionFace = "left";
             }
 
-            if (updateManager.getMatchState() == ServerMatchState.MATCH) {
+            if (core.getMatchState() == ServerMatchState.MATCH) {
                 if (input.up()) {
                     direction = "up";
                 } else if (input.down()) {
@@ -71,16 +71,16 @@ public class PlayerServerSide {
 
                 if (collisionManager.checkTile(this) && collisionManager.checkObject(this)) {
                     if (input.up()) {
-                        worldY -= ConstantsShared.playerSpeed;
+                        worldY -= ConstantsShared.PLAYER_SPEED;
                         walking = true;
                     } else if (input.down()) {
-                        worldY += ConstantsShared.playerSpeed;
+                        worldY += ConstantsShared.PLAYER_SPEED;
                         walking = true;
                     } else if (input.left()) {
-                        worldX -= ConstantsShared.playerSpeed;
+                        worldX -= ConstantsShared.PLAYER_SPEED;
                         walking = true;
                     } else if (input.right()) {
-                        worldX += ConstantsShared.playerSpeed;
+                        worldX += ConstantsShared.PLAYER_SPEED;
                         walking = true;
                     } else {
                         walking = false;
@@ -131,13 +131,13 @@ public class PlayerServerSide {
     }
 
     public void update() {
-        if (death && updateManager.getMatchState() == ServerMatchState.MATCH) {
+        if (death && core.getMatchState() == ServerMatchState.MATCH) {
             respawn();
         }
     }
 
     public void setInitData(Packet_AddPlayer data) {
-        this.id = data.name();
+        this.name = data.name();
         this.playerModel = data.playerModel();
     }
 
@@ -154,7 +154,7 @@ public class PlayerServerSide {
         if (health <= 0 && !death) {
             death();
             enemyPlayer.addKill();
-            killedBy = enemyPlayer.getId();
+            killedBy = enemyPlayer.getName();
         }
     }
 
@@ -181,9 +181,10 @@ public class PlayerServerSide {
         kills = 0;
         respawn();
     }
+
     public boolean isWalking() {
         // prevent walking after match is over
-        if (updateManager.getMatchState() == ServerMatchState.MATCH) {
+        if (core.getMatchState() == ServerMatchState.MATCH) {
             return walking;
         } else {
             return false;
@@ -194,8 +195,8 @@ public class PlayerServerSide {
         kills++;
     }
 
-    public String getId() {
-        return id;
+    public String getName() {
+        return name;
     }
 
     public String getPlayerModel() {
@@ -204,7 +205,7 @@ public class PlayerServerSide {
 
     @Override
     public String toString() {
-        return "id: " + id;
+        return "id: " + name;
     }
 
     public int getWorldX() {

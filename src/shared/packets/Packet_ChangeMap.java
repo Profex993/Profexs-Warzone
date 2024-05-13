@@ -16,6 +16,6 @@ public record Packet_ChangeMap(int mapNumber) {
     }
 
     public String toString() {
-        return head + ConstantsShared.protocolLineSplit + mapNumber;
+        return head + ConstantsShared.PROTOCOL_LINE_SPLIT + mapNumber;
     }
 }

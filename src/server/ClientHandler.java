@@ -104,7 +104,7 @@ public class ClientHandler implements Runnable {
         if (!addPlayerRequestList.isEmpty()) {
             for (PlayerServerSide player : addPlayerRequestList) {
                 if (this.player != player) {
-                    Packet_AddPlayer packet = new Packet_AddPlayer(player.getId(), player.getPlayerModel());
+                    Packet_AddPlayer packet = new Packet_AddPlayer(player.getName(), player.getPlayerModel());
                     packetStringList.add(packet.toString());
                 }
             }
@@ -155,7 +155,7 @@ public class ClientHandler implements Runnable {
                 if (checkNameValidity(nameTest, out)) {
                     if (checkNameAvailability(nameTest, out)) {
                         test = false;
-                        out.write("name available");
+                        out.write(ConstantsShared.NAME_AVAILABLE);
                         out.newLine();
                         out.flush();
                     }
@@ -170,8 +170,8 @@ public class ClientHandler implements Runnable {
 
     private boolean checkNameAvailability(String name, BufferedWriter out) throws Exception {
         for (PlayerServerSide playerServerSide : playerList) {
-            if (playerServerSide != player && playerServerSide.getId().equals(name)) {
-                out.write("name taken");
+            if (playerServerSide != player && playerServerSide.getName().equals(name)) {
+                out.write(ConstantsShared.NAME_TAKEN);
                 out.newLine();
                 out.flush();
                 return false;
@@ -184,7 +184,7 @@ public class ClientHandler implements Runnable {
         if (name.matches("[a-zA-Z\\d_]{1,15}")) {
             return true;
         } else {
-            out.write("invalid name");
+            out.write(ConstantsShared.INVALID_NAME);
             out.newLine();
             out.flush();
             return false;

@@ -1,6 +1,7 @@
 package server;
 
 import server.entity.PlayerServerSide;
+import server.enums.ServerMatchState;
 import shared.MapGenerator;
 import shared.object.objectClasses.Object;
 
@@ -13,6 +14,7 @@ import java.util.ArrayList;
 public class ServerCore {
     private final int MAP_NUMBER = 0; // this variable will be used for selecting map later
     private int MATCH_TIME = 60;
+    private ServerMatchState matchState = ServerMatchState.MATCH;
     private final ArrayList<PlayerServerSide> playerList = new ArrayList<>();
     private final ArrayList<Object> objectList = MapGenerator.getMapObjects(MAP_NUMBER);
     private final ArrayList<ClientHandler> clientHandlerList = new ArrayList<>();
@@ -46,7 +48,7 @@ public class ServerCore {
         BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         BufferedWriter out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
         PlayerServerSide player = new PlayerServerSide(serverUpdateManager, collisionManager, objectList, this);
-        return new ClientHandler(socket, in, out, player, this, playerList, serverUpdateManager.getMatchState());
+        return new ClientHandler(socket, in, out, player, this, playerList, matchState);
     }
 
     public static void closeSocket(Socket socket, BufferedWriter out, BufferedReader in) {
@@ -104,5 +106,13 @@ public class ServerCore {
 
     public int getMATCH_TIME() {
         return MATCH_TIME;
+    }
+
+    public ServerMatchState getMatchState() {
+        return matchState;
+    }
+
+    public void setMatchState(ServerMatchState matchState) {
+        this.matchState = matchState;
     }
 }

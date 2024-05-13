@@ -44,8 +44,7 @@ public class MainPlayer extends Entity {
                 weapon = WeaponGenerator.getWeaponByName(input.weapon());
                 SoundManager.playSound(SoundManager.switchWeapon);
             } catch (Exception e) {
-                ClientMain.closeSocket();
-                throw new RuntimeException(e);
+                ClientMain.showErrorWindowAndExit("weapon change exception", e);
             }
         }
 

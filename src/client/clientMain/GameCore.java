@@ -11,7 +11,6 @@ import shared.object.objectClasses.Object;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
-import java.net.Socket;
 import java.util.ArrayList;
 
 public class GameCore {
@@ -24,18 +23,18 @@ public class GameCore {
     private final TileManager tileManager;
     private ArrayList<Object> objectList;
 
-    public GameCore(String name, String playerModel, Socket socket, BufferedReader in, BufferedWriter out) {
+    public GameCore(String name, String playerModel, BufferedReader in, BufferedWriter out) {
         playerList = new ArrayList<>();
         MouseHandler mouseHandler = new MouseHandler(this);
         KeyHandler keyHandler = new KeyHandler(this);
         Menu menu = new Menu(mouseHandler, this);
         mainPlayer = new MainPlayer(name, playerModel, mouseHandler, keyHandler, this);
-        ServerCommunication serverCommunication = new ServerCommunication(mainPlayer, playerModel, socket, in, out,
+        ServerCommunication serverCommunication = new ServerCommunication(mainPlayer, playerModel, in, out,
                 keyHandler, mouseHandler, this);
         try {
             tileManager = new TileManager(mainPlayer);
         } catch (Exception e) {
-            ClientMain.closeSocket(socket, in, out);
+            ClientMain.showErrorWindowAndExit("can not load resources", e);
             throw new RuntimeException();
         }
         gamePanel = new GamePanel(mainPlayer, playerList, keyHandler, mouseHandler, tileManager, menu, this);
@@ -53,8 +52,7 @@ public class GameCore {
         try {
             tileManager.loadMap(mapNumber);
         } catch (IOException e) {
-            ClientMain.closeSocket();
-            throw new RuntimeException(e);
+            ClientMain.showErrorWindowAndExit("can not load resources", e);
         }
     }
 
@@ -71,8 +69,7 @@ public class GameCore {
             object.initializeRes();
             objectList.add(object);
         } catch (IOException e) {
-            ClientMain.closeSocket();
-            throw new RuntimeException(e);
+            ClientMain.showErrorWindowAndExit("can not load resources", e);
         }
     }
 
@@ -87,15 +84,19 @@ public class GameCore {
     public GamePanel getGamePanel() {
         return gamePanel;
     }
+
     public MainPlayer getMainPlayer() {
         return mainPlayer;
     }
+
     public ArrayList<Player> getPlayerList() {
         return playerList;
     }
+
     public ArrayList<Object> getObjectList() {
         return objectList;
     }
+
     public int getTick() {
         return updateManager.getTick();
     }

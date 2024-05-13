@@ -9,9 +9,9 @@ import java.util.Objects;
 
 @SuppressWarnings("unused")
 public class Weapon_Sks extends Weapon_Rifle {
-    public static final String name = "SKS";
+    public static final String name = "Sks";
     public Weapon_Sks() {
-        super("SKS", 20, false, 80, 30, false,
+        super(name, 20, false, 80, 30, false,
                 0, 10, 360, true);
     }
 
@@ -30,6 +30,6 @@ public class Weapon_Sks extends Weapon_Rifle {
     }
 
     public static Weapon_Core getServerSideWeapon() {
-        return new Weapon_Core("SKS", 20, false, 80, 30, 0, 10, 4 * 120);
+        return new Weapon_Core(name, 20, false, 80, 30, 0, 10, 4 * 120);
     }
 }

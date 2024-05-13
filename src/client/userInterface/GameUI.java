@@ -57,7 +57,6 @@ public class GameUI {
         }
 
         if (core.getCurrentMatchTime() < 3) {
-            System.out.println(core.getCurrentMatchTime());
             drawCountDown(g2);
         }
     }

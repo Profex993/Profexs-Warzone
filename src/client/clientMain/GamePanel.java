@@ -47,8 +47,7 @@ public class GamePanel extends JPanel implements Runnable {
                 object.initializeRes();
             }
         } catch (IOException e) {
-            ClientMain.closeSocket();
-            throw new RuntimeException(e);
+            ClientMain.showErrorWindowAndExit("can not load resources", e);
         }
     }
 
@@ -131,8 +130,8 @@ public class GamePanel extends JPanel implements Runnable {
                 object.initializeRes();
             }
         } catch (IOException e) {
-            ClientMain.closeSocket();
-            throw new RuntimeException(e);
+            ClientMain.showErrorWindowAndExit("can not load resources", e);
+            throw new RuntimeException();
         }
     }
 

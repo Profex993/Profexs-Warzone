@@ -1,6 +1,7 @@
 package client.clientMain;
 
 import client.userInterface.menu.MainMenu;
+import shared.ConstantsShared;
 
 import javax.swing.*;
 import java.io.*;
@@ -26,13 +27,12 @@ public class ClientMain {
         } catch (ConnectException | UnknownHostException e) {
             throw new Exception("no server found");
         } catch (IOException e) {
-            System.out.println(e.getMessage());
-            throw new RuntimeException(e);
+            showErrorWindowAndExit("start game exception", e);
         }
     }
 
     public static void lunch(String username, String playerModel) {
-        GameCore core = new GameCore(username, playerModel, socket, in, out);
+        GameCore core = new GameCore(username, playerModel, in, out);
 
         JFrame window = new JFrame();
         window.setTitle("Profex's warzone");
@@ -43,12 +43,7 @@ public class ClientMain {
         window.pack();
     }
 
-    public static void setName(String username, String playerModel) throws Exception {
-        checkName(socket, in, out, username);
-        lunch(username, playerModel);
-    }
-
-    public static void checkName(Socket socket, BufferedReader in, BufferedWriter out, String username) throws Exception {
+    public static void checkName(String username) throws Exception {
         String message;
         try {
             out.write(username);
@@ -56,22 +51,27 @@ public class ClientMain {
             out.flush();
             message = in.readLine();
         } catch (Exception e) {
-            closeSocket(socket, in, out);
+            showErrorWindowAndExit("name exception", e);
             throw new RuntimeException(e);
         }
-        if (!message.equals("name available")) {
+        if (message.equals(ConstantsShared.NAME_TAKEN)) {
             throw new Exception("name taken");
+        } else if (message.equals(ConstantsShared.INVALID_NAME)) {
+            throw new Exception("invalid name");
         }
     }
 
-    public static void closeSocket(Socket socket, BufferedReader in, BufferedWriter out) {
+    public static void showErrorWindowAndExit(String message, Exception e) {
         try {
             socket.close();
             out.close();
             in.close();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        } catch (IOException ex) {
+            throw new RuntimeException(ex);
         }
+        String errorMessage = message + ":\n" + e.getMessage() + "\n" + e;
+        JOptionPane.showMessageDialog(null, errorMessage, "Error", JOptionPane.ERROR_MESSAGE);
+        System.exit(1);
     }
 
     public static void closeSocket() {
@@ -79,8 +79,8 @@ public class ClientMain {
             socket.close();
             out.close();
             in.close();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        } catch (IOException ex) {
+            throw new RuntimeException(ex);
         }
     }
 }

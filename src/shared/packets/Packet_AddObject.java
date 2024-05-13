@@ -10,7 +10,7 @@ public record Packet_AddObject(String name, int x, int y) {
 
     public static Packet_AddObject parseString(String line) throws IOException {
         try {
-            String[] parts = line.split(ConstantsShared.protocolVariableSplit);
+            String[] parts = line.split(ConstantsShared.PROTOCOL_VARIABLE_SPLIT);
             return new Packet_AddObject(parts[0], Integer.parseInt(parts[1]), Integer.parseInt(parts[2]));
         } catch (Exception e) {
             throw new IOException("corrupted input\n" + e);
@@ -22,7 +22,7 @@ public record Packet_AddObject(String name, int x, int y) {
     }
 
     public String toString() {
-        String split = ConstantsShared.protocolVariableSplit;
-        return head + ConstantsShared.protocolLineSplit + name + split + x + split + y;
+        String split = ConstantsShared.PROTOCOL_VARIABLE_SPLIT;
+        return head + ConstantsShared.PROTOCOL_LINE_SPLIT + name + split + x + split + y;
     }
 }

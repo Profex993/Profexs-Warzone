@@ -10,7 +10,7 @@ public record Packet_PlayerInputToServer(boolean up, boolean down, boolean left,
                                          int screenX, int screenY, boolean leftCLick, boolean reload, boolean rightClick) {
     public static Packet_PlayerInputToServer parseString(String line) throws IOException {
         try {
-            String[] parts = line.split(ConstantsShared.protocolVariableSplit);
+            String[] parts = line.split(ConstantsShared.PROTOCOL_VARIABLE_SPLIT);
             return new Packet_PlayerInputToServer(Boolean.parseBoolean(parts[0]), Boolean.parseBoolean(parts[1]), Boolean.parseBoolean(parts[2]),
                     Boolean.parseBoolean(parts[3]), Double.parseDouble(parts[4]), Double.parseDouble(parts[5]), Integer.parseInt(parts[6]),
                     Integer.parseInt(parts[7]), Boolean.parseBoolean(parts[8]), Boolean.parseBoolean(parts[9]), Boolean.parseBoolean(parts[10]));
@@ -25,7 +25,7 @@ public record Packet_PlayerInputToServer(boolean up, boolean down, boolean left,
     }
 
     public String toString() {
-        String split = ConstantsShared.protocolVariableSplit;
+        String split = ConstantsShared.PROTOCOL_VARIABLE_SPLIT;
         return up + split + down + split + left + split + right + split + mouseX + split + mouseY + split + screenX + split
                 + screenY + split + leftCLick + split + reload + split + rightClick;
     }

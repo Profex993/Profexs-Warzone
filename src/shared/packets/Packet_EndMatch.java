@@ -9,6 +9,6 @@ public record Packet_EndMatch(int time) {
         return new Packet_EndMatch(Integer.parseInt(line));
     }
     public String toString() {
-        return head + ConstantsShared.protocolLineSplit + time;
+        return head + ConstantsShared.PROTOCOL_LINE_SPLIT + time;
     }
 }

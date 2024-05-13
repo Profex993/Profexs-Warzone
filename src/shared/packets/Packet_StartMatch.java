@@ -10,6 +10,6 @@ public record Packet_StartMatch(int time) {
     }
 
     public String toString() {
-        return head + ConstantsShared.protocolLineSplit + time;
+        return head + ConstantsShared.PROTOCOL_LINE_SPLIT + time;
     }
 }

@@ -118,6 +118,7 @@ public abstract class Weapon extends Weapon_Core {
     public int getMagazineSize() {
         return magazineSize;
     }
+
     public int getCurrentMagazineSize() {
         return currentMagazineSize;
     }

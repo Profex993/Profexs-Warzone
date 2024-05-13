@@ -10,10 +10,10 @@ public record Packet_RemovePlayer(String name) {
     }
 
     public static Packet_RemovePlayer getFromPlayer(PlayerServerSide player) {
-        return new Packet_RemovePlayer(player.getId());
+        return new Packet_RemovePlayer(player.getName());
     }
 
     public String toString() {
-        return head + ConstantsShared.protocolLineSplit + name;
+        return head + ConstantsShared.PROTOCOL_LINE_SPLIT + name;
     }
 }

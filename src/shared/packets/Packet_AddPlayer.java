@@ -8,7 +8,7 @@ public record Packet_AddPlayer(String name, String playerModel) {
     public final static String head = "addPlayer";
     public static Packet_AddPlayer parseString(String line) throws IOException {
         try {
-            String[] parts = line.split(ConstantsShared.protocolVariableSplit);
+            String[] parts = line.split(ConstantsShared.PROTOCOL_VARIABLE_SPLIT);
             return new Packet_AddPlayer(parts[0], parts[1]);
         } catch (Exception e) {
             throw new IOException("corrupted input\n" + e);
@@ -16,7 +16,7 @@ public record Packet_AddPlayer(String name, String playerModel) {
     }
 
     public String toString() {
-        String split = ConstantsShared.protocolVariableSplit;
-        return head + ConstantsShared.protocolLineSplit + name + split + playerModel;
+        String split = ConstantsShared.PROTOCOL_VARIABLE_SPLIT;
+        return head + ConstantsShared.PROTOCOL_LINE_SPLIT + name + split + playerModel;
     }
 }
