@@ -8,12 +8,12 @@ import java.io.IOException;
 import java.util.Objects;
 
 @SuppressWarnings("unused")
-public class Weapon_Makarov extends Weapon_Pistol {
-    public static final String name = "Makarov";
+public class Weapon_PM extends Weapon_Pistol {
+    public static final String name = "PM";
 
-    public Weapon_Makarov() {
-        super("Makarov", 5, false, 60, 30, false,
-                0, 8, 360, false);
+    public Weapon_PM() {
+        super(name, 5, false, 60, 30, false,
+                0, 8, 250, false);
     }
 
     @Override
@@ -33,6 +33,6 @@ public class Weapon_Makarov extends Weapon_Pistol {
     }
 
     public static Weapon_Core getServerSideWeapon() {
-        return new Weapon_Core("Makarov", 5, false, 60, 30, 0, 8, 360);
+        return new Weapon_Core(name, 5, false, 60, 30, 0, 8, 360);
     }
 }

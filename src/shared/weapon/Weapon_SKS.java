@@ -8,11 +8,11 @@ import java.io.IOException;
 import java.util.Objects;
 
 @SuppressWarnings("unused")
-public class Weapon_Sks extends Weapon_Rifle {
-    public static final String name = "Sks";
-    public Weapon_Sks() {
+public class Weapon_SKS extends Weapon_Rifle {
+    public static final String name = "SKS";
+    public Weapon_SKS() {
         super(name, 20, false, 80, 30, false,
-                0, 10, 360, true);
+                0, 10, 680, true);
     }
 
     protected void getRes() {

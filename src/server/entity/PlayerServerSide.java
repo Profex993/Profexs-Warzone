@@ -8,8 +8,7 @@ import shared.ConstantsShared;
 import shared.object.objectClasses.Object;
 import shared.packets.Packet_AddPlayer;
 import shared.packets.Packet_PlayerInputToServer;
-import shared.weapon.Weapon_AK;
-import shared.weapon.Weapon_Makarov;
+import shared.weapon.Weapon_PM;
 import shared.weapon.weaponClasses.Weapon;
 import shared.weapon.weaponClasses.WeaponGenerator;
 import shared.weapon.weaponClasses.Weapon_Core;
@@ -29,7 +28,7 @@ public class PlayerServerSide {
     private String direction = "down", directionFace, killedBy = "";
     private boolean shootLock = true, shooting = false, reloadTrigger = false, walking, death, interactTrigger = true;
     private final Rectangle solidArea;
-    private Weapon_Core weapon = Weapon_AK.getServerSideWeapon();
+    private Weapon_Core weapon = Weapon_PM.getServerSideWeapon();
 
     public PlayerServerSide(ServerUpdateManager updateManager, CollisionManager collisionManager, ArrayList<Object> objectList,
                             ServerCore core) {
@@ -172,7 +171,7 @@ public class PlayerServerSide {
             killedBy = "";
             worldX = 500;
             worldY = 500;
-            changeWeapon(Weapon_Makarov.class);
+            changeWeapon(Weapon_PM.class);
         }
     }
 
