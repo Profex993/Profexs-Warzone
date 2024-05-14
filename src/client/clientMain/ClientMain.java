@@ -71,6 +71,7 @@ public class ClientMain {
         }
         String errorMessage = message + ":\n" + e.getMessage() + "\n" + e;
         JOptionPane.showMessageDialog(null, errorMessage, "Error", JOptionPane.ERROR_MESSAGE);
+        e.printStackTrace();
         System.exit(1);
     }
 

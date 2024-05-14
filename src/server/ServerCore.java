@@ -10,15 +10,20 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
 import java.util.ArrayList;
+import java.util.Random;
 
 public class ServerCore {
-    private final int MAP_NUMBER = 0; // this variable will be used for selecting map later
-    private int MATCH_TIME = 60;
+    private final int MAP_NUMBER = ConstantsServer.MAPS[0]; // this variable will be used for selecting map later
+    private int MATCH_TIME = ConstantsServer.MATCH_TIME;
     private ServerMatchState matchState = ServerMatchState.MATCH;
+    private final Random random = new Random();
     private final ArrayList<PlayerServerSide> playerList = new ArrayList<>();
     private final ArrayList<Object> objectList = MapGenerator.getMapObjects(MAP_NUMBER);
+    private final ArrayList<SpawnLocation> spawnLocations = SpawnLocation.getPlayerSpawnLocationList(MAP_NUMBER);
+    private final ArrayList<ItemSpawnLocation> itemSpawnLocations = ItemSpawnLocation.getPlayerSpawnLocationList(MAP_NUMBER);
     private final ArrayList<ClientHandler> clientHandlerList = new ArrayList<>();
-    private final ServerUpdateManager serverUpdateManager = new ServerUpdateManager(playerList, clientHandlerList, this);
+    private final ServerUpdateManager serverUpdateManager = new ServerUpdateManager(playerList, clientHandlerList, this,
+            itemSpawnLocations, objectList, random);
     private final CollisionManager collisionManager = new CollisionManager(objectList);
 
     public ServerCore() {
@@ -47,8 +52,9 @@ public class ServerCore {
     private ClientHandler getClientHandler(Socket socket) throws IOException {
         BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         BufferedWriter out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
-        PlayerServerSide player = new PlayerServerSide(serverUpdateManager, collisionManager, objectList, this);
-        return new ClientHandler(socket, in, out, player, this, playerList, matchState);
+        PlayerServerSide player = new PlayerServerSide(serverUpdateManager, collisionManager, objectList,
+                this, spawnLocations, random);
+        return new ClientHandler(socket, in, out, player, this, playerList, matchState, itemSpawnLocations);
     }
 
     public static void closeSocket(Socket socket, BufferedWriter out, BufferedReader in) {
@@ -66,6 +72,11 @@ public class ServerCore {
         for (ClientHandler clientHandler : clientHandlerList) {
             clientHandler.getRemoveObjectRequestList().add(remove);
         }
+        for (ItemSpawnLocation location : itemSpawnLocations) {
+            if (remove == location.getObject()) {
+                location.setObject(null);
+            }
+        }
     }
 
     public void addObject(Object add) {
@@ -73,7 +84,6 @@ public class ServerCore {
         for (ClientHandler clientHandler : clientHandlerList) {
             clientHandler.getAddObjectRequestList().add(add);
         }
-        System.out.println(add);
     }
 
     public void removePlayer(PlayerServerSide playerServerSide) {

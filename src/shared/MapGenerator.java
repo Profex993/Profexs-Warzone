@@ -13,7 +13,25 @@ public abstract class MapGenerator {
 
     public static BufferedReader getMap(int mapNum) throws FileNotFoundException {
         String filePath = switch (mapNum) {
-            case 0 -> "maps/map_crossfire.txt";
+            case 0 -> "maps/crossfire/map_crossfire.txt";
+            default -> "";
+        };
+
+        return new BufferedReader(new FileReader(filePath));
+    }
+
+    public static BufferedReader getPlayerSpawnLocations(int mapNumber) throws FileNotFoundException {
+        String filePath = switch (mapNumber) {
+            case 0 -> "maps/crossfire/playerSpawn_crossfire.txt";
+            default -> "";
+        };
+
+        return new BufferedReader(new FileReader(filePath));
+    }
+
+    public static BufferedReader getItemSpawnLocations(int mapNumber) throws FileNotFoundException {
+        String filePath = switch (mapNumber) {
+            case 0 -> "maps/crossfire/itemSpawn_crossfire.txt";
             default -> "";
         };
 

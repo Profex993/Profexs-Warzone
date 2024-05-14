@@ -1,16 +1,12 @@
 package server.entity;
 
-import server.CollisionManager;
-import server.ServerCore;
-import server.ServerUpdateManager;
+import server.*;
 import server.enums.ServerMatchState;
 import shared.ConstantsShared;
 import shared.ObjectGenerator;
 import shared.object.objectClasses.Object;
 import shared.packets.Packet_AddPlayer;
 import shared.packets.Packet_PlayerInputToServer;
-import shared.weapon.Weapon_PM;
-import shared.weapon.Weapon_SKS;
 import shared.weapon.weaponClasses.Weapon;
 import shared.weapon.weaponClasses.WeaponGenerator;
 import shared.weapon.weaponClasses.Weapon_Core;
@@ -18,37 +14,45 @@ import shared.weapon.weaponClasses.Weapon_Core;
 import java.awt.*;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Random;
 
 public class PlayerServerSide {
     private final ServerUpdateManager updateManager;
     private final CollisionManager collisionManager;
     private final ArrayList<Object> objectList;
+    private final ArrayList<SpawnLocation> spawnLocations;
+    private final Random random;
     private final ServerCore core;
     private String name, playerModel;
-    private int worldX = 100, worldY = 500, health = 100, kills, deaths, respawnDelay;
+    private int worldX, worldY, health, kills, deaths, respawnDelay;
     private double rotation = 0;
     private String direction = "down", directionFace, killedBy = "";
     private boolean shootLock = true, shooting = false, reloadTrigger = false, walking, death, interactTrigger = true;
     private final Rectangle solidArea;
-    private Weapon_Core weapon = Weapon_SKS.getServerSideWeapon();
+    private Weapon_Core weapon;
 
     public PlayerServerSide(ServerUpdateManager updateManager, CollisionManager collisionManager, ArrayList<Object> objectList,
-                            ServerCore core) {
+                            ServerCore core, ArrayList<SpawnLocation> spawnLocations, Random random) {
         this.updateManager = updateManager;
         solidArea = new Rectangle(worldX, worldY, ConstantsShared.PLAYER_WIDTH, ConstantsShared.PLAYER_HEIGHT);
         this.collisionManager = collisionManager;
         this.objectList = objectList;
         this.core = core;
+        this.spawnLocations = spawnLocations;
+        this.random = random;
         try {
             collisionManager.loadMap(core.getMAP_NUMBER());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+
+        respawn();
     }
 
     public void updateFromPlayerInput(Packet_PlayerInputToServer input) {
         if (!death) {
-            rotation = Math.atan2(input.mouseY() - (input.screenY() + (double) solidArea.width / 2), input.mouseX() - (input.screenX() + (double) solidArea.width / 2));
+            rotation = Math.atan2(input.mouseY() - (input.screenY() + (double) solidArea.width / 2),
+                    input.mouseX() - (input.screenX() + (double) solidArea.width / 2));
             if (rotation >= -Math.PI / 4 && rotation < Math.PI / 4) {
                 directionFace = "right";
             } else if (rotation >= Math.PI / 4 && rotation < 3 * Math.PI / 4) {
@@ -72,16 +76,16 @@ public class PlayerServerSide {
 
                 if (collisionManager.checkTile(this) && collisionManager.checkObject(this)) {
                     if (input.up()) {
-                        worldY -= ConstantsShared.PLAYER_SPEED;
+                        worldY -= ConstantsServer.PLAYER_SPEED;
                         walking = true;
                     } else if (input.down()) {
-                        worldY += ConstantsShared.PLAYER_SPEED;
+                        worldY += ConstantsServer.PLAYER_SPEED;
                         walking = true;
                     } else if (input.left()) {
-                        worldX -= ConstantsShared.PLAYER_SPEED;
+                        worldX -= ConstantsServer.PLAYER_SPEED;
                         walking = true;
                     } else if (input.right()) {
-                        worldX += ConstantsShared.PLAYER_SPEED;
+                        worldX += ConstantsServer.PLAYER_SPEED;
                         walking = true;
                     } else {
                         walking = false;
@@ -165,7 +169,7 @@ public class PlayerServerSide {
         deaths++;
         respawnDelay = updateManager.getTick() + 600;
         try {
-            core.addObject(ObjectGenerator.getObjectByWeapon("Object_Weapon_" + weapon.getName(), worldX, worldY));
+            core.addObject(ObjectGenerator.getObjectByName("Object_Weapon_" + weapon.getName(), worldX, worldY));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -176,9 +180,10 @@ public class PlayerServerSide {
             health = 100;
             death = false;
             killedBy = "";
-            worldX = 500;
-            worldY = 500;
-            changeWeapon(Weapon_PM.class);
+            SpawnLocation location = spawnLocations.get(random.nextInt(spawnLocations.size()));
+            worldX = location.x();
+            worldY = location.y();
+            changeWeapon(ConstantsServer.DEFAULT_WEAPON);
         }
     }
 

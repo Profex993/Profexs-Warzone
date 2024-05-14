@@ -99,15 +99,17 @@ public abstract class Weapon extends Weapon_Core {
 
     protected void drawCommon(Graphics2D g2, int weaponX, int weaponY, String direction, int tick, double rotation) {
         BufferedImage img = getImage(direction);
-        AffineTransform transform = new AffineTransform();
-        transform.translate(weaponX, weaponY);
-        transform.rotate(rotation, 0, (double) img.getHeight() / 2);
-        transform.scale(desiredWidth / (double) img.getWidth(), desiredHeight / (double) img.getHeight());
+        if (img != null) {
+            AffineTransform transform = new AffineTransform();
+            transform.translate(weaponX, weaponY);
+            transform.rotate(rotation, 0, (double) img.getHeight() / 2);
+            transform.scale(desiredWidth / (double) img.getWidth(), desiredHeight / (double) img.getHeight());
 
-        g2.drawImage(img, transform, null);
+            g2.drawImage(img, transform, null);
 
-        if (blastTrigger && tick > blastTick) {
-            blastTrigger = false;
+            if (blastTrigger && tick > blastTick) {
+                blastTrigger = false;
+            }
         }
     }
 

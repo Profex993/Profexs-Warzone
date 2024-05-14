@@ -61,25 +61,25 @@ public class CollisionManager {
         try {
             switch (player.getDirection()) {
                 case "up" -> {
-                    topRow = (topY - ConstantsShared.PLAYER_SPEED) / tileSize;
+                    topRow = (topY - ConstantsServer.PLAYER_SPEED) / tileSize;
                     if (tiles[mapTileNumber[leftCol][topRow]] || tiles[mapTileNumber[rightCol][topRow]]) {
                         return false;
                     }
                 }
                 case "down" -> {
-                    bottomRow = (bottomY + ConstantsShared.PLAYER_SPEED) / tileSize;
+                    bottomRow = (bottomY + ConstantsServer.PLAYER_SPEED) / tileSize;
                     if (tiles[mapTileNumber[leftCol][bottomRow]] || tiles[mapTileNumber[rightCol][bottomRow]]) {
                         return false;
                     }
                 }
                 case "left" -> {
-                    leftCol = (leftX - ConstantsShared.PLAYER_SPEED) / tileSize;
+                    leftCol = (leftX - ConstantsServer.PLAYER_SPEED) / tileSize;
                     if (tiles[mapTileNumber[leftCol][topRow]] || tiles[mapTileNumber[leftCol][bottomRow]]) {
                         return false;
                     }
                 }
                 case "right" -> {
-                    rightCol = (rightX + ConstantsShared.PLAYER_SPEED) / tileSize;
+                    rightCol = (rightX + ConstantsServer.PLAYER_SPEED) / tileSize;
                     if (tiles[mapTileNumber[rightCol][topRow]] || tiles[mapTileNumber[rightCol][bottomRow]]) {
                         return false;
                     }
@@ -107,10 +107,10 @@ public class CollisionManager {
                 Rectangle modifiedPlayerSolidArea = new Rectangle(player.getWorldX(), player.getWorldY(),
                         ConstantsShared.PLAYER_WIDTH, ConstantsShared.PLAYER_HEIGHT);
                 switch (player.getDirection()) {
-                    case "up" -> modifiedPlayerSolidArea.y -= ConstantsShared.PLAYER_SPEED;
-                    case "down" -> modifiedPlayerSolidArea.y += ConstantsShared.PLAYER_SPEED;
-                    case "left" -> modifiedPlayerSolidArea.x -= ConstantsShared.PLAYER_SPEED;
-                    case "right" -> modifiedPlayerSolidArea.x += ConstantsShared.PLAYER_SPEED;
+                    case "up" -> modifiedPlayerSolidArea.y -= ConstantsServer.PLAYER_SPEED;
+                    case "down" -> modifiedPlayerSolidArea.y += ConstantsServer.PLAYER_SPEED;
+                    case "left" -> modifiedPlayerSolidArea.x -= ConstantsServer.PLAYER_SPEED;
+                    case "right" -> modifiedPlayerSolidArea.x += ConstantsServer.PLAYER_SPEED;
                 }
                 if (modifiedPlayerSolidArea.intersects(object.getSolidArea())) {
                     return false;

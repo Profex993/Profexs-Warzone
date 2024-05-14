@@ -1,9 +1,9 @@
 package shared.object.objectClasses;
 
 import client.entity.MainPlayer;
+import server.ConstantsServer;
 import server.ServerCore;
 import server.entity.PlayerServerSide;
-import shared.ConstantsShared;
 import shared.packets.Packet_PlayerInputToServer;
 
 import javax.imageio.ImageIO;
@@ -31,10 +31,10 @@ public abstract class Object {
         this.collision = false;
         this.imagePath = imagePath;
         this.drawUnderPlayer = drawUnderPlayer;
-        this.triggerArea = new Rectangle(worldX - ConstantsShared.OBJECT_TRIGGER_AREA_OFFSET,
-                worldY - ConstantsShared.OBJECT_TRIGGER_AREA_OFFSET,
-                width + 2 * ConstantsShared.OBJECT_TRIGGER_AREA_OFFSET,
-                height + ConstantsShared.OBJECT_TRIGGER_AREA_OFFSET);
+        this.triggerArea = new Rectangle(worldX - ConstantsServer.OBJECT_TRIGGER_AREA_OFFSET,
+                worldY - ConstantsServer.OBJECT_TRIGGER_AREA_OFFSET,
+                width + 2 * ConstantsServer.OBJECT_TRIGGER_AREA_OFFSET,
+                height + ConstantsServer.OBJECT_TRIGGER_AREA_OFFSET);
     }
 
     public Object(int worldX, int worldY, int width, int height, boolean intractable, String imagePath, Rectangle solidArea,
@@ -48,10 +48,10 @@ public abstract class Object {
         this.collision = true;
         this.imagePath = imagePath;
         this.drawUnderPlayer = drawUnderPlayer;
-        this.triggerArea = new Rectangle(worldX - ConstantsShared.OBJECT_TRIGGER_AREA_OFFSET,
-                worldY - ConstantsShared.OBJECT_TRIGGER_AREA_OFFSET,
-                width + 2 * ConstantsShared.OBJECT_TRIGGER_AREA_OFFSET,
-                (int) (height + 1.5 * ConstantsShared.OBJECT_TRIGGER_AREA_OFFSET));
+        this.triggerArea = new Rectangle(worldX - ConstantsServer.OBJECT_TRIGGER_AREA_OFFSET,
+                worldY - ConstantsServer.OBJECT_TRIGGER_AREA_OFFSET,
+                width + 2 * ConstantsServer.OBJECT_TRIGGER_AREA_OFFSET,
+                (int) (height + 1.5 * ConstantsServer.OBJECT_TRIGGER_AREA_OFFSET));
     }
 
     public void initializeRes() throws IOException {
@@ -69,7 +69,9 @@ public abstract class Object {
 
             executeServerSide(player, core);
         }
+    }
 
+    public void updatePerSecond(ServerCore core) {
 
     }
 

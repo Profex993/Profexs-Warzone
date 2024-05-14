@@ -1,7 +1,7 @@
 package server.entity;
 
 import server.CollisionManager;
-import shared.ConstantsShared;
+import server.ConstantsServer;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -23,8 +23,8 @@ public class ProjectileServerSide {
     }
 
     public void update(ArrayList<PlayerServerSide> playerList, ArrayList<ProjectileServerSide> projectileList) {
-        solidArea.x += (int) (Math.cos(rotation) * ConstantsShared.PROJECTILE_SPEED);
-        solidArea.y += (int) (Math.sin(rotation) * ConstantsShared.PROJECTILE_SPEED);
+        solidArea.x += (int) (Math.cos(rotation) * ConstantsServer.PROJECTILE_SPEED);
+        solidArea.y += (int) (Math.sin(rotation) * ConstantsServer.PROJECTILE_SPEED);
 
         for (PlayerServerSide player : playerList) {
             if (solidArea.intersects(player.getSolidArea()) && this.originalPlayer != player) {

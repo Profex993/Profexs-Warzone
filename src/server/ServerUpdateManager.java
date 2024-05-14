@@ -3,23 +3,32 @@ package server;
 import server.entity.PlayerServerSide;
 import server.entity.ProjectileServerSide;
 import server.enums.ServerMatchState;
-import shared.ConstantsShared;
+import shared.ObjectGenerator;
+import shared.object.objectClasses.Object;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 public class ServerUpdateManager implements Runnable {
     private Thread thread;
     private final ArrayList<PlayerServerSide> playerList;
     private final ArrayList<ProjectileServerSide> projectileList = new ArrayList<>();
+    private final ArrayList<Object> objectList;
     private final ArrayList<ClientHandler> clientHandlers;
     private final ServerCore core;
+    private final ArrayList<ItemSpawnLocation> itemSpawnLocations;
     private int tick = 0;
     private int gameTime = 0;
+    private final Random random;
 
-    public ServerUpdateManager(ArrayList<PlayerServerSide> playerList, ArrayList<ClientHandler> clientHandlers, ServerCore core) {
+    public ServerUpdateManager(ArrayList<PlayerServerSide> playerList, ArrayList<ClientHandler> clientHandlers, ServerCore core,
+                               ArrayList<ItemSpawnLocation> itemSpawnLocations, ArrayList<Object> objectList, Random random) {
         this.playerList = playerList;
+        this.objectList = objectList;
         this.clientHandlers = clientHandlers;
         this.core = core;
+        this.itemSpawnLocations = itemSpawnLocations;
+        this.random = random;
     }
 
     public void startThread() {
@@ -46,7 +55,8 @@ public class ServerUpdateManager implements Runnable {
             }
             if (timer >= 1000000000) {
                 timer = 0;
-                updateTime();
+
+                updatePerSecond();
 
                 //for testing
 //                if (!playerList.isEmpty()) {
@@ -65,6 +75,30 @@ public class ServerUpdateManager implements Runnable {
         }
     }
 
+    private void updatePerSecond() {
+        updateTime();
+
+        for (int i = 0; i < objectList.size(); i++) {
+            objectList.get(i).updatePerSecond(core);
+        }
+
+        for (ItemSpawnLocation location : itemSpawnLocations) {
+            try {
+                location.decreaseDelay();
+                if (location.getSpawnDelay() == 0) {
+                    Object object = ObjectGenerator.getObjectByName(
+                            ConstantsServer.SPAWN_WEAPON_NAMES[random.nextInt(ConstantsServer.SPAWN_WEAPON_NAMES.length)],
+                            location.getX(), location.getY());
+
+                    location.setObjectAndResetDelay(object);
+                    core.addObject(object);
+                }
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
     private void updateTime() {
         gameTime++;
 
@@ -74,7 +108,7 @@ public class ServerUpdateManager implements Runnable {
             for (ClientHandler clientHandler : clientHandlers) {
                 clientHandler.triggerEndOfMatch();
             }
-        } else if (core.getMatchState() == ServerMatchState.MATCH_OVER && gameTime > ConstantsShared.MATCH_OVER_TIME) {
+        } else if (core.getMatchState() == ServerMatchState.MATCH_OVER && gameTime > ConstantsServer.MATCH_OVER_TIME) {
             core.setMatchState(ServerMatchState.MATCH);
             gameTime = 0;
             for (ClientHandler clientHandler : clientHandlers) {

@@ -26,7 +26,8 @@ public class ClientHandler implements Runnable {
     private final ArrayList<String> packetStringList = new ArrayList<>();
 
     public ClientHandler(Socket socket, BufferedReader in, BufferedWriter out, PlayerServerSide player, ServerCore core,
-                         ArrayList<PlayerServerSide> playerList, ServerMatchState matchState) {
+                         ArrayList<PlayerServerSide> playerList, ServerMatchState matchState,
+                         ArrayList<ItemSpawnLocation> itemSpawnLocation) {
         this.player = player;
         this.socket = socket;
         this.core = core;
@@ -40,6 +41,11 @@ public class ClientHandler implements Runnable {
             triggerStartOfMatch();
         }
 
+        itemSpawnLocation.forEach(e -> {
+            if (e.getObject() != null) {
+                addObjectRequestList.add(e.getObject());
+            }
+        });
         addPlayerRequestList.addAll(playerList);
     }
 
@@ -90,7 +96,7 @@ public class ClientHandler implements Runnable {
         }
 
         if (endMatchRequestTrigger) {
-            Packet_EndMatch packet = new Packet_EndMatch(ConstantsShared.MATCH_OVER_TIME);
+            Packet_EndMatch packet = new Packet_EndMatch(ConstantsServer.MATCH_OVER_TIME);
             packetStringList.add(packet.toString());
             endMatchRequestTrigger = false;
         }
