@@ -3,6 +3,7 @@ package client.clientMain;
 import client.entity.MainPlayer;
 import client.entity.Player;
 import client.enums.GameStateClient;
+import client.userInterface.ChatMessage;
 import client.userInterface.GameUI;
 import client.userInterface.menu.Menu;
 import shared.object.objectClasses.Object;
@@ -99,7 +100,7 @@ public class GamePanel extends JPanel implements Runnable {
         }
 
         g2.setColor(Color.white);
-        g2.setFont(Constants.font10);
+        g2.setFont(ConstantsClient.font10);
         g2.drawString(String.valueOf(currentFps), 5, 10);
         g2.dispose();
     }
@@ -131,10 +132,12 @@ public class GamePanel extends JPanel implements Runnable {
             }
         } catch (IOException e) {
             ClientMain.showErrorWindowAndExit("can not load resources", e);
-            throw new RuntimeException();
         }
     }
 
+    public void addChatMessage(ChatMessage message) {
+        gameUI.addChatMessage(message);
+    }
     public static int getScreenWidth() {
         return screenWidth;
     }

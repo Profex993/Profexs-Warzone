@@ -50,7 +50,9 @@ public class Entity {
             } else {
                 g2.drawImage(walk2Down, screenX, screenY, width, height, null);
                 g2.drawString(name, screenX, screenY - 5);
-                weapon.draw(g2, "left", core.getTick(), 2.86, screenX, screenY);
+                if (weapon != null) {
+                    weapon.draw(g2, "left", core.getTick(), 2.86, screenX, screenY);
+                }
             }
         }
 

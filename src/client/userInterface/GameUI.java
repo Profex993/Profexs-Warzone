@@ -1,9 +1,10 @@
 package client.userInterface;
 
-import client.clientMain.Constants;
+import client.clientMain.ConstantsClient;
 import client.clientMain.GameCore;
 import client.clientMain.GamePanel;
 import client.clientMain.KeyHandler;
+import client.clientMain.sound.SoundManager;
 import client.entity.Entity;
 import client.entity.MainPlayer;
 import client.entity.Player;
@@ -18,6 +19,7 @@ public class GameUI {
     private int deathScreenCounter = 0;
     private final KeyHandler keyHandler;
     private final GameCore core;
+    private final ArrayList<ChatMessage> chatMessages = new ArrayList<>();
 
     public GameUI(MainPlayer player, ArrayList<Player> playerList, int screenWidth, int screenHeight, KeyHandler keyHandler, GameCore core) {
         this.player = player;
@@ -34,21 +36,36 @@ public class GameUI {
             drawDeathScreen(g2);
         } else {
             drawGameUI(g2);
+        }
 
-            if (keyHandler.leaderBoard) {
-                drawLeaderBoard(g2);
-                g2.drawString(String.valueOf(core.getCurrentMatchTime()), 5, 30);
+        if (keyHandler.leaderBoard) {
+            drawLeaderBoard(g2);
+            g2.drawString(String.valueOf(core.getCurrentMatchTime()), 5, 30);
+        }
+
+        drawChat(g2);
+    }
+
+    private void drawChat(Graphics2D g2) {
+        g2.setColor(Color.red);
+        g2.setFont(ConstantsClient.font25);
+        for (int i = 0; i < chatMessages.size(); i++) {
+            ChatMessage message = chatMessages.get(i);
+            g2.drawString(message.getMessage(), 30, i * 40 + 40);
+            message.decreaseTimer();
+            if (message.getTimer() == 0) {
+                chatMessages.remove(message);
             }
         }
     }
 
     private void drawGameUI(Graphics2D g2) {
-        g2.setFont(Constants.font25);
+        g2.setFont(ConstantsClient.font25);
         g2.drawString(String.valueOf(player.getHealth()), 30, screenHeight - 60);
         g2.fillRect(80, screenHeight - 75, player.getHealth(), 15);
 
         if (player.getWeapon() != null) {
-            g2.setColor(Constants.transparentColor);
+            g2.setColor(ConstantsClient.transparentColor);
             g2.fillRect(screenWidth - 250, screenHeight - 140, 230, 120);
             g2.setColor(Color.red);
             g2.drawString(player.getWeapon().getName(), screenWidth - 230, screenHeight - 120);
@@ -64,12 +81,12 @@ public class GameUI {
     public void drawGameOver(Graphics2D g2) {
         if (core.getCurrentMatchTime() > 3) {
             drawLeaderBoard(g2);
-            g2.setFont(Constants.font100);
+            g2.setFont(ConstantsClient.font100);
             g2.setColor(Color.red);
             g2.drawString("GAME OVER",
                     (GamePanel.getScreenWidth() - g2.getFontMetrics().stringWidth("GAME OVER")) / 2,
                     GamePanel.getScreenHeight() / 2 + 150);
-            g2.setFont(Constants.font50);
+            g2.setFont(ConstantsClient.font50);
             ArrayList<Entity> leaderBoard = makeLeaderBoard();
             if (leaderBoard.get(0).getKills() != 0) {
                 g2.drawString("Winner is: " + leaderBoard.get(0).getName(),
@@ -82,7 +99,7 @@ public class GameUI {
     }
 
     private void drawCountDown(Graphics2D g2) {
-        g2.setFont(Constants.font100);
+        g2.setFont(ConstantsClient.font100);
         g2.setColor(Color.red);
         g2.drawString(String.valueOf(core.getCurrentMatchTime()),
                 (GamePanel.getScreenWidth() - g2.getFontMetrics().stringWidth(String.valueOf(core.getCurrentMatchTime()))) / 2,
@@ -91,7 +108,7 @@ public class GameUI {
 
     private void drawDeathScreen(Graphics2D g2) {
         if (deathScreenCounter < 100) {
-            g2.setFont(Constants.font100);
+            g2.setFont(ConstantsClient.font100);
             g2.drawString("You have been killed by:",
                     (GamePanel.getScreenWidth() - g2.getFontMetrics().stringWidth("You have been killed by:")) / 2,
                     GamePanel.getScreenHeight() / 2 + 50);
@@ -109,10 +126,10 @@ public class GameUI {
 
     private void drawLeaderBoard(Graphics2D g2) {
         ArrayList<Entity> leaderBoard = makeLeaderBoard();
-        g2.setColor(Constants.transparentColor);
+        g2.setColor(ConstantsClient.transparentColor);
         g2.fillRect(GamePanel.screenWidth / 2 - 300, 0, 600, leaderBoard.size() * 40 + 40);
         g2.setColor(Color.red);
-        g2.setFont(Constants.font25);
+        g2.setFont(ConstantsClient.font25);
         g2.setStroke(new BasicStroke(2));
         g2.drawRect(GamePanel.screenWidth / 2 - 300, 0, 600, 40);
         g2.drawLine(GamePanel.screenWidth / 2 + 100, 0, GamePanel.screenWidth / 2 + 100, leaderBoard.size() * 40 + 40);
@@ -140,5 +157,10 @@ public class GameUI {
             }
         });
         return leaderBoard;
+    }
+
+    public void addChatMessage(ChatMessage message) {
+        chatMessages.add(message);
+        SoundManager.playSound(SoundManager.chat);
     }
 }

@@ -11,12 +11,13 @@ import java.util.Objects;
 
 public class SoundManager {
     private static Clip mainMenuSoundtrack;
-    public final static URL walk1, walk2, switchWeapon;
+    public final static URL walk1, walk2, switchWeapon, chat;
 
     static {
         walk1 = Objects.requireNonNull(SoundManager.class.getClassLoader().getResource("sound/player/walk1.wav"));
         walk2 = Objects.requireNonNull(SoundManager.class.getClassLoader().getResource("sound/player/walk2.wav"));
         switchWeapon = Objects.requireNonNull(SoundManager.class.getClassLoader().getResource("sound/player/switchWeapon.wav"));
+        chat = Objects.requireNonNull(SoundManager.class.getClassLoader().getResource("sound/chat.wav"));
     }
 
     public static void playMainMenuSoundtrack() {

@@ -24,6 +24,7 @@ public class ServerCommunication {
 
     public ServerCommunication(MainPlayer mainPlayer, String playerModel, BufferedReader in, BufferedWriter out, KeyHandler keyHandler,
                                MouseHandler mouseHandler, GameCore core) {
+
         this.mainPlayer = mainPlayer;
         this.out = out;
         this.in = in;

@@ -10,6 +10,7 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.ArrayList;
 
 public class ClientHandler implements Runnable {
@@ -18,6 +19,7 @@ public class ClientHandler implements Runnable {
     private final BufferedWriter out;
     private final BufferedReader in;
     private final ArrayList<PlayerServerSide> playerList;
+    private final ArrayList<ClientHandler> clientHandlers;
     private final ServerCore core;
     private final ArrayList<PlayerServerSide> addPlayerRequestList = new ArrayList<>();
     private final ArrayList<PlayerServerSide> removePlayerRequestList = new ArrayList<>();
@@ -27,13 +29,14 @@ public class ClientHandler implements Runnable {
 
     public ClientHandler(Socket socket, BufferedReader in, BufferedWriter out, PlayerServerSide player, ServerCore core,
                          ArrayList<PlayerServerSide> playerList, ServerMatchState matchState,
-                         ArrayList<ItemSpawnLocation> itemSpawnLocation) {
+                         ArrayList<ItemSpawnLocation> itemSpawnLocation, ArrayList<ClientHandler> clientHandlers) {
         this.player = player;
         this.socket = socket;
         this.core = core;
         this.playerList = playerList;
         this.in = in;
         this.out = out;
+        this.clientHandlers = clientHandlers;
 
         if (matchState == ServerMatchState.MATCH_OVER) {
             triggerEndOfMatch();
@@ -46,7 +49,11 @@ public class ClientHandler implements Runnable {
                 addObjectRequestList.add(e.getObject());
             }
         });
-        addPlayerRequestList.addAll(playerList);
+
+        playerList.forEach( e -> {
+            Packet_AddPlayer packetAddPlayer = new Packet_AddPlayer(e.getName(), e.getPlayerModel(), false);
+            packetStringList.add(packetAddPlayer.toString());
+        });
     }
 
     @Override
@@ -56,7 +63,8 @@ public class ClientHandler implements Runnable {
         try {
             while (socket.isConnected()) {
                 String inputLine = in.readLine();
-                if (inputLine.isEmpty()) break;
+                if (inputLine == null) break;
+
                 updatePlayer(inputLine);
 
                 makePacketList();
@@ -74,12 +82,14 @@ public class ClientHandler implements Runnable {
 
                 out.flush();
             }
-        } catch (Exception e) {
-            core.removePlayer(player);
-            ServerCore.closeSocket(socket, out, in);
+        } catch (SocketException ignored) {
+            // client has disconnected
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
+
         core.removePlayer(player);
-        ServerCore.closeSocket(socket, out, in);
+        endConnection();
     }
 
     private void updatePlayer(String line) throws IOException {
@@ -110,7 +120,7 @@ public class ClientHandler implements Runnable {
         if (!addPlayerRequestList.isEmpty()) {
             for (PlayerServerSide player : addPlayerRequestList) {
                 if (this.player != player) {
-                    Packet_AddPlayer packet = new Packet_AddPlayer(player.getName(), player.getPlayerModel());
+                    Packet_AddPlayer packet = new Packet_AddPlayer(player.getName(), player.getPlayerModel(), true);
                     packetStringList.add(packet.toString());
                 }
             }
@@ -170,7 +180,7 @@ public class ClientHandler implements Runnable {
 
             player.setInitData(Packet_AddPlayerToServer.parseString(in.readLine()));
         } catch (Exception e) {
-            ServerCore.closeSocket(socket, out, in);
+            endConnection();
         }
     }
 
@@ -197,6 +207,17 @@ public class ClientHandler implements Runnable {
         }
     }
 
+    private void endConnection() {
+        clientHandlers.remove(this);
+        try {
+            socket.close();
+            in.close();
+            out.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public void triggerEndOfMatch() {
         endMatchRequestTrigger = true;
     }
@@ -220,5 +241,4 @@ public class ClientHandler implements Runnable {
     public ArrayList<Object> getRemoveObjectRequestList() {
         return removeObjectRequestList;
     }
-
 }

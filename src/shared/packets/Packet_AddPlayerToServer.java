@@ -5,10 +5,10 @@ import shared.ConstantsShared;
 import java.io.IOException;
 
 public record Packet_AddPlayerToServer(String name, String playerModel) {
-    public static Packet_AddPlayer parseString(String line) throws IOException {
+    public static Packet_AddPlayerToServer parseString(String line) throws IOException {
         try {
             String[] parts = line.split(ConstantsShared.PROTOCOL_VARIABLE_SPLIT);
-            return new Packet_AddPlayer(parts[0], parts[1]);
+            return new Packet_AddPlayerToServer(parts[0], parts[1]);
         } catch (Exception e) {
             throw new IOException("corrupted input\n" + e);
         }

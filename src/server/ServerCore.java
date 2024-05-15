@@ -8,7 +8,6 @@ import shared.object.objectClasses.Object;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -41,8 +40,6 @@ public class ServerCore {
                     Thread thread = new Thread(clientHandler);
                     thread.start();
                 }
-            } catch (SocketException ignored) {
-                //goofy ahh exception
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
@@ -54,17 +51,7 @@ public class ServerCore {
         BufferedWriter out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
         PlayerServerSide player = new PlayerServerSide(serverUpdateManager, collisionManager, objectList,
                 this, spawnLocations, random);
-        return new ClientHandler(socket, in, out, player, this, playerList, matchState, itemSpawnLocations);
-    }
-
-    public static void closeSocket(Socket socket, BufferedWriter out, BufferedReader in) {
-        try {
-            socket.close();
-            in.close();
-            out.close();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        return new ClientHandler(socket, in, out, player, this, playerList, matchState, itemSpawnLocations, clientHandlerList);
     }
 
     public void removeObject(Object remove) {
@@ -77,6 +64,8 @@ public class ServerCore {
                 location.setObject(null);
             }
         }
+
+        System.out.println(remove);
     }
 
     public void addObject(Object add) {
@@ -84,6 +73,8 @@ public class ServerCore {
         for (ClientHandler clientHandler : clientHandlerList) {
             clientHandler.getAddObjectRequestList().add(add);
         }
+
+        System.out.println(add);
     }
 
     public void removePlayer(PlayerServerSide playerServerSide) {

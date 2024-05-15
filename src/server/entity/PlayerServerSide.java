@@ -5,7 +5,7 @@ import server.enums.ServerMatchState;
 import shared.ConstantsShared;
 import shared.ObjectGenerator;
 import shared.object.objectClasses.Object;
-import shared.packets.Packet_AddPlayer;
+import shared.packets.Packet_AddPlayerToServer;
 import shared.packets.Packet_PlayerInputToServer;
 import shared.weapon.weaponClasses.Weapon;
 import shared.weapon.weaponClasses.WeaponGenerator;
@@ -141,7 +141,7 @@ public class PlayerServerSide {
         }
     }
 
-    public void setInitData(Packet_AddPlayer data) {
+    public void setInitData(Packet_AddPlayerToServer data) {
         this.name = data.name();
         this.playerModel = data.playerModel();
     }

@@ -1,7 +1,7 @@
 package client.userInterface.menu;
 
 import client.clientMain.ClientMain;
-import client.clientMain.Constants;
+import client.clientMain.ConstantsClient;
 import client.clientMain.sound.SoundManager;
 import shared.enums.PlayerModel;
 
@@ -212,7 +212,7 @@ public class MainMenu {
             g2.setFont(new Font("impact", Font.PLAIN, 55));
             g2.drawString("Profex's warzone", 10, 70);
             g2.setColor(Color.red);
-            g2.setFont(Constants.font25);
+            g2.setFont(ConstantsClient.font25);
             g2.drawString("Soundtrack by SUPREMER", 10, 485);
         }
     }

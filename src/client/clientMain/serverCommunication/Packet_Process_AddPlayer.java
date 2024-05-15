@@ -2,6 +2,7 @@ package client.clientMain.serverCommunication;
 
 import client.clientMain.GameCore;
 import client.entity.Player;
+import client.userInterface.ChatMessage;
 import shared.packets.Packet_AddPlayer;
 
 import java.io.IOException;
@@ -14,6 +15,9 @@ public class Packet_Process_AddPlayer implements Packet_Process {
         if (!data.name().equals(core.getMainPlayer().getName()) && isNewPlayer(data, core.getPlayerList())) {
             Player newPlayer = new Player(core.getMainPlayer(), data.name(), data.playerModel(), core);
             core.getPlayerList().add(newPlayer);
+            if (data.isNew()) {
+                core.getGamePanel().addChatMessage(new ChatMessage(data.name() + " joined the game."));
+            }
         }
     }
 
