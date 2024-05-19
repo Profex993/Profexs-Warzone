@@ -8,21 +8,38 @@ import shared.weapon.weaponClasses.WeaponGenerator;
 
 import java.awt.*;
 
+/**
+ * class for players
+ */
 public class Player extends Entity {
     private final MainPlayer mainPlayer;
     private boolean shootLock = true;
 
+    /**
+     * @param mainPlayer MainPlayer for calculating draw coordinates
+     * @param name String name
+     * @param playerModel String player model
+     * @param core GameCore for accessing game components
+     */
     public Player(MainPlayer mainPlayer, String name, String playerModel, GameCore core) {
         super(name, playerModel, core);
         this.mainPlayer = mainPlayer;
     }
 
+    /**
+     * draw player
+     * @param g2 Graphics2D
+     */
     public void draw(Graphics2D g2) {
         screenX = worldX - mainPlayer.getWorldX() + mainPlayer.getScreenX();
         screenY = worldY - mainPlayer.getWorldY() + mainPlayer.getScreenY();
         super.draw(g2);
     }
 
+    /**
+     * update player from input
+     * @param input Packet_PlayerUpdateInput from server
+     */
     public void updateFromInputData(Packet_PlayerUpdateInput input) {
         this.death = input.death();
         this.worldX = input.x();

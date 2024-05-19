@@ -1,16 +1,25 @@
 package shared;
 
 import shared.object.*;
-import shared.object.objectClasses.Object;
+import shared.object.objectClasses.MapObject;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.ArrayList;
 
+/**
+ * class for generating map from file
+ */
 public abstract class MapGenerator {
     private static final Tile[] tiles;
 
+    /**
+     * get BufferedReader of map file
+     * @param mapNum int representing map
+     * @return returns BufferedReader of map file
+     * @throws FileNotFoundException if file cant be found
+     */
     public static BufferedReader getMap(int mapNum) throws FileNotFoundException {
         String filePath = switch (mapNum) {
             case 0 -> "maps/crossfire/map_crossfire.txt";
@@ -20,6 +29,12 @@ public abstract class MapGenerator {
         return new BufferedReader(new FileReader(filePath));
     }
 
+    /**
+     * get BufferedReader of file containing map spawn locations on current map
+     * @param mapNumber int representing map
+     * @return BufferedReader of file containing map locations
+     * @throws FileNotFoundException if file cant be found
+     */
     public static BufferedReader getPlayerSpawnLocations(int mapNumber) throws FileNotFoundException {
         String filePath = switch (mapNumber) {
             case 0 -> "maps/crossfire/playerSpawn_crossfire.txt";
@@ -29,6 +44,12 @@ public abstract class MapGenerator {
         return new BufferedReader(new FileReader(filePath));
     }
 
+    /**
+     * get BufferedReader of file containing map item spawn locations on current map
+     * @param mapNumber int representing map
+     * @return BufferedReader of file containing map locations
+     * @throws FileNotFoundException if file cant be found
+     */
     public static BufferedReader getItemSpawnLocations(int mapNumber) throws FileNotFoundException {
         String filePath = switch (mapNumber) {
             case 0 -> "maps/crossfire/itemSpawn_crossfire.txt";
@@ -38,40 +59,75 @@ public abstract class MapGenerator {
         return new BufferedReader(new FileReader(filePath));
     }
 
-    public static ArrayList<Object> getMapObjects(int mapNum) {
-        ArrayList<Object> list = new ArrayList<>();
+    /**
+     * get Arraylist of mapObjects on current map
+     * @param mapNum int representing map
+     * @return ArrayList of MapObject
+     */
+    public static ArrayList<MapObject> getMapObjects(int mapNum) {
+        ArrayList<MapObject> list = new ArrayList<>();
         switch (mapNum) {
             case 0 -> {
-                list.add(new Object_Building_3(2050, 1730, 300, 600));
-                list.add(new Object_Building_1(48, 1604, 600, 300));
-                list.add(new Object_Building_2(648, 1600, 300, 300));
-                list.add(new Object_Building_4(1100, 1400, 700, 500));
-                list.add(new Object_Building_Bunker(700, -200));
-                list.add(new Object_Btr(992, 684));
-                list.add(new Object_Btr(1416, 864));
-                list.add(new Object_Bulldozer(2060, 1400));
-                list.add(new Object_Sandbags(1116, 1964, 200, 60));
-                list.add(new Object_Car(284, 1964));
-                list.add(new Object_Pipe(1716, 72, 200, 80));
-                list.add(new Object_Bricks(1984, 96, 168, 80));
-                list.add(new Object_Sandbags(1700, 324, 200, 60));
-                list.add(new Object_AmmoCase(1700, 272));
-                list.add(new Object_Antenna2(570, -500, 100, 800));
-                list.add(new Object_PowerBox2(548, 100, 60, 100));
-                list.add(new Object_PowerBox(485, 100, 60, 100));
-                list.add(new Object_Sandbags(516, 324, 200, 60));
-                list.add(new Object_Cable(52, 2120, 120, 100));
-                list.add(new Object_Cable(52, 2230, 120, 100));
-                list.add(new Object_AmmoCase(1316, 1964));
+                list.add(new MapObject_Building_3(2050, 1730, 300, 600));
+                list.add(new MapObject_Building_1(48, 1604, 600, 300));
+                list.add(new MapObject_Building_2(648, 1600, 300, 300));
+                list.add(new MapObject_Building_4(1100, 1400, 700, 500));
+                list.add(new MapObject_Building_Bunker(700, -200));
+                list.add(new MapObject_Btr(992, 684));
+                list.add(new MapObject_Btr(1416, 864));
+                list.add(new MapObject_Bulldozer(2060, 1400));
+                list.add(new MapObject_Sandbags(1116, 1964, 200, 60));
+                list.add(new MapObject_Car(284, 1964));
+                list.add(new MapObject_Pipe(1716, 72, 200, 80));
+                list.add(new MapObject_Bricks(1984, 96, 168, 80));
+                list.add(new MapObject_Sandbags(1700, 324, 200, 60));
+                list.add(new MapObject_AmmoCase(1700, 272));
+                list.add(new MapObject_Antenna2(570, -500, 100, 800));
+                list.add(new MapObject_PowerBox2(548, 100, 60, 100));
+                list.add(new MapObject_PowerBox(485, 100, 60, 100));
+                list.add(new MapObject_Sandbags(516, 324, 200, 60));
+                list.add(new MapObject_Cable(52, 2120, 120, 100));
+                list.add(new MapObject_Cable(52, 2230, 120, 100));
+                list.add(new MapObject_AmmoCase(1316, 1964));
             }
         }
 
         return list;
     }
 
+    /**
+     * record for tiles
+     * @param path String path to image
+     * @param collision boolean true if player cant walk through tile
+     */
     private record Tile(String path, boolean collision) {
     }
 
+    /**
+     * returns set of tile image paths
+     * @return String[] of image paths
+     */
+    public static String[] getTileSetImagePath() {
+        String[] out = new String[tiles.length];
+        for (int i = 0; i < tiles.length; i++) {
+            out[i] = tiles[i].path();
+        }
+        return out;
+    }
+
+    /**
+     * returns set of tile collision
+     * @return boolean[] of collisions
+     */
+    public static boolean[] getTileSetCollision() {
+        boolean[] out = new boolean[tiles.length];
+        for (int i = 0; i < tiles.length; i++) {
+            out[i] = tiles[i].collision();
+        }
+        return out;
+    }
+
+    // initialize tiles
     static {
         tiles = new Tile[74];
 
@@ -149,21 +205,5 @@ public abstract class MapGenerator {
         tiles[71] = new Tile("tiles/heliportVertical.png", false);
         tiles[72] = new Tile("tiles/heliportHorizontal.png", false);
         tiles[73] = new Tile("tiles/heliportVertical2.png", false);
-    }
-
-    public static String[] getTileSetImagePath() {
-        String[] out = new String[tiles.length];
-        for (int i = 0; i < tiles.length; i++) {
-            out[i] = tiles[i].path();
-        }
-        return out;
-    }
-
-    public static boolean[] getTileSetCollision() {
-        boolean[] out = new boolean[tiles.length];
-        for (int i = 0; i < tiles.length; i++) {
-            out[i] = tiles[i].collision();
-        }
-        return out;
     }
 }

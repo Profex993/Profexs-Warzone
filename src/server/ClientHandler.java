@@ -3,7 +3,7 @@ package server;
 import server.entity.PlayerServerSide;
 import server.enums.ServerMatchState;
 import shared.ConstantsShared;
-import shared.object.objectClasses.Object;
+import shared.object.objectClasses.MapObject;
 import shared.packets.*;
 
 import java.io.BufferedReader;
@@ -13,20 +13,34 @@ import java.net.Socket;
 import java.net.SocketException;
 import java.util.ArrayList;
 
+/**
+ * class for clientHandling
+ */
 public class ClientHandler implements Runnable {
     private final PlayerServerSide player;
     private final Socket socket;
     private final BufferedWriter out;
     private final BufferedReader in;
+    private final ServerCore core;
     private final ArrayList<PlayerServerSide> playerList;
     private final ArrayList<ClientHandler> clientHandlers;
-    private final ServerCore core;
-    private final ArrayList<PlayerServerSide> addPlayerRequestList = new ArrayList<>();
-    private final ArrayList<PlayerServerSide> removePlayerRequestList = new ArrayList<>();
-    private final ArrayList<Object> addObjectRequestList = new ArrayList<>(), removeObjectRequestList = new ArrayList<>();
-    private boolean changeMapRequestTrigger = true, endMatchRequestTrigger, startMatchRequestTrigger;
+    private final ArrayList<PlayerServerSide> playersToAddList = new ArrayList<>(), playerToRemoveList = new ArrayList<>();
+    private final ArrayList<MapObject> mapObjectsToAddList = new ArrayList<>(), mapObjectsToRemoveList = new ArrayList<>();
     private final ArrayList<String> packetStringList = new ArrayList<>();
+    private boolean changeMapRequestTrigger = true, endMatchRequestTrigger, startMatchRequestTrigger;
 
+    /**
+     *
+     * @param socket client Socket
+     * @param in client InputStream to read input
+     * @param out client OutputStream to send output
+     * @param player PlayerServerSide to update clients player
+     * @param core ServerCore for requesting adding objects and players
+     * @param playerList Arraylist of PlayerServerSide to add players connected to server
+     * @param matchState ServerMatchState current match state to end or start match
+     * @param itemSpawnLocation Arraylist of item spawn locations to add MapObjects already on map
+     * @param clientHandlers Arraylist of clientHandler to remove this if client disconnects
+     */
     public ClientHandler(Socket socket, BufferedReader in, BufferedWriter out, PlayerServerSide player, ServerCore core,
                          ArrayList<PlayerServerSide> playerList, ServerMatchState matchState,
                          ArrayList<ItemSpawnLocation> itemSpawnLocation, ArrayList<ClientHandler> clientHandlers) {
@@ -38,24 +52,30 @@ public class ClientHandler implements Runnable {
         this.out = out;
         this.clientHandlers = clientHandlers;
 
+        //set match state for client
         if (matchState == ServerMatchState.MATCH_OVER) {
             triggerEndOfMatch();
         } else if (matchState == ServerMatchState.MATCH) {
             triggerStartOfMatch();
         }
 
+        //add items from item spawn location
         itemSpawnLocation.forEach(e -> {
             if (e.getObject() != null) {
-                addObjectRequestList.add(e.getObject());
+                mapObjectsToAddList.add(e.getObject());
             }
         });
 
+        //add players
         playerList.forEach( e -> {
             Packet_AddPlayer packetAddPlayer = new Packet_AddPlayer(e.getName(), e.getPlayerModel(), false);
             packetStringList.add(packetAddPlayer.toString());
         });
     }
 
+    /**
+     * handle client
+     */
     @Override
     public void run() {
         setName();
@@ -63,13 +83,15 @@ public class ClientHandler implements Runnable {
         try {
             while (socket.isConnected()) {
                 String inputLine = in.readLine();
-                if (inputLine == null) break;
+                if (inputLine == null) break; //no client input
 
                 updatePlayer(inputLine);
 
                 makePacketList();
+                //send how many packets has the client expect
                 out.write(String.valueOf(packetStringList.size()));
                 out.newLine();
+                // send out packets
                 packetStringList.forEach(e -> {
                     try {
                         out.write(e);
@@ -92,12 +114,20 @@ public class ClientHandler implements Runnable {
         endConnection();
     }
 
+    /**
+     * update player from input String and send update back to client
+     * @param line Packet_ClientInputToServer.toString() from client
+     * @throws IOException if line is corrupted
+     */
     private void updatePlayer(String line) throws IOException {
         player.updateFromPlayerInput(Packet_PlayerInputToServer.parseString(line));
         out.write(Packet_ServerOutputToClient.getFromPlayerData(player).toString());
         out.newLine();
     }
 
+    /**
+     * create list of packets Strings
+     */
     private void makePacketList() {
         if (changeMapRequestTrigger) {
             Packet_ChangeMap packetChangeMap = new Packet_ChangeMap(core.getMAP_NUMBER());
@@ -117,22 +147,22 @@ public class ClientHandler implements Runnable {
             startMatchRequestTrigger = false;
         }
 
-        if (!addPlayerRequestList.isEmpty()) {
-            for (PlayerServerSide player : addPlayerRequestList) {
+        if (!playersToAddList.isEmpty()) {
+            for (PlayerServerSide player : playersToAddList) {
                 if (this.player != player) {
                     Packet_AddPlayer packet = new Packet_AddPlayer(player.getName(), player.getPlayerModel(), true);
                     packetStringList.add(packet.toString());
                 }
             }
-            addPlayerRequestList.clear();
+            playersToAddList.clear();
         }
 
-        if (!removePlayerRequestList.isEmpty()) {
-            for (PlayerServerSide player : removePlayerRequestList) {
+        if (!playerToRemoveList.isEmpty()) {
+            for (PlayerServerSide player : playerToRemoveList) {
                 Packet_RemovePlayer packet = Packet_RemovePlayer.getFromPlayer(player);
                 packetStringList.add(packet.toString());
             }
-            removePlayerRequestList.clear();
+            playerToRemoveList.clear();
         }
 
         if (!playerList.isEmpty()) {
@@ -144,23 +174,26 @@ public class ClientHandler implements Runnable {
             }
         }
 
-        if (!removeObjectRequestList.isEmpty()) {
-            for (Object Object : removeObjectRequestList) {
-                Packet_RemoveObject packet = Packet_RemoveObject.getFromObject(Object);
+        if (!mapObjectsToRemoveList.isEmpty()) {
+            for (int i = 0; i < mapObjectsToRemoveList.size(); i++) {
+                Packet_RemoveObject packet = Packet_RemoveObject.getFromObject(mapObjectsToRemoveList.get(i));
                 packetStringList.add(packet.toString());
             }
-            removeObjectRequestList.clear();
+            mapObjectsToRemoveList.clear();
         }
 
-        if (!addObjectRequestList.isEmpty()) {
-            for (Object object : addObjectRequestList) {
-                Packet_AddObject packet = Packet_AddObject.getFromObject(object);
+        if (!mapObjectsToAddList.isEmpty()) {
+            for (int i = 0; i < mapObjectsToAddList.size(); i++) {
+                Packet_AddObject packet = Packet_AddObject.getFromObject(mapObjectsToAddList.get(i));
                 packetStringList.add(packet.toString());
             }
-            addObjectRequestList.clear();
+            mapObjectsToAddList.clear();
         }
     }
 
+    /**
+     * set clients name and check its availability and validity
+     */
     public void setName() {
         try {
             String nameTest;
@@ -178,12 +211,20 @@ public class ClientHandler implements Runnable {
                 }
             } while (test);
 
-            player.setInitData(Packet_AddPlayerToServer.parseString(in.readLine()));
+            //set players name and model
+            player.setInitialData(Packet_AddPlayerToServer.parseString(in.readLine()));
         } catch (Exception e) {
             endConnection();
         }
     }
 
+    /**
+     * check if name is available
+     * @param name String of name
+     * @param out OutputStream to send response to client
+     * @return returns true if name is available
+     * @throws Exception output stream error
+     */
     private boolean checkNameAvailability(String name, BufferedWriter out) throws Exception {
         for (PlayerServerSide playerServerSide : playerList) {
             if (playerServerSide != player && playerServerSide.getName().equals(name)) {
@@ -196,6 +237,13 @@ public class ClientHandler implements Runnable {
         return true;
     }
 
+    /**
+     * checks if name is valid by regex
+     * @param name String of name
+     * @param out OutputStream to send response back to client
+     * @return returns true if name is valid
+     * @throws Exception output stream error
+     */
     private boolean checkNameValidity(String name, BufferedWriter out) throws Exception {
         if (name.matches("[a-zA-Z\\d_]{1,15}")) {
             return true;
@@ -207,6 +255,9 @@ public class ClientHandler implements Runnable {
         }
     }
 
+    /**
+     * end connection and remove client
+     */
     private void endConnection() {
         clientHandlers.remove(this);
         try {
@@ -226,19 +277,19 @@ public class ClientHandler implements Runnable {
         startMatchRequestTrigger = true;
     }
 
-    public ArrayList<PlayerServerSide> getAddPlayerRequestList() {
-        return addPlayerRequestList;
+    public ArrayList<PlayerServerSide> getPlayersToAddList() {
+        return playersToAddList;
     }
 
-    public ArrayList<PlayerServerSide> getRemovePlayerRequestList() {
-        return removePlayerRequestList;
+    public ArrayList<PlayerServerSide> getPlayerToRemoveList() {
+        return playerToRemoveList;
     }
 
-    public ArrayList<Object> getAddObjectRequestList() {
-        return addObjectRequestList;
+    public ArrayList<MapObject> getAddObjectRequestList() {
+        return mapObjectsToAddList;
     }
 
-    public ArrayList<Object> getRemoveObjectRequestList() {
-        return removeObjectRequestList;
+    public ArrayList<MapObject> getRemoveObjectRequestList() {
+        return mapObjectsToRemoveList;
     }
 }

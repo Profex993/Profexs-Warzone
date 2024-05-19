@@ -1,5 +1,8 @@
 package shared;
 
+/**
+ * constants used in client and server
+ */
 public abstract class ConstantsShared {
     public static final int PLAYER_WIDTH = 41, PLAYER_HEIGHT = 52, MAX_WORLD_WIDTH = 50,
             MAX_WORLD_HEIGHT = 50, TILE_SIZE = 48;

@@ -1,5 +1,6 @@
 package shared.weapon;
 
+import shared.object.MapObject_Weapon_SKS;
 import shared.weapon.weaponClasses.Weapon_Core;
 import shared.weapon.weaponClasses.Weapon_Rifle;
 
@@ -30,6 +31,7 @@ public class Weapon_SKS extends Weapon_Rifle {
     }
 
     public static Weapon_Core getServerSideWeapon() {
-        return new Weapon_Core(name, 15, false, 80, 30, 0, 10, 4 * 120);
+        return new Weapon_Core(name, 15, false, 80, 30, 0, 10, 4 * 120,
+                MapObject_Weapon_SKS.class);
     }
 }

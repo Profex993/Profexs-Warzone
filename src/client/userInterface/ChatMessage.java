@@ -2,6 +2,9 @@ package client.userInterface;
 
 import client.clientMain.ConstantsClient;
 
+/**
+ * class for chat message
+ */
 public class ChatMessage {
     private int timer = ConstantsClient.CHAT_TIMER;
     private final String message;
@@ -10,6 +13,9 @@ public class ChatMessage {
         this.message = message;
     }
 
+    /**
+     * decrease time when message will be displayed
+     */
     public void decreaseTimer() {
         timer--;
     }

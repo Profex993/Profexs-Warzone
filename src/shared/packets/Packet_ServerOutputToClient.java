@@ -5,6 +5,19 @@ import shared.ConstantsShared;
 
 import java.io.IOException;
 
+/**
+ * packet containing data for client to update main player
+ * @param x int world location x
+ * @param y int world location y
+ * @param directionFace String direction face
+ * @param walking boolean if walking
+ * @param weapon String name of weapon
+ * @param health int health
+ * @param death boolean if death
+ * @param killedBy String name of player who killed main player
+ * @param kills int kills
+ * @param deaths int deaths
+ */
 public record Packet_ServerOutputToClient(int x, int y, String directionFace, boolean walking, String weapon, int health,
                                           boolean death, String killedBy, int kills, int deaths) {
 

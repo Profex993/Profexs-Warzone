@@ -1,5 +1,8 @@
 package shared.enums;
 
+/**
+ * enum of player models, String value represents directory where player model can be found
+ */
 public enum PlayerModel {
     BANDIT("bandit"),
     BANDIT_2("bandit_2"),

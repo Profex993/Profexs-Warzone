@@ -12,6 +12,9 @@ import client.entity.Player;
 import java.awt.*;
 import java.util.ArrayList;
 
+/**
+ * class for drawing game UI
+ */
 public class GameUI {
     private final int screenWidth, screenHeight;
     private final MainPlayer player;
@@ -21,6 +24,14 @@ public class GameUI {
     private final GameCore core;
     private final ArrayList<ChatMessage> chatMessages = new ArrayList<>();
 
+    /**
+     * @param player MainPlayer for displaying stats and leaderboard
+     * @param playerList Arraylist of Players list for leaderboard
+     * @param screenWidth int screen width
+     * @param screenHeight int screen height
+     * @param keyHandler keyHandler for keyboard input
+     * @param core GameCore for accessing components
+     */
     public GameUI(MainPlayer player, ArrayList<Player> playerList, int screenWidth, int screenHeight, KeyHandler keyHandler, GameCore core) {
         this.player = player;
         this.playerList = playerList;
@@ -30,6 +41,10 @@ public class GameUI {
         this.core = core;
     }
 
+    /**
+     * method which selects what to draw
+     * @param g2 Graphics2D
+     */
     public void draw(Graphics2D g2) {
         g2.setColor(Color.red);
         if (player.isDeath()) {
@@ -46,9 +61,12 @@ public class GameUI {
         drawChat(g2);
     }
 
+    /**
+     * @param g2 Graphics2D
+     */
     private void drawChat(Graphics2D g2) {
         g2.setColor(Color.red);
-        g2.setFont(ConstantsClient.font25);
+        g2.setFont(ConstantsClient.FONT_25);
         for (int i = 0; i < chatMessages.size(); i++) {
             ChatMessage message = chatMessages.get(i);
             g2.drawString(message.getMessage(), 30, i * 40 + 40);
@@ -59,13 +77,17 @@ public class GameUI {
         }
     }
 
+    /**
+     * draw player UI with stats and weapon
+     * @param g2 Graphics2D
+     */
     private void drawGameUI(Graphics2D g2) {
-        g2.setFont(ConstantsClient.font25);
+        g2.setFont(ConstantsClient.FONT_25);
         g2.drawString(String.valueOf(player.getHealth()), 30, screenHeight - 60);
         g2.fillRect(80, screenHeight - 75, player.getHealth(), 15);
 
         if (player.getWeapon() != null) {
-            g2.setColor(ConstantsClient.transparentColor);
+            g2.setColor(ConstantsClient.TRANSPARENT_COLOR);
             g2.fillRect(screenWidth - 250, screenHeight - 140, 230, 120);
             g2.setColor(Color.red);
             g2.drawString(player.getWeapon().getName(), screenWidth - 230, screenHeight - 120);
@@ -78,15 +100,19 @@ public class GameUI {
         }
     }
 
+    /**
+     * draw game over screen
+     * @param g2 Graphics2D
+     */
     public void drawGameOver(Graphics2D g2) {
         if (core.getCurrentMatchTime() > 3) {
             drawLeaderBoard(g2);
-            g2.setFont(ConstantsClient.font100);
+            g2.setFont(ConstantsClient.FONT_100);
             g2.setColor(Color.red);
             g2.drawString("GAME OVER",
                     (GamePanel.getScreenWidth() - g2.getFontMetrics().stringWidth("GAME OVER")) / 2,
                     GamePanel.getScreenHeight() / 2 + 150);
-            g2.setFont(ConstantsClient.font50);
+            g2.setFont(ConstantsClient.FONT_50);
             ArrayList<Entity> leaderBoard = makeLeaderBoard();
             if (leaderBoard.get(0).getKills() != 0) {
                 g2.drawString("Winner is: " + leaderBoard.get(0).getName(),
@@ -98,17 +124,25 @@ public class GameUI {
         }
     }
 
+    /**
+     * draw end game countdown
+     * @param g2 Graphics2D
+     */
     private void drawCountDown(Graphics2D g2) {
-        g2.setFont(ConstantsClient.font100);
+        g2.setFont(ConstantsClient.FONT_100);
         g2.setColor(Color.red);
         g2.drawString(String.valueOf(core.getCurrentMatchTime()),
                 (GamePanel.getScreenWidth() - g2.getFontMetrics().stringWidth(String.valueOf(core.getCurrentMatchTime()))) / 2,
                 GamePanel.getScreenHeight() / 2 + 150);
     }
 
+    /**
+     * draw death screen
+     * @param g2 Graphics2D
+     */
     private void drawDeathScreen(Graphics2D g2) {
         if (deathScreenCounter < 100) {
-            g2.setFont(ConstantsClient.font100);
+            g2.setFont(ConstantsClient.FONT_100);
             g2.drawString("You have been killed by:",
                     (GamePanel.getScreenWidth() - g2.getFontMetrics().stringWidth("You have been killed by:")) / 2,
                     GamePanel.getScreenHeight() / 2 + 50);
@@ -124,12 +158,16 @@ public class GameUI {
         }
     }
 
+    /**
+     * draw and leader board on screen
+     * @param g2 Graphics2D
+     */
     private void drawLeaderBoard(Graphics2D g2) {
         ArrayList<Entity> leaderBoard = makeLeaderBoard();
-        g2.setColor(ConstantsClient.transparentColor);
+        g2.setColor(ConstantsClient.TRANSPARENT_COLOR);
         g2.fillRect(GamePanel.screenWidth / 2 - 300, 0, 600, leaderBoard.size() * 40 + 40);
         g2.setColor(Color.red);
-        g2.setFont(ConstantsClient.font25);
+        g2.setFont(ConstantsClient.FONT_25);
         g2.setStroke(new BasicStroke(2));
         g2.drawRect(GamePanel.screenWidth / 2 - 300, 0, 600, 40);
         g2.drawLine(GamePanel.screenWidth / 2 + 100, 0, GamePanel.screenWidth / 2 + 100, leaderBoard.size() * 40 + 40);
@@ -145,6 +183,10 @@ public class GameUI {
         }
     }
 
+    /**
+     * make leader board
+     * @return returns sorted Arraylist of players with the winner on index 0
+     */
     private ArrayList<Entity> makeLeaderBoard() {
         ArrayList<Entity> leaderBoard = new ArrayList<>(playerList);
         leaderBoard.add(player);
@@ -159,6 +201,10 @@ public class GameUI {
         return leaderBoard;
     }
 
+    /**
+     * add chat message and play sound
+     * @param message ChatMessage to add
+     */
     public void addChatMessage(ChatMessage message) {
         chatMessages.add(message);
         SoundManager.playSound(SoundManager.chat);

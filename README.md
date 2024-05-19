@@ -1,7 +1,8 @@
 <h1>Profex's Warzone</h1>
 
 Profex's Warzone is an Action Packed Multiplayer 2D Game Developed in Java 19.2. <br>
-This Game if Free to Play, You Can Even Host Your Own Server and Enjoy Playing With Your Friends.<br>
+This Game if Free to Play, You Can Even Host Your Own Server and Enjoy Playing With Your Friends.<br> <br>
+**This Game is Still work in progress!**
 
 <h2>What is it About?</h2>
 
@@ -35,7 +36,7 @@ When a Player Gets Killed, They Will Respawn on a Random Location After Few Seco
 For Now, the Controlls Can Not Be Changed.
 
 - W,S,A,D - Walking
-- T - LeaderBoard
+- T - Leader Board
 - Left Click - Shoot
 - Right Click - Interact
 
@@ -66,4 +67,4 @@ This Game is Developed by Profex With Some Help From Friends. <br>
 <h2>Installation</h2>
 
 Jar Builds of the Game and Server Can Be Found on This GitHub Page.<br>
-[Java 19.2](https://www.oracle.com/java/technologies/javase/jdk19-archive-downloads.html) is needed.
+[Java 19.0.2](https://www.oracle.com/java/technologies/javase/jdk19-archive-downloads.html) is needed.

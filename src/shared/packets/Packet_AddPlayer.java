@@ -4,6 +4,12 @@ import shared.ConstantsShared;
 
 import java.io.IOException;
 
+/**
+ * packet for adding player to client
+ * @param name String name
+ * @param playerModel String player model
+ * @param isNew boolean if player is new
+ */
 public record Packet_AddPlayer(String name, String playerModel, boolean isNew) {
     public final static String head = "addPlayer";
     public static Packet_AddPlayer parseString(String line) throws IOException {

@@ -5,6 +5,21 @@ import shared.ConstantsShared;
 
 import java.io.IOException;
 
+/**
+ * packet containing data about non-main player
+ * @param id String name of player
+ * @param x int world location x
+ * @param y int world location y
+ * @param directionFace String of direction face
+ * @param walking boolean if walking
+ * @param rotation double mouse rotation
+ * @param shooting boolean if shooting
+ * @param reloading double if reloading
+ * @param weapon String name of weapon
+ * @param death boolean if death
+ * @param kills int kills
+ * @param deaths int deaths
+ */
 public record Packet_PlayerUpdateInput(String id, int x, int y, String directionFace, boolean walking, double rotation,
                                        boolean shooting, boolean reloading, String weapon, boolean death, int kills, int deaths) {
     public final static String head = "updatePlayer";

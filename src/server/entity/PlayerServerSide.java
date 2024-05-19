@@ -4,7 +4,8 @@ import server.*;
 import server.enums.ServerMatchState;
 import shared.ConstantsShared;
 import shared.ObjectGenerator;
-import shared.object.objectClasses.Object;
+import shared.object.objectClasses.MapObject;
+import shared.object.objectClasses.MapObject_Weapon;
 import shared.packets.Packet_AddPlayerToServer;
 import shared.packets.Packet_PlayerInputToServer;
 import shared.weapon.weaponClasses.Weapon;
@@ -12,14 +13,16 @@ import shared.weapon.weaponClasses.WeaponGenerator;
 import shared.weapon.weaponClasses.Weapon_Core;
 
 import java.awt.*;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
 
+/**
+ * server side player class
+ */
 public class PlayerServerSide {
     private final ServerUpdateManager updateManager;
     private final CollisionManager collisionManager;
-    private final ArrayList<Object> objectList;
+    private final ArrayList<MapObject> mapObjectList;
     private final ArrayList<SpawnLocation> spawnLocations;
     private final Random random;
     private final ServerCore core;
@@ -31,39 +34,49 @@ public class PlayerServerSide {
     private final Rectangle solidArea;
     private Weapon_Core weapon;
 
-    public PlayerServerSide(ServerUpdateManager updateManager, CollisionManager collisionManager, ArrayList<Object> objectList,
+    /**
+     *
+     * @param updateManager ServerUpdateManager for setting delays and getting projectileList
+     * @param collisionManager CollisionManager for checking collisions
+     * @param mapObjectList Arraylist of MapObjects for checking interactions
+     * @param core ServerCore for checking match state, adding objects on map
+     * @param spawnLocations Arraylist of playerSpawnLocations for respawning
+     * @param random Random for random generations
+     */
+    public PlayerServerSide(ServerUpdateManager updateManager, CollisionManager collisionManager, ArrayList<MapObject> mapObjectList,
                             ServerCore core, ArrayList<SpawnLocation> spawnLocations, Random random) {
         this.updateManager = updateManager;
         solidArea = new Rectangle(worldX, worldY, ConstantsShared.PLAYER_WIDTH, ConstantsShared.PLAYER_HEIGHT);
         this.collisionManager = collisionManager;
-        this.objectList = objectList;
+        this.mapObjectList = mapObjectList;
         this.core = core;
         this.spawnLocations = spawnLocations;
         this.random = random;
-        try {
-            collisionManager.loadMap(core.getMAP_NUMBER());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
 
         respawn();
     }
 
+    /**
+     * update player from input from client
+     * @param input Package_PlayerInputToServer from client
+     */
     public void updateFromPlayerInput(Packet_PlayerInputToServer input) {
         if (!death) {
-            rotation = Math.atan2(input.mouseY() - (input.screenY() + (double) solidArea.width / 2),
-                    input.mouseX() - (input.screenX() + (double) solidArea.width / 2));
-            if (rotation >= -Math.PI / 4 && rotation < Math.PI / 4) {
-                directionFace = "right";
-            } else if (rotation >= Math.PI / 4 && rotation < 3 * Math.PI / 4) {
-                directionFace = "down";
-            } else if (rotation >= -3 * Math.PI / 4 && rotation < -Math.PI / 4) {
-                directionFace = "up";
-            } else {
-                directionFace = "left";
-            }
-
+            //player cant move at the end of the match
             if (core.getMatchState() == ServerMatchState.MATCH) {
+                //mouse rotation
+                rotation = Math.atan2(input.mouseY() - (input.screenY() + (double) solidArea.width / 2),
+                        input.mouseX() - (input.screenX() + (double) solidArea.width / 2));
+                if (rotation >= -Math.PI / 4 && rotation < Math.PI / 4) {
+                    directionFace = "right";
+                } else if (rotation >= Math.PI / 4 && rotation < 3 * Math.PI / 4) {
+                    directionFace = "down";
+                } else if (rotation >= -3 * Math.PI / 4 && rotation < -Math.PI / 4) {
+                    directionFace = "up";
+                } else {
+                    directionFace = "left";
+                }
+
                 if (input.up()) {
                     direction = "up";
                 } else if (input.down()) {
@@ -74,6 +87,7 @@ public class PlayerServerSide {
                     direction = "right";
                 }
 
+                //check if collision
                 if (collisionManager.checkTile(this) && collisionManager.checkObject(this)) {
                     if (input.up()) {
                         worldY -= ConstantsServer.PLAYER_SPEED;
@@ -94,9 +108,11 @@ public class PlayerServerSide {
                     walking = false;
                 }
 
+                //update solid area
                 solidArea.x = worldX;
                 solidArea.y = worldY;
 
+                //weapon
                 if (input.leftCLick()) {
                     if (weapon.isAutomatic()) {
                         weapon.shoot(updateManager.getProjectileList(), worldX, worldY, directionFace, this, updateManager.getTick(),
@@ -123,9 +139,10 @@ public class PlayerServerSide {
                     weapon.reload(updateManager.getTick());
                 }
 
+                //object interacting
                 if (input.rightClick() && interactTrigger) {
-                    for (int i = 0; i < objectList.size(); i++) {
-                        objectList.get(i).tryInteracting(this, input, core);
+                    for (int i = 0; i < mapObjectList.size(); i++) {
+                        mapObjectList.get(i).tryInteracting(this, input, core);
                         interactTrigger = false;
                     }
                 } else if (!input.rightClick() && !interactTrigger) {
@@ -135,17 +152,29 @@ public class PlayerServerSide {
         }
     }
 
+    /**
+     * update each tick
+     */
     public void update() {
+        // check if enough time has past since death
         if (death && core.getMatchState() == ServerMatchState.MATCH) {
             respawn();
         }
     }
 
-    public void setInitData(Packet_AddPlayerToServer data) {
+    /**
+     * sets players name and player model
+     * @param data Packet_AddPlayerToServer
+     */
+    public void setInitialData(Packet_AddPlayerToServer data) {
         this.name = data.name();
         this.playerModel = data.playerModel();
     }
 
+    /**
+     * change weapon of player
+     * @param weaponClass Class which extends weapon to change it to
+     */
     public void changeWeapon(Class<? extends Weapon> weaponClass) {
         try {
             this.weapon = WeaponGenerator.getServerSideWeapon(weaponClass);
@@ -154,6 +183,11 @@ public class PlayerServerSide {
         }
     }
 
+    /**
+     * handle damage
+     * @param remove damage int
+     * @param enemyPlayer player who dealt damage
+     */
     public void removeHealth(int remove, PlayerServerSide enemyPlayer) {
         health -= remove;
         if (health <= 0 && !death) {
@@ -163,18 +197,28 @@ public class PlayerServerSide {
         }
     }
 
+    /**
+     * process player death
+     */
     private void death() {
         health = 0;
         death = true;
         deaths++;
-        respawnDelay = updateManager.getTick() + 600;
+
+        //set time until respawn
+        respawnDelay = updateManager.getTick() + ConstantsServer.PLAYER_RESPAWN_TIME;
+
+        //drop players weapon
         try {
-            core.addObject(ObjectGenerator.getObjectByName("Object_Weapon_" + weapon.getName(), worldX, worldY));
+            core.addObject(ObjectGenerator.getObjectByName(weapon.getAssociatedWeaponMapObject().getSimpleName(), worldX, worldY));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
+    /**
+     * respawn player after enough of time
+     */
     private void respawn() {
         if (updateManager.getTick() >= respawnDelay) {
             health = 100;
@@ -245,6 +289,10 @@ public class PlayerServerSide {
 
     public String getWeaponName() {
         return weapon.getName();
+    }
+
+    public Class<? extends MapObject_Weapon> getWeaponAssociatedMapObject() {
+        return weapon.getAssociatedWeaponMapObject();
     }
 
     public int getHealth() {

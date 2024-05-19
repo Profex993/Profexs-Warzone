@@ -11,6 +11,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.Objects;
 
+/**
+ * class for drawing map
+ */
 public class TileManager {
     private final MainPlayer player;
     private final String[] tiles;
@@ -18,20 +21,37 @@ public class TileManager {
     private final int[][] mapTileNumber;
     private final int maxWorldColum = ConstantsShared.MAX_WORLD_WIDTH, maxWorldRow = ConstantsShared.MAX_WORLD_HEIGHT;
 
-    public TileManager(MainPlayer mainPlayer) throws IOException {
+    /**
+     * constructor initializes images of tiles, tiles are from MapGenerator
+     * @param mainPlayer MainPlayer for determining position of drawing
+     */
+    public TileManager(MainPlayer mainPlayer) {
         this.player = mainPlayer;
         tiles = MapGenerator.getTileSetImagePath();
         tileImages = new BufferedImage[tiles.length];
         mapTileNumber = new int[maxWorldColum][maxWorldRow];
-        getTileImg();
+        try {
+            getTileImg();
+        } catch (IOException e) {
+            ClientMain.showErrorWindowAndExit("can not load resources", e);
+        }
     }
 
+    /**
+     * load images of tiles
+     * @throws IOException if image cant be loaded
+     */
     private void getTileImg() throws IOException {
         for (int i = 0; i < tiles.length; i++) {
             tileImages[i] = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream(tiles[i])));
         }
     }
 
+    /**
+     * load map from file reader generated in MapGenerator
+     * @param mapNum int representing map
+     * @throws IOException if map cant be found
+     */
     public void loadMap(int mapNum) throws IOException {
         BufferedReader br = MapGenerator.getMap(mapNum);
 
@@ -54,6 +74,10 @@ public class TileManager {
         br.close();
     }
 
+    /**
+     * draw map
+     * @param g2 Graphics2D
+     */
     public void draw(Graphics2D g2) {
         int playerWorldX = player.getWorldX();
         int playerWorldY = player.getWorldY();

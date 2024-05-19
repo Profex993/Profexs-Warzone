@@ -14,7 +14,13 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.Objects;
 
+/**
+ * class for main menu at the start of the game
+ */
 public class MainMenu {
+    /**
+     * lunch the window
+     */
     public void open() {
         JFrame window = new JFrame();
         window.setTitle("Profex's warzone");
@@ -28,12 +34,15 @@ public class MainMenu {
         panel.startThread();
     }
 
+    /**
+     * panel class of the menu
+     */
     private static class Panel extends JPanel implements Runnable {
         private static final Dimension screenSize = new Dimension(800, 500);
         private Thread thread;
         private final JFrame window;
         private final BufferedImage background;
-        private JPanel largePanel, bottomPanel;
+        private JPanel playerModelPanel, bottomPanel;
         private final JPanel mainPanel = new JPanel();
         private JComboBox<String> dropBox;
         private JTextField ipBox, portBox, userBox;
@@ -41,6 +50,10 @@ public class MainMenu {
         private int walkAnimNum = 1;
         private final PlayerModelMenu playerModelMenu = new PlayerModelMenu();
 
+        /**
+         * constructor creates the components of the menu
+         * @param window JFrame window where panel should be displayed
+         */
         public Panel(JFrame window) {
             this.window = window;
             this.setPreferredSize(screenSize);
@@ -62,6 +75,9 @@ public class MainMenu {
             thread.start();
         }
 
+        /**
+         * loop for player model walking animation
+         */
         @Override
         public void run() {
             while (thread != null) {
@@ -79,10 +95,13 @@ public class MainMenu {
                 } else {
                     walkAnimNum = 1;
                 }
-                largePanel.repaint();
+                playerModelPanel.repaint();
             }
         }
 
+        /**
+         * create panel components
+         */
         private void createComponents() {
             mainPanel.setPreferredSize(new Dimension(400, 0));
             mainPanel.setLayout(new BorderLayout());
@@ -92,19 +111,26 @@ public class MainMenu {
             createServerControlPanel();
             createDropBox();
 
-            mainPanel.add(largePanel, BorderLayout.CENTER);
+            mainPanel.add(playerModelPanel, BorderLayout.CENTER);
             mainPanel.add(dropBox, BorderLayout.NORTH);
             mainPanel.add(bottomPanel, BorderLayout.SOUTH);
             this.setLayout(new BorderLayout());
             this.add(mainPanel, BorderLayout.EAST);
         }
 
+        /**
+         * create player model panel where player animation is drawn
+         */
         private void createPlayerModelPanel() {
-            largePanel = new LargePanel();
-            largePanel.setBackground(new Color(8, 0, 255));
+            playerModelPanel = new PlayerModelPanel();
+            playerModelPanel.setBackground(new Color(8, 0, 255));
         }
 
-        private class LargePanel extends JPanel {
+        private class PlayerModelPanel extends JPanel {
+            /**
+             * method for drawing player walking animation
+             * @param g the <code>Graphics</code> object to protect
+             */
             @Override
             public void paintComponent(Graphics g) {
                 super.paintComponent(g);
@@ -113,6 +139,9 @@ public class MainMenu {
             }
         }
 
+        /**
+         * create server control panel
+         */
         private void createServerControlPanel() {
             bottomPanel = new JPanel(new GridLayout(1, 2));
             JPanel leftPanel = new JPanel(new BorderLayout());
@@ -164,9 +193,12 @@ public class MainMenu {
             });
         }
 
+        /**
+         * join server with ip and port selected in box
+         */
         private void joinServer() {
             try {
-                ClientMain.startGame(ipBox.getText(), Integer.parseInt(portBox.getText()));
+                ClientMain.establishConnection(ipBox.getText(), Integer.parseInt(portBox.getText()));
                 swapButtons();
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(null, "no server found", "Error",
@@ -174,9 +206,12 @@ public class MainMenu {
             }
         }
 
+        /**
+         * join with name from text box
+         */
         private void enterName() {
             try {
-                ClientMain.checkName(userBox.getText());
+                ClientMain.setName(userBox.getText());
                 ClientMain.lunch(userBox.getText(), String.valueOf(dropBox.getSelectedItem()));
                 SoundManager.stopMainMenuSoundtrack();
                 window.dispose();
@@ -186,6 +221,9 @@ public class MainMenu {
             }
         }
 
+        /**
+         * swap buttons when connected to server
+         */
         public void swapButtons() {
             bottomPanel.removeAll();
             bottomPanel.add(new JLabel("Username:"));
@@ -195,6 +233,9 @@ public class MainMenu {
             bottomPanel.repaint();
         }
 
+        /**
+         * create dropBox with player models
+         */
         private void createDropBox() {
             String[] options = {PlayerModel.DEFAULT.name, PlayerModel.BANDIT.name, PlayerModel.BANDIT_2.name, PlayerModel.BANDIT_3.name,
                     PlayerModel.HAZMAT_SUIT.name, PlayerModel.REBEL.name, PlayerModel.SCAVENGER.name, PlayerModel.SCIENTIST.name, PlayerModel.SCIENTIST_2.name,
@@ -203,6 +244,10 @@ public class MainMenu {
             dropBox.addActionListener(e -> playerModelMenu.setPlayerImage(String.valueOf(dropBox.getSelectedItem())));
         }
 
+        /**
+         * draw main menu left panel
+         * @param g the <code>Graphics</code> object to protect
+         */
         @Override
         public void paintComponent(Graphics g) {
             super.paintComponent(g);
@@ -212,7 +257,7 @@ public class MainMenu {
             g2.setFont(new Font("impact", Font.PLAIN, 55));
             g2.drawString("Profex's warzone", 10, 70);
             g2.setColor(Color.red);
-            g2.setFont(ConstantsClient.font25);
+            g2.setFont(ConstantsClient.FONT_25);
             g2.drawString("Soundtrack by SUPREMER", 10, 485);
         }
     }

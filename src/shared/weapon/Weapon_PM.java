@@ -1,5 +1,6 @@
 package shared.weapon;
 
+import shared.object.MapObject_Weapon_PM;
 import shared.weapon.weaponClasses.Weapon_Core;
 import shared.weapon.weaponClasses.Weapon_Pistol;
 
@@ -33,6 +34,7 @@ public class Weapon_PM extends Weapon_Pistol {
     }
 
     public static Weapon_Core getServerSideWeapon() {
-        return new Weapon_Core(name, 12, false, 60, 30, 0, 8, 360);
+        return new Weapon_Core(name, 12, false, 60, 30, 0, 8, 360,
+                MapObject_Weapon_PM.class);
     }
 }

@@ -11,7 +11,10 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.Objects;
 
-public class Entity {
+/**
+ * core class of entities
+ */
+public abstract class Entity {
     protected int worldX, worldY, screenX, screenY, walkCounter = 0, idleCounter = 0, walkAnimNum = 1, kills, deaths;
     protected final int width = ConstantsShared.PLAYER_WIDTH, height = ConstantsShared.PLAYER_HEIGHT;
     protected final String name;
@@ -24,12 +27,22 @@ public class Entity {
     protected double rotation;
     protected final GameCore core;
 
+    /**
+     * constructor initializes player images from player model
+     * @param name String name
+     * @param playerModel String player model
+     * @param core GameCore for client components
+     */
     public Entity(String name, String playerModel, GameCore core) {
         this.name = name;
         this.core = core;
         setPlayerImage(playerModel);
     }
 
+    /**
+     * draw entity with circumstances
+     * @param g2 Graphics2D
+     */
     public void draw(Graphics2D g2) {
         if (core.getGameState() == GameStateClient.GAME) {
             if (death) {
@@ -58,6 +71,10 @@ public class Entity {
 
     }
 
+    /**
+     * set players image
+     * @param dir String of folder name in which the player model is, this name equals to PlayerModel.name
+     */
     public void setPlayerImage(String dir) {
         try {
             deathImg = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("entity/" + dir + "/death.png")));
@@ -78,6 +95,9 @@ public class Entity {
         }
     }
 
+    /**
+     * @return returns current image of the player
+     */
     private BufferedImage getImage() {
         switch (directionFace) {
             case "down" -> {

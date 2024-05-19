@@ -5,6 +5,9 @@ import client.enums.GameStateClient;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
+/**
+ * class for handling keyboard input
+ */
 public class KeyHandler implements KeyListener {
     public boolean up, down, left, right, reload, leaderBoard;
     private final GameCore core;
@@ -18,6 +21,10 @@ public class KeyHandler implements KeyListener {
 
     }
 
+    /**
+     * check what key was pressed
+     * @param e the event to be processed
+     */
     @Override
     public void keyPressed(KeyEvent e) {
         if (core.getGameState() == GameStateClient.GAME) {
@@ -36,6 +43,7 @@ public class KeyHandler implements KeyListener {
             }
         }
 
+        //opening menu
         if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
             if (core.getGameState() == GameStateClient.GAME || core.getGameState() == GameStateClient.MATCH_END) {
                 tempGameState = core.getGameState();
@@ -46,6 +54,10 @@ public class KeyHandler implements KeyListener {
         }
     }
 
+    /**
+     * check what key was released
+     * @param e the event to be processed
+     */
     @Override
     public void keyReleased(KeyEvent e) {
         if (e.getKeyCode() == KeyEvent.VK_W) {

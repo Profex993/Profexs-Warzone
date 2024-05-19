@@ -4,6 +4,10 @@ import shared.ConstantsShared;
 
 import java.io.IOException;
 
+/**
+ * packet to change clients map
+ * @param mapNumber int representing map
+ */
 public record Packet_ChangeMap(int mapNumber) {
     public final static String head = "changeMap";
 

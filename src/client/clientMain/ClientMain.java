@@ -15,11 +15,17 @@ public class ClientMain {
     static BufferedWriter out = null;
 
     public static void main(String[] args) {
-        MainMenu menu = new MainMenu();
-        menu.open();
+        new MainMenu().open();
     }
 
-    public static void startGame(String ip, int port) throws Exception {
+    /**
+     * establish connection with the server
+     *
+     * @param ip   String of ip of server
+     * @param port int of port of server
+     * @throws Exception if no server found
+     */
+    public static void establishConnection(String ip, int port) throws Exception {
         try {
             socket = new Socket(ip, port);
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
@@ -31,6 +37,12 @@ public class ClientMain {
         }
     }
 
+    /**
+     * lunch game window and create key components of client
+     *
+     * @param username    String of players name
+     * @param playerModel String of players player model
+     */
     public static void lunch(String username, String playerModel) {
         GameCore core = new GameCore(username, playerModel, in, out);
 
@@ -43,7 +55,13 @@ public class ClientMain {
         window.pack();
     }
 
-    public static void checkName(String username) throws Exception {
+    /**
+     * set players name
+     *
+     * @param username String name
+     * @throws Exception if name is taken or invalid
+     */
+    public static void setName(String username) throws Exception {
         String message;
         try {
             out.write(username);
@@ -61,6 +79,12 @@ public class ClientMain {
         }
     }
 
+    /**
+     * shows exception message box, prints error details into console and exits
+     *
+     * @param message String error message
+     * @param e       Exception that has occurred
+     */
     public static void showErrorWindowAndExit(String message, Exception e) {
         try {
             socket.close();
@@ -75,6 +99,9 @@ public class ClientMain {
         System.exit(1);
     }
 
+    /**
+     * close socket
+     */
     public static void closeSocket() {
         try {
             socket.close();

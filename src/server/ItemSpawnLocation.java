@@ -1,30 +1,43 @@
 package server;
 
 import shared.MapGenerator;
-import shared.object.objectClasses.Object;
+import shared.object.objectClasses.MapObject;
 
 import java.util.ArrayList;
 
+/**
+ * location where items can spawn
+ */
 public class ItemSpawnLocation {
     private final int x, y;
     private int spawnDelay;
-    private Object object;
+    private MapObject mapObject;
 
+    /**
+     * constructor sets delay
+     * @param x x coordinate int
+     * @param y y coordinate int
+     */
     public ItemSpawnLocation(int x, int y) {
         this.x = x;
         this.y = y;
         spawnDelay = ConstantsServer.WEAPON_ITEM_DESPAWN_DELAY;
     }
 
-    public void setObject(Object object) {
-        this.object = object;
+    public void setObject(MapObject mapObject) {
+        this.mapObject = mapObject;
     }
 
-    public void setObjectAndResetDelay(Object object) {
-        this.object = object;
+    public void setObjectAndResetDelay(MapObject mapObject) {
+        this.mapObject = mapObject;
         spawnDelay = ConstantsServer.WEAPON_ITEM_DESPAWN_DELAY;
     }
 
+    /**
+     * create an Arraylist of ItemSpawnLocation
+     * @param mapNumber int number of current map
+     * @return Arraylist of ItemSpawnLocation
+     */
     public static ArrayList<ItemSpawnLocation> getPlayerSpawnLocationList(int mapNumber) {
         try {
             ArrayList<ItemSpawnLocation> out = new ArrayList<>();
@@ -57,7 +70,7 @@ public class ItemSpawnLocation {
         return spawnDelay;
     }
 
-    public Object getObject() {
-        return object;
+    public MapObject getObject() {
+        return mapObject;
     }
 }

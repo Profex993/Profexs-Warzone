@@ -4,6 +4,9 @@ import client.clientMain.MouseHandler;
 
 import java.awt.*;
 
+/**
+ * class for buttons in menu
+ */
 public class MenuButton implements MenuComponent {
     private final Rectangle triggerArea;
     private final String text;
@@ -11,6 +14,14 @@ public class MenuButton implements MenuComponent {
     private final MouseHandler mouseHandler;
     private final Runnable onCLick;
 
+    /**
+     * @param x x location int
+     * @param y y location int
+     * @param text String text
+     * @param font Font
+     * @param mouseHandler MouseHandler for updating
+     * @param onCLick Runnable operation to be executed on click
+     */
     public MenuButton(int x, int y, String text, Font font, MouseHandler mouseHandler, Runnable onCLick) {
         this.font = font;
         this.text = text;
@@ -20,12 +31,19 @@ public class MenuButton implements MenuComponent {
         this.onCLick = onCLick;
     }
 
+    /**
+     * update each tick
+     */
     public void update() {
         if (mouseHandler.leftClick && mouseHandler.getCursorRect().intersects(triggerArea)) {
             onCLick.run();
         }
     }
 
+    /**
+     * draw each tick
+     * @param g2 Graphics2D
+     */
     public void draw(Graphics2D g2) {
         g2.setColor(Color.white);
         g2.setFont(font);

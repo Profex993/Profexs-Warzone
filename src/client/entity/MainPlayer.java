@@ -8,6 +8,9 @@ import shared.weapon.weaponClasses.WeaponGenerator;
 
 import java.awt.*;
 
+/**
+ * class form main player
+ */
 public class MainPlayer extends Entity {
     private final MouseHandler mouseHandler;
     private final KeyHandler keyHandler;
@@ -15,6 +18,14 @@ public class MainPlayer extends Entity {
     private int health;
     private String killedBy;
 
+    /**
+     * constructor initializes ints screenX and screenY which are used for drawing objects and other players
+     * @param name String name
+     * @param playerModel String playerModel
+     * @param mouseHandler MouseHandler for mouse input
+     * @param keyHandler KeyHandler for keyboard input
+     * @param core GameCore for accessing client components
+     */
     public MainPlayer(String name, String playerModel, MouseHandler mouseHandler, KeyHandler keyHandler, GameCore core) {
         super(name, playerModel, core);
         screenX = GamePanel.getScreenWidth() / 2 - (48 / 2);
@@ -23,6 +34,10 @@ public class MainPlayer extends Entity {
         this.keyHandler = keyHandler;
     }
 
+    /**
+     * update player from player input
+     * @param input Packet_ServerOutputToClient from server
+     */
     public void updateFromServerInput(Packet_ServerOutputToClient input) {
         this.health = input.health();
         if (death && !input.death()) {
@@ -78,6 +93,9 @@ public class MainPlayer extends Entity {
         }
     }
 
+    /**
+     * update each tick
+     */
     public void update() {
         if (!death) {
             if (mouseHandler.isShooting()) {
@@ -105,6 +123,10 @@ public class MainPlayer extends Entity {
         }
     }
 
+    /**
+     * draw player
+     * @param g2 Graphics2D
+     */
     public void draw(Graphics2D g2) {
         rotation = Math.atan2(mouseHandler.getY() - (screenY + (double) solidArea.width / 2),
                 mouseHandler.getX() - (screenX + (double) solidArea.width / 2));

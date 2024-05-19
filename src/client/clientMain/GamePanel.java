@@ -6,13 +6,16 @@ import client.enums.GameStateClient;
 import client.userInterface.ChatMessage;
 import client.userInterface.GameUI;
 import client.userInterface.menu.Menu;
-import shared.object.objectClasses.Object;
+import shared.object.objectClasses.MapObject;
 
 import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
 import java.util.ArrayList;
 
+/**
+ * class for graphics
+ */
 public class GamePanel extends JPanel implements Runnable {
     private static final Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
     public static final int screenWidth = screenSize.width, screenHeight = screenSize.height;
@@ -20,13 +23,23 @@ public class GamePanel extends JPanel implements Runnable {
     private int currentFps = 0;
     private final MainPlayer mainPlayer;
     private final ArrayList<Player> playerList;
-    private ArrayList<Object> objectList = new ArrayList<>();
+    private ArrayList<MapObject> mapObjectList = new ArrayList<>();
     private final TileManager tileManager;
     private final Menu menu;
     private final GameUI gameUI;
     private final MouseHandler mouseHandler;
     private final GameCore core;
 
+    /**
+     * constructor initializes GameUi
+     * @param player MainPlayer
+     * @param playerList Arraylist of Players
+     * @param keyHandler KeyHandler
+     * @param mouseHandler MouseHandler
+     * @param tileManager TileManager
+     * @param menu pause Menu
+     * @param core GameCore for checking ClientGameState
+     */
     public GamePanel(MainPlayer player, ArrayList<Player> playerList, KeyHandler keyHandler, MouseHandler mouseHandler,
                      TileManager tileManager, Menu menu, GameCore core) {
         this.setPreferredSize(screenSize);
@@ -42,14 +55,6 @@ public class GamePanel extends JPanel implements Runnable {
         this.menu = menu;
         this.core = core;
         gameUI = new GameUI(mainPlayer, playerList, screenWidth, screenHeight, keyHandler, core);
-
-        try {
-            for (Object object : objectList) {
-                object.initializeRes();
-            }
-        } catch (IOException e) {
-            ClientMain.showErrorWindowAndExit("can not load resources", e);
-        }
     }
 
     public void startThread() {
@@ -57,6 +62,9 @@ public class GamePanel extends JPanel implements Runnable {
         thread.start();
     }
 
+    /**
+     * loop for drawing, locked on 120 fps in double interval
+     */
     @Override
     public void run() {
         double interval = 8333333; //16666666 60fps
@@ -83,6 +91,10 @@ public class GamePanel extends JPanel implements Runnable {
         }
     }
 
+    /**
+     * method for drawing components
+     * @param g the <code>Graphics</code> object to protect
+     */
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;
@@ -100,35 +112,43 @@ public class GamePanel extends JPanel implements Runnable {
         }
 
         g2.setColor(Color.white);
-        g2.setFont(ConstantsClient.font10);
+        g2.setFont(ConstantsClient.FONT_10);
         g2.drawString(String.valueOf(currentFps), 5, 10);
         g2.dispose();
     }
 
+    /**
+     * drawing game components
+     * @param g2 Graphics2D
+     */
     public void drawGame(Graphics2D g2) {
         tileManager.draw(g2);
-        for (int i = 0; i < objectList.size(); i++) {
-            if (objectList.get(i).isDrawUnderPlayer()) {
-                objectList.get(i).draw(g2, mainPlayer, (int) mouseHandler.getX(), (int) mouseHandler.getY());
+        for (int i = 0; i < mapObjectList.size(); i++) {
+            if (mapObjectList.get(i).isDrawUnderPlayer()) {
+                mapObjectList.get(i).draw(g2, mainPlayer, (int) mouseHandler.getX(), (int) mouseHandler.getY());
             }
         }
         mainPlayer.draw(g2);
         for (Player player : playerList) {
             player.draw(g2);
         }
-        for (int i = 0; i < objectList.size(); i++) {
-            if (!objectList.get(i).isDrawUnderPlayer()) {
-                objectList.get(i).draw(g2, mainPlayer, (int) mouseHandler.getX(), (int) mouseHandler.getY());
+        for (int i = 0; i < mapObjectList.size(); i++) {
+            if (!mapObjectList.get(i).isDrawUnderPlayer()) {
+                mapObjectList.get(i).draw(g2, mainPlayer, (int) mouseHandler.getX(), (int) mouseHandler.getY());
             }
         }
     }
 
-    public void setObjectList(ArrayList<Object> objectListUnderPlayer) {
-        this.objectList = objectListUnderPlayer;
+    /**
+     * set ObjectList and initialize resource
+     * @param mapObjectListUnderPlayer Arraylist of MapObjects
+     */
+    public void setObjectList(ArrayList<MapObject> mapObjectListUnderPlayer) {
+        this.mapObjectList = mapObjectListUnderPlayer;
 
         try {
-            for (Object object : objectListUnderPlayer) {
-                object.initializeRes();
+            for (MapObject mapObject : mapObjectListUnderPlayer) {
+                mapObject.initializeRes();
             }
         } catch (IOException e) {
             ClientMain.showErrorWindowAndExit("can not load resources", e);

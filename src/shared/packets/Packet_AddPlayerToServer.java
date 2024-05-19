@@ -4,6 +4,11 @@ import shared.ConstantsShared;
 
 import java.io.IOException;
 
+/**
+ * packet for adding player to server
+ * @param name String name
+ * @param playerModel String player model
+ */
 public record Packet_AddPlayerToServer(String name, String playerModel) {
     public static Packet_AddPlayerToServer parseString(String line) throws IOException {
         try {

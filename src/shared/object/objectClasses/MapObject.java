@@ -12,7 +12,10 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.Objects;
 
-public abstract class Object {
+/**
+ * class for map objects
+ */
+public abstract class MapObject {
     protected final int worldX, worldY, width, height;
     private final boolean collision, drawUnderPlayer;
     protected final boolean intractable;
@@ -21,7 +24,16 @@ public abstract class Object {
     private final String imagePath;
     private boolean interactText = false;
 
-    public Object(int worldX, int worldY, int width, int height, boolean intractable, String imagePath, boolean drawUnderPlayer) {
+    /**
+     * @param worldX int world x location
+     * @param worldY int world y location
+     * @param width int width
+     * @param height int height
+     * @param intractable boolean which determines if object is intractable
+     * @param imagePath String of file path to image
+     * @param drawUnderPlayer if true, object will be drawn under player
+     */
+    public MapObject(int worldX, int worldY, int width, int height, boolean intractable, String imagePath, boolean drawUnderPlayer) {
         this.worldX = worldX;
         this.worldY = worldY;
         this.width = width;
@@ -37,8 +49,18 @@ public abstract class Object {
                 height + ConstantsServer.OBJECT_TRIGGER_AREA_OFFSET);
     }
 
-    public Object(int worldX, int worldY, int width, int height, boolean intractable, String imagePath, Rectangle solidArea,
-                  boolean drawUnderPlayer) {
+    /**
+     * @param worldX int world x location
+     * @param worldY int world y location
+     * @param width int width
+     * @param height int height
+     * @param intractable boolean which determines if object is intractable
+     * @param imagePath String of file path to image
+     * @param drawUnderPlayer if true, object will be drawn under player
+     * @param solidArea Rectangle where of solid area through which player cant go
+     */
+    public MapObject(int worldX, int worldY, int width, int height, boolean intractable, String imagePath, Rectangle solidArea,
+                     boolean drawUnderPlayer) {
         this.worldX = worldX;
         this.worldY = worldY;
         this.width = width;
@@ -54,10 +76,20 @@ public abstract class Object {
                 (int) (height + 1.5 * ConstantsServer.OBJECT_TRIGGER_AREA_OFFSET));
     }
 
+    /**
+     * load image resource
+     * @throws IOException if image cant be loaded
+     */
     public void initializeRes() throws IOException {
         image = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream(imagePath)));
     }
 
+    /**
+     * try to interact with object
+     * @param player PlayerServerSide which is trying to interact
+     * @param input Packet_PlayerInputToServer input
+     * @param core ServerCore for accessing game components
+     */
     public void tryInteracting(PlayerServerSide player, Packet_PlayerInputToServer input, ServerCore core) {
         if (!intractable) return;
         int screenX = worldX - player.getWorldX() + input.screenX();
@@ -71,13 +103,28 @@ public abstract class Object {
         }
     }
 
+    /**
+     * update each second
+     * @param core GameCore for accessing components
+     */
     public void updatePerSecond(ServerCore core) {
 
     }
 
+    /**
+     * execute on serverSide when interacted
+     * @param player PlayerServerSide
+     * @param core ServerCore for accessing components
+     */
     public void executeServerSide(PlayerServerSide player, ServerCore core) {
     }
 
+    /**
+     * update each tick on server side
+     * @param mouseX int mouse x location
+     * @param mouseY int mouse y location
+     * @param player mainPlayer
+     */
     public void updateClientSide(double mouseX, double mouseY, MainPlayer player) {
         if (intractable) {
             int screenX = worldX - player.getWorldX() + player.getScreenX();
@@ -90,6 +137,13 @@ public abstract class Object {
         }
     }
 
+    /**
+     * draw object on map
+     * @param g2 Graphics2D
+     * @param player MainPlayer for determining draw location
+     * @param mouseX int mouse x location
+     * @param mouseY int mouse y location
+     */
     public void draw(Graphics2D g2, MainPlayer player, int mouseX, int mouseY) {
         if (worldX + width > player.getWorldX() - player.getScreenX() && worldX - width < player.getWorldX() + player.getScreenX()
                 && worldY + height > player.getWorldY() - player.getScreenY() && worldY - height < worldY + player.getScreenY()) {

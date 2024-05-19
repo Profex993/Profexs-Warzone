@@ -4,3 +4,4 @@ out/
 !**/src/test/**/out/
 /system.txt
 /mapBuilder/
+/todo

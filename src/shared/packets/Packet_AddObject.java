@@ -1,10 +1,16 @@
 package shared.packets;
 
 import shared.ConstantsShared;
-import shared.object.objectClasses.Object;
+import shared.object.objectClasses.MapObject;
 
 import java.io.IOException;
 
+/**
+ * packet for adding object
+ * @param name name of object class equivalent of object.getClass().getSimpleName()
+ * @param x int x coordinate
+ * @param y int y coordinate
+ */
 public record Packet_AddObject(String name, int x, int y) {
     public final static String head = "addObject";
 
@@ -17,8 +23,8 @@ public record Packet_AddObject(String name, int x, int y) {
         }
     }
 
-    public static Packet_AddObject getFromObject(Object object) {
-        return new Packet_AddObject(object.getClass().getSimpleName(), object.getWorldX(), object.getWorldY());
+    public static Packet_AddObject getFromObject(MapObject mapObject) {
+        return new Packet_AddObject(mapObject.getClass().getSimpleName(), mapObject.getWorldX(), mapObject.getWorldY());
     }
 
     public String toString() {

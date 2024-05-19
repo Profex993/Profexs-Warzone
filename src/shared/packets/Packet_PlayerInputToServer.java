@@ -6,6 +6,20 @@ import shared.ConstantsShared;
 
 import java.io.IOException;
 
+/**
+ * packet containing information about main player from client to server
+ * @param up boolean is player walking up
+ * @param down boolean is player walking down
+ * @param left boolean is player walking left
+ * @param right boolean is player walking right
+ * @param mouseX double mouse position x
+ * @param mouseY double mouse position y
+ * @param screenX int screen position of player
+ * @param screenY int screen position of player
+ * @param leftCLick boolean if player left clicks
+ * @param reload boolean if player reloads
+ * @param rightClick if player right clicks
+ */
 public record Packet_PlayerInputToServer(boolean up, boolean down, boolean left, boolean right, double mouseX, double mouseY,
                                          int screenX, int screenY, boolean leftCLick, boolean reload, boolean rightClick) {
     public static Packet_PlayerInputToServer parseString(String line) throws IOException {

@@ -8,12 +8,20 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.LinkedHashMap;
 
+/**
+ * server console class
+ * this class has its own console making it compatible with the main thread of ServerCore class
+ */
 public class Console {
     private boolean exit = true;
     private final LinkedHashMap<String, Command> commandList;
     private final ServerCore core;
     private final BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 
+    /**
+     * constructor initializes commandList and puts commands in it
+     * @param core ServerCore for method access
+     */
     public Console(ServerCore core) {
         this.core = core;
         this.commandList = new LinkedHashMap<>();
@@ -23,6 +31,9 @@ public class Console {
         commandList.put("change match time", new Command_ChangeMatchTime());
     }
 
+    /**
+     * start console thread and wait for input
+     */
     public void startConsole() {
         new Thread(() -> {
             while (exit) {
@@ -43,14 +54,17 @@ public class Console {
         }).start();
     }
 
+    /**
+     * select port from player input
+     * @return port int
+     */
     public int selectPort() {
         System.out.println("enter port number:");
-//        try {
-//            return Integer.parseInt(reader.readLine());
-//        } catch (IOException e) {
-//            throw new RuntimeException(e);
-//        }
-        return 8080;
+        try {
+            return Integer.parseInt(reader.readLine());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public void triggerExit() {
