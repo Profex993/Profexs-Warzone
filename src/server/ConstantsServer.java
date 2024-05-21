@@ -1,8 +1,7 @@
 package server;
 
-import shared.object.MapObject_Weapon_AK;
-import shared.object.MapObject_Weapon_SKS;
-import shared.weapon.Weapon_PM;
+import shared.object.*;
+import shared.weapon.Weapon_MP;
 import shared.weapon.weaponClasses.Weapon;
 
 /**
@@ -13,8 +12,10 @@ public abstract class ConstantsServer {
     public static final int MATCH_TIME = 600, PLAYER_SPEED = 4, PROJECTILE_SPEED = 40, OBJECT_TRIGGER_AREA_OFFSET = 45,
             MATCH_OVER_TIME = 20, WEAPON_ITEM_DESPAWN_DELAY = 30, PROJECTILE_SIZE = 4, PLAYER_RESPAWN_TIME = 600;
 
-    public static final Class<? extends Weapon> DEFAULT_WEAPON = Weapon_PM.class;
+    public static final Class<? extends Weapon> DEFAULT_WEAPON = Weapon_MP.class;
 
     //names of weapons that can spawn on the map
-    public static final String[] SPAWN_WEAPON_NAMES = {MapObject_Weapon_AK.class.getSimpleName(), MapObject_Weapon_SKS.class.getSimpleName()};
+    public static final String[] SPAWN_WEAPON_NAMES = {MapObject_Weapon_KA.class.getSimpleName(), MapObject_Weapon_KSK.class.getSimpleName(),
+            MapObject_Weapon_ZSS.class.getSimpleName(), MapObject_Weapon_Port13.class.getSimpleName(), MapObject_Weapon_P37.class.getSimpleName(),
+            MapObject_Weapon_VO68.class.getSimpleName(), MapObject_Weapon_DB.class.getSimpleName()};
 }
