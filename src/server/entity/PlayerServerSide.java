@@ -239,8 +239,17 @@ public class PlayerServerSide {
 
     public boolean isWalking() {
         // prevent walking after match is over
-        if (core.getMatchState() == ServerMatchState.MATCH) {
+        if (core.getMatchState() == ServerMatchState.MATCH && !death) {
             return walking;
+        } else {
+            return false;
+        }
+    }
+
+    public boolean isShooting() {
+        // prevent shooting after match is over
+        if (core.getMatchState() == ServerMatchState.MATCH && !death) {
+            return shooting;
         } else {
             return false;
         }
@@ -273,10 +282,6 @@ public class PlayerServerSide {
 
     public String getDirectionFace() {
         return directionFace;
-    }
-
-    public boolean isShooting() {
-        return shooting;
     }
 
     public Rectangle getSolidArea() {
